@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="cz.muni.fi.bruzl">
+  <collaboration id="Collaboration">
+    <participant id="loadHydroData1" name="LoadHydroData" processRef="LoadHydroData1"></participant>
+    <participant id="evaluateHydroData1" name="EvaluateHydroData" processRef="evaluatehydrodata1"></participant>
+  </collaboration>
+  <process id="LoadHydroData1" name="LoadHydroData" isExecutable="true">
+    <documentation>Process of obtaining hydrological data.</documentation>
+    <laneSet id="laneSet_LoadHydroData1">
+      <lane id="LoadHydroData-Lane1" name="System">
+        <flowNodeRef>timerstartevent1</flowNodeRef>
+        <flowNodeRef>endevent1</flowNodeRef>
+        <flowNodeRef>boundarytimer1</flowNodeRef>
+        <flowNodeRef>scriptlogerror</flowNodeRef>
+        <flowNodeRef>endevent2</flowNodeRef>
+        <flowNodeRef>retrievecontactdata</flowNodeRef>
+        <flowNodeRef>retrievehydrodata1</flowNodeRef>
+        <flowNodeRef>callactivity1</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="timerstartevent1" name="Timer start">
+      <timerEventDefinition>
+        <timeCycle>R1/PT10S</timeCycle>
+      </timerEventDefinition>
+    </startEvent>
+    <sequenceFlow id="flow1" sourceRef="timerstartevent1" targetRef="retrievecontactdata"></sequenceFlow>
+    <scriptTask id="retrievecontactdata" name="Retrieve contact data" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>println "Data retrieved"</script>
+    </scriptTask>
+    <subProcess id="retrievehydrodata1" name="Retrieve hydro data">
+      <scriptTask id="scripttask1" name="Retrieve Hydro Data" scriptFormat="groovy" activiti:autoStoreVariables="false">
+        <script>println "Hydro data retrieved"</script>
+      </scriptTask>
+    </subProcess>
+    <sequenceFlow id="flow2" sourceRef="retrievecontactdata" targetRef="retrievehydrodata1"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <boundaryEvent id="boundarytimer1" name="Timer" attachedToRef="retrievehydrodata1" cancelActivity="true">
+      <timerEventDefinition>
+        <timeDuration>5M</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow5" sourceRef="boundarytimer1" targetRef="scriptlogerror"></sequenceFlow>
+    <scriptTask id="scriptlogerror" name="Log error" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>println "timeout error"</script>
+    </scriptTask>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <sequenceFlow id="flow6" sourceRef="scriptlogerror" targetRef="endevent2"></sequenceFlow>
+    <callActivity id="callactivity1" name="Evaluate hydro data" calledElement="evaluatehydrodata1"></callActivity>
+    <sequenceFlow id="flow7" sourceRef="callactivity1" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="retrievehydrodata1" targetRef="callactivity1"></sequenceFlow>
+  </process>
+  <process id="evaluatehydrodata1" name="EvaluateHydroData" isExecutable="true">
+    <laneSet id="laneSet_evaluatehydrodata1">
+      <lane id="lane1">
+        <flowNodeRef>startevent1</flowNodeRef>
+        <flowNodeRef>endevent3</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <endEvent id="endevent3" name="End"></endEvent>
+    <sequenceFlow id="flow9" sourceRef="startevent1" targetRef="endevent3"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Collaboration">
+    <bpmndi:BPMNPlane bpmnElement="Collaboration" id="BPMNPlane_Collaboration">
+      <bpmndi:BPMNShape bpmnElement="loadHydroData1" id="BPMNShape_loadHydroData1">
+        <omgdc:Bounds height="391.0" width="891.0" x="120.0" y="130.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="LoadHydroData-Lane1" id="BPMNShape_LoadHydroData-Lane1">
+        <omgdc:Bounds height="391.0" width="871.0" x="140.0" y="130.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="evaluateHydroData1" id="BPMNShape_evaluateHydroData1">
+        <omgdc:Bounds height="150.0" width="500.0" x="120.0" y="540.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="lane1" id="BPMNShape_lane1">
+        <omgdc:Bounds height="150.0" width="480.0" x="140.0" y="540.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="timerstartevent1" id="BPMNShape_timerstartevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="180.0" y="310.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="retrievecontactdata" id="BPMNShape_retrievecontactdata">
+        <omgdc:Bounds height="61.0" width="105.0" x="260.0" y="297.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="retrievehydrodata1" id="BPMNShape_retrievehydrodata1">
+        <omgdc:Bounds height="236.0" width="251.0" x="410.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask1" id="BPMNShape_scripttask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="480.0" y="303.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundarytimer1" id="BPMNShape_boundarytimer1">
+        <omgdc:Bounds height="30.0" width="30.0" x="640.0" y="433.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="880.0" y="310.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scriptlogerror" id="BPMNShape_scriptlogerror">
+        <omgdc:Bounds height="55.0" width="105.0" x="726.0" y="420.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="876.0" y="430.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="callactivity1" id="BPMNShape_callactivity1">
+        <omgdc:Bounds height="65.0" width="105.0" x="726.0" y="295.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="190.0" y="610.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="270.0" y="610.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="215.0" y="327.0"></omgdi:waypoint>
+        <omgdi:waypoint x="260.0" y="327.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="365.0" y="327.0"></omgdi:waypoint>
+        <omgdi:waypoint x="410.0" y="328.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="670.0" y="448.0"></omgdi:waypoint>
+        <omgdi:waypoint x="726.0" y="447.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="831.0" y="447.0"></omgdi:waypoint>
+        <omgdi:waypoint x="876.0" y="447.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="831.0" y="327.0"></omgdi:waypoint>
+        <omgdi:waypoint x="880.0" y="327.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="661.0" y="328.0"></omgdi:waypoint>
+        <omgdi:waypoint x="726.0" y="327.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="225.0" y="627.0"></omgdi:waypoint>
+        <omgdi:waypoint x="270.0" y="627.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
