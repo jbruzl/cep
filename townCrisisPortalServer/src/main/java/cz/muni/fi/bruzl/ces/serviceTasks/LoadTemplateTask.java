@@ -22,6 +22,8 @@ import java.util.Map;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.nio.file.Paths.get;
 
@@ -30,7 +32,7 @@ import static java.nio.file.Paths.get;
  *
  */
 public class LoadTemplateTask implements JavaDelegate {
-
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	/*
 	 * (non-Javadoc)
 	 * 

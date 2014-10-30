@@ -21,7 +21,7 @@
     </dependencies>
 
     <properties>
-        <start-class>cz.muni.fi.bruzl.sirenstub.Application</start-class>
+        <start-class>Application</start-class>
     </properties>
 
     <build>

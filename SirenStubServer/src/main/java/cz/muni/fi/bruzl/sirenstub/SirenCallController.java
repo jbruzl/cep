@@ -25,10 +25,11 @@ public class SirenCallController {
 	private final String sirenSoundPath = "/sirenSoundTest.wav";
 
 	@RequestMapping("/soundSiren")
-	public void soundSiren(
+	public boolean soundSiren(
 			@RequestParam(value = "user", defaultValue = "default") String user) {
-		System.out.println(user + " - sounding siren.");
+		System.out.println(user + " - sounding siren " + counter.incrementAndGet());
 		playSiren();
+		return true;
 	}
 
 	/**
