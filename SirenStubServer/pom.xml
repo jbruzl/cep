@@ -3,9 +3,8 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cz.muni.fi.bruzl</groupId>
     <artifactId>siren-stub</artifactId>
-    <version>0.0.1</version>
+    <version>0.1.0</version>
 
 
     <dependencies>
@@ -22,7 +21,7 @@
     </dependencies>
 
     <properties>
-        <start-class>cz.muni.fi.bruzl.Application</start-class>
+        <start-class>cz.muni.fi.bruzl.sirenstub.Application</start-class>
     </properties>
 
     <build>
@@ -47,4 +46,9 @@
             <url>http://repo.spring.io/libs-release</url>
         </pluginRepository>
     </pluginRepositories>
+    <parent>
+    	<groupId>cz.muni.fi.bruzl</groupId>
+    	<artifactId>city-emergency-portal</artifactId>
+    	<version>0.0.1-SNAPSHOT</version>
+    </parent>
 </project>

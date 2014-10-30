@@ -26,8 +26,8 @@ public class SirenCallController {
 
 	@RequestMapping("/soundSiren")
 	public void soundSiren(
-			@RequestParam(value = "user", defaultValue = "") String user,
-			@RequestParam(value = "password", defaultValue = "") String password) {
+			@RequestParam(value = "user", defaultValue = "default") String user) {
+		System.out.println(user + " - sounding siren.");
 		playSiren();
 	}
 
