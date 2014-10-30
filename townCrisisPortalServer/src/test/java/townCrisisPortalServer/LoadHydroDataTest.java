@@ -61,18 +61,10 @@ public class LoadHydroDataTest extends AbstractTest {
 						"LoadHydroData1");
 
 		moveBySeconds(5);
-		waitForJobExecutorOnCondition(10000, 500, new Callable<Boolean>() {
-			public Boolean call() throws Exception {
-				return 1 == piq.count();
-			}
-		});
+		
 		assertEquals(1, jobQuery.count());
 		moveBySeconds(5);
-		waitForJobExecutorOnCondition(10000, 500, new Callable<Boolean>() {
-			public Boolean call() throws Exception {
-				return 1 == piq.count();
-			}
-		});
+		
 		assertEquals(1, jobQuery.count());
 
 	}
