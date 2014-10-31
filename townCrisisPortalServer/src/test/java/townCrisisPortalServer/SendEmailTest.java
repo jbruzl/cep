@@ -5,13 +5,13 @@ package townCrisisPortalServer;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
@@ -41,7 +41,7 @@ public class SendEmailTest extends AbstractTest {
 	
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendEmail.bpmn" })
-	public void testEMAILTask() {
+	public void testEMAILTask() throws IOException, MessagingException {
 		Wiser wiser = new Wiser();
 		wiser.setPort(1025);
 		wiser.start();
@@ -64,6 +64,7 @@ public class SendEmailTest extends AbstractTest {
 		
 		List<WiserMessage> messages = wiser.getMessages();
 		assertEquals(2, messages.size());
+		
 
 		wiser.stop();
 	}

@@ -16,8 +16,11 @@ import java.util.Map;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+<<<<<<< HEAD
+=======
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+>>>>>>> cd05fda08cc384170888b07121d913d9e7b8063a
 
 /**
  * @author Jan Bruzl
