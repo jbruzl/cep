@@ -13,12 +13,15 @@
       <errorEventDefinition errorRef="InvokeSirenFailed"></errorEventDefinition>
     </endEvent>
     <sequenceFlow id="flow4" sourceRef="sirenrefusedconnection1" targetRef="errorendevent1"></sequenceFlow>
+<<<<<<< HEAD
+=======
     <boundaryEvent id="invokesirentimeout1" name="Invoke Siren Timeout" attachedToRef="invokesiren1" cancelActivity="true">
       <timerEventDefinition>
         <timeDuration>PT5S</timeDuration>
       </timerEventDefinition>
     </boundaryEvent>
     <sequenceFlow id="flow5" sourceRef="invokesirentimeout1" targetRef="errorendevent1"></sequenceFlow>
+>>>>>>> cd05fda08cc384170888b07121d913d9e7b8063a
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_SoundSiren">
     <bpmndi:BPMNPlane bpmnElement="SoundSiren" id="BPMNPlane_SoundSiren">
@@ -31,9 +34,12 @@
       <bpmndi:BPMNShape bpmnElement="sirenrefusedconnection1" id="BPMNShape_sirenrefusedconnection1">
         <omgdc:Bounds height="30.0" width="30.0" x="280.0" y="240.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
+<<<<<<< HEAD
+=======
       <bpmndi:BPMNShape bpmnElement="invokesirentimeout1" id="BPMNShape_invokesirentimeout1">
         <omgdc:Bounds height="30.0" width="30.0" x="190.0" y="240.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
+>>>>>>> cd05fda08cc384170888b07121d913d9e7b8063a
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="350.0" y="210.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
@@ -53,11 +59,14 @@
         <omgdi:waypoint x="294.0" y="307.0"></omgdi:waypoint>
         <omgdi:waypoint x="350.0" y="307.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
+<<<<<<< HEAD
+=======
       <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
         <omgdi:waypoint x="205.0" y="270.0"></omgdi:waypoint>
         <omgdi:waypoint x="204.0" y="307.0"></omgdi:waypoint>
         <omgdi:waypoint x="350.0" y="307.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
+>>>>>>> cd05fda08cc384170888b07121d913d9e7b8063a
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </definitions>
