@@ -44,6 +44,7 @@ public class RadioController {
 	public @ResponseBody Boolean handleFileUpload(
 			@RequestParam(value="user", defaultValue="unknown") String user,
 			@RequestParam("file") MultipartFile file) {
+		System.out.println("Received request.");
 		if (!file.isEmpty()) {
 			try {
 				byte[] bytes = file.getBytes();
@@ -59,9 +60,11 @@ public class RadioController {
 				System.out.println(counter.incrementAndGet() + " " + user + " - playng sound " + filePath);
 				return Boolean.TRUE;
 			} catch (Exception e) {
+				e.printStackTrace();
 				return Boolean.FALSE;
 			}
 		} else {
+			System.err.println("Received empty file.");
 			return Boolean.FALSE;
 		}
 	}
