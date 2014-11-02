@@ -32,7 +32,6 @@ public class InvokeSirenServiceTask implements JavaDelegate {
 	 */
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
-		Thread.sleep(10*1000);
 		RestTemplate restTemplate = new RestTemplate();		
 		try {
 			restTemplate.getForObject(soundSirenUrl, Boolean.class);

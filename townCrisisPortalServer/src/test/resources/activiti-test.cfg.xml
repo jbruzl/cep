@@ -55,5 +55,7 @@
 		factory-method="getHistoryService" />
 	<bean id="managementService" factory-bean="activitiRule"
 		factory-method="getManagementService" />
+		<bean id="formService" factory-bean="activitiRule"
+		factory-method="getFormService" />
 
 </beans>

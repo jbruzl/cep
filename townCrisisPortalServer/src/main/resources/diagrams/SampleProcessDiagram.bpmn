@@ -1,36 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <process id="mySimpleProcess" name="mySimpleProcess" isExecutable="true">
-    <sequenceFlow id="flow1" sourceRef="timerstartevent1" targetRef="scripttask1"></sequenceFlow>
-    <scriptTask id="scripttask1" name="User Task" activiti:async="true" activiti:exclusive="false" scriptFormat="groovy" activiti:autoStoreVariables="false">
-      <script>println "Hello scripttask"</script>
-    </scriptTask>
     <endEvent id="endevent1" name="End"></endEvent>
-    <sequenceFlow id="flow2" sourceRef="scripttask1" targetRef="endevent1"></sequenceFlow>
-    <startEvent id="timerstartevent1" name="Start">
-      <timerEventDefinition>
-        <timeCycle>R3/PT5S</timeCycle>
-      </timerEventDefinition>
-    </startEvent>
+    <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="endevent1"></sequenceFlow>
+    <userTask id="usertask1" name="User Task"></userTask>
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <sequenceFlow id="flow3" sourceRef="startevent1" targetRef="subprocess1"></sequenceFlow>
+    <subProcess id="subprocess1" name="Sub Process">
+      <startEvent id="startevent2" name="Start"></startEvent>
+      <scriptTask id="scripttask2" name="Script Task" activiti:autoStoreVariables="true">
+      	<script>
+      		testMap = [test:"map"]
+      		println(testmap)
+      	</script>
+      </scriptTask>
+      <sequenceFlow id="flow5" sourceRef="startevent2" targetRef="scripttask2"></sequenceFlow>
+      <endEvent id="endevent2" name="End"></endEvent>
+      <sequenceFlow id="flow6" sourceRef="scripttask2" targetRef="endevent2"></sequenceFlow>
+    </subProcess>
+    <sequenceFlow id="flow7" sourceRef="subprocess1" targetRef="usertask1"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_mySimpleProcess">
     <bpmndi:BPMNPlane bpmnElement="mySimpleProcess" id="BPMNPlane_mySimpleProcess">
-      <bpmndi:BPMNShape bpmnElement="scripttask1" id="BPMNShape_scripttask1">
-        <omgdc:Bounds height="55.0" width="105.0" x="200.0" y="150.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="350.0" y="160.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="timerstartevent1" id="BPMNShape_timerstartevent1">
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="200.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="120.0" y="160.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="155.0" y="177.0"></omgdi:waypoint>
-        <omgdi:waypoint x="200.0" y="177.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="subprocess1" id="BPMNShape_subprocess1">
+        <omgdc:Bounds height="205.0" width="401.0" x="60.0" y="310.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent2" id="BPMNShape_startevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="90.0" y="400.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask2" id="BPMNShape_scripttask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="170.0" y="390.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="320.0" y="400.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
         <omgdi:waypoint x="305.0" y="177.0"></omgdi:waypoint>
         <omgdi:waypoint x="350.0" y="177.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="137.0" y="195.0"></omgdi:waypoint>
+        <omgdi:waypoint x="260.0" y="310.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="125.0" y="417.0"></omgdi:waypoint>
+        <omgdi:waypoint x="170.0" y="417.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="275.0" y="417.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="417.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="260.0" y="310.0"></omgdi:waypoint>
+        <omgdi:waypoint x="252.0" y="205.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
