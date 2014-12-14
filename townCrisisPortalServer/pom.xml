@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>BPMN 2.0 with Activiti - Examples</name>
+	<name>Sandbox project</name>
 	<properties>
 		<activiti-version>5.16.1</activiti-version>
 		<org.springframework.version>4.1.1.RELEASE</org.springframework.version>
@@ -147,7 +147,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	<artifactId>city-emergency-server</artifactId>
+	<artifactId>cep-test</artifactId>
 	<parent>
 		<groupId>cz.muni.fi.bruzl</groupId>
 		<artifactId>city-emergency-portal</artifactId>
