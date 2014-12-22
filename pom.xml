@@ -10,5 +10,6 @@
   	<module>sirenStub</module>
   	<module>cep</module>
   	<module>subscriptions</module>
+  	<module>core</module>
   </modules>
 </project>
