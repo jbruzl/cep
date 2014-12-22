@@ -9,28 +9,23 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
+ * Abstract super type for subscription to {@link Publisher}.
+ * 
  * @author Jan Bruzl
- *
  */
 @Entity
-public class Subscriber {
+public abstract class Subscriber {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	public long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
+
+	private ContactType contactType;
 
 	/**
 	 * 
 	 */
 	public Subscriber() {
 		super();
-	}
-
-	/**
-	 * @param id
-	 */
-	public Subscriber(long id) {
-		super();
-		this.id = id;
 	}
 
 	/**
@@ -41,47 +36,30 @@ public class Subscriber {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * 
+	 * @return subscribed contact
+	 * @throws Exception Unknown contact type
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
-		return result;
+	abstract String getContact() throws Exception;
+
+	/**
+	 * 
+	 * @return type of subscribed contact
+	 */
+	ContactType getContactType() {
+		return contactType;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Subscriber other = (Subscriber) obj;
-		if (id != other.id)
-			return false;
-		return true;
+	public void setContactType(ContactType contactType) {
+		this.contactType = contactType;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "Subscriber [id=" + id + "]";
-	}
-	
-	
 }
