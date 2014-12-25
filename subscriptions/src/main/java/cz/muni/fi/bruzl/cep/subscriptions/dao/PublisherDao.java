@@ -12,5 +12,5 @@ import cz.muni.fi.bruzl.cep.subscriptions.entities.Publisher;
  *
  */
 public interface PublisherDao extends CrudRepository<Publisher, Long> {
-
+	public Publisher findByCode(String code); 
 }
