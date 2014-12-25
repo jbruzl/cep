@@ -14,7 +14,7 @@ import cz.muni.fi.cep.core.entities.CepUser;
  */
 @Entity
 public class UserSubscriber extends Subscriber {
-
+	//TODO add annotations for relation
 	private CepUser user;
 
 	public UserSubscriber() {

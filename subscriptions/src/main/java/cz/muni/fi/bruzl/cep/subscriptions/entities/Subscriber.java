@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  * Abstract super type for subscription to {@link Publisher}.
@@ -20,6 +21,9 @@ public abstract class Subscriber {
 	private long id;
 
 	private ContactType contactType;
+	
+	@ManyToOne
+	private Publisher publisher;
 
 	/**
 	 * 
@@ -61,5 +65,23 @@ public abstract class Subscriber {
 	public void setContactType(ContactType contactType) {
 		this.contactType = contactType;
 	}
+
+	/**
+	 * @return the publisher
+	 */
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	/**
+	 * @param publisher the publisher to set
+	 */
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
+
+
+	
+	
 
 }

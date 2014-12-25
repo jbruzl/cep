@@ -3,10 +3,16 @@
  */
 package cz.muni.fi.bruzl.cep.subscriptions.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  * @author Jan Bruzl
@@ -17,7 +23,11 @@ public class Publisher {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+	@Column(unique=true, nullable=false)
 	private String code;
+	
+	@OneToMany(mappedBy="publisher", fetch=FetchType.LAZY)
+	private List<Subscriber> subscribers = new ArrayList<Subscriber>();
 
 	/**
 	 * 
@@ -74,5 +84,20 @@ public class Publisher {
 	public void setCode(String code) {
 		this.code = code;
 	}
+
+	/**
+	 * @return the subscribers
+	 */
+	public List<Subscriber> getSubscribers() {
+		return subscribers;
+	}
+
+	/**
+	 * @param subscribers the subscribers to set
+	 */
+	public void setSubscribers(List<Subscriber> subscribers) {
+		this.subscribers = subscribers;
+	}
+	
 
 }
