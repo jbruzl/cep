@@ -52,13 +52,13 @@ public abstract class Subscriber {
 	 * @return subscribed contact
 	 * @throws Exception Unknown contact type
 	 */
-	abstract String getContact() throws Exception;
+	public abstract String getContact() throws Exception;
 
 	/**
 	 * 
 	 * @return type of subscribed contact
 	 */
-	ContactType getContactType() {
+	public ContactType getContactType() {
 		return contactType;
 	}
 

@@ -51,7 +51,7 @@ public class UserSubscriber extends Subscriber {
 	}
 
 	@Override
-	String getContact() throws Exception {
+	public String getContact() throws Exception {
 		String contact;
 		switch (getContactType()) {
 		case EMAIL:
