@@ -9,9 +9,7 @@ import org.activiti.engine.identity.User;
 
 @Entity
 public class CepUser implements User {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -3456927035872908174L;
 	
 	@Id
@@ -86,6 +84,13 @@ public class CepUser implements User {
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override
