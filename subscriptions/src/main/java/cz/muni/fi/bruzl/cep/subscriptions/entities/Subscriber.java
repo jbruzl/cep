@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import cz.muni.fi.bruzl.cep.subscriptions.api.ContactType;
+
 /**
  * Abstract super type for subscription to {@link Publisher}.
  * 

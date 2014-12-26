@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cz.muni.fi.bruzl.cep.subscriptions.api.ContactType;
 import cz.muni.fi.bruzl.cep.subscriptions.api.SubscriptionService;
 import cz.muni.fi.bruzl.cep.subscriptions.dao.PublisherDao;
 import cz.muni.fi.bruzl.cep.subscriptions.dao.SubscriberDao;
-import cz.muni.fi.bruzl.cep.subscriptions.entities.ContactType;
 import cz.muni.fi.bruzl.cep.subscriptions.entities.OrphanSubscriber;
 import cz.muni.fi.bruzl.cep.subscriptions.entities.Publisher;
 import cz.muni.fi.bruzl.cep.subscriptions.entities.Subscriber;

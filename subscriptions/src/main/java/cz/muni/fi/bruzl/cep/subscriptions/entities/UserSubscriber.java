@@ -4,7 +4,7 @@
 package cz.muni.fi.bruzl.cep.subscriptions.entities;
 
 import javax.persistence.Entity;
-
+import javax.persistence.ManyToOne;
 import cz.muni.fi.cep.core.entities.CepUser;
 
 /**
@@ -14,7 +14,7 @@ import cz.muni.fi.cep.core.entities.CepUser;
  */
 @Entity
 public class UserSubscriber extends Subscriber {
-	//TODO add annotations for relation
+	@ManyToOne(targetEntity=cz.muni.fi.cep.core.entities.CepUser.class)
 	private CepUser user;
 
 	public UserSubscriber() {

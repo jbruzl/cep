@@ -3,11 +3,9 @@
  */
 package cz.muni.fi.bruzl.cep.subscriptions.dao;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import cz.muni.fi.bruzl.cep.subscriptions.entities.Publisher;
-import cz.muni.fi.bruzl.cep.subscriptions.entities.Subscriber;
 
 /**
  * @author Jan Bruzl
@@ -15,11 +13,9 @@ import cz.muni.fi.bruzl.cep.subscriptions.entities.Subscriber;
  */
 public interface PublisherDao extends CrudRepository<Publisher, Long> {
 	/**
-	 * TODO
+	 * Returns {@link Publisher} with given code.
 	 * @param code
-	 * @return
+	 * @return {@link Publisher}
 	 */
 	public Publisher findByCode(String code); 
-	
-
 }
