@@ -2,11 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>cz.muni.fi.bruzl</groupId>
+		<groupId>cz.muni.fi.cep</groupId>
 		<artifactId>city-emergency-portal</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>cz.muni.fi.bruzl.cep</groupId>
 	<artifactId>subscriptions</artifactId>
 	<dependencies>
 		<dependency>
@@ -31,7 +30,12 @@
 		</dependency>
 		<dependency>
 			<groupId>cz.muni.fi.cep</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.muni.fi.cep</groupId>
+			<artifactId>users</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
