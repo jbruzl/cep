@@ -7,18 +7,23 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import cz.muni.fi.cep.core.users.services.IdentityService;
+import cz.muni.fi.cep.core.users.services.UserService;
+
 /**
  * @author Jan Bruzl
  *
  */
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan
+@ComponentScan(basePackages= {"cz.muni.fi.cep.core"})
 @EntityScan(basePackages = { "cz.muni.fi.cep.core" })
 public class App {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication
 				.run(App.class);
+		
+		IdentityService is = context.getBean(IdentityService.class);
 		
 		//UserService service = context.getBean(UserService.class);
 		
@@ -29,7 +34,7 @@ public class App {
 		//cepUser.setPhoneNumber("728484615");
 		cepUser.setPassword("01234");
 		
-		IdentityService is = context.getBean(IdentityService.class);
+		
 		
 		is.saveUser(cepUser);
 		

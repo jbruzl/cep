@@ -13,8 +13,9 @@ public class ActivitiEngine {
 		return ProcessEngines.getDefaultProcessEngine();
 	}
 	
+	/*
 	@Bean
 	public IdentityService getIdentityService(ProcessEngine processEngine) {
 		return processEngine.getIdentityService();
-	}
+	}*/
 }

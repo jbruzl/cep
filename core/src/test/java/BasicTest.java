@@ -1,7 +1,10 @@
-import org.springframework.boot.orm.jpa.EntityScan;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+
+import cz.muni.fi.cep.core.App;
 
 
-@EntityScan(basePackages = { "cz.muni.fi.cep.core.entities" })
-public class BasicTest {
+
+public class BasicTest extends AbstractTransactionalJUnit4SpringContextTests{
 
 }
