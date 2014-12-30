@@ -180,7 +180,18 @@ public class IdentityServiceTests extends BasicTest {
 
 	@Test
 	public void membershipTest() {
-
+		CepUserEntity cepUserEntity = createUser();
+		CepGroupEntity cepGroupEntity = createGroup();
+		
+		identityService.createMembership(cepUserEntity, cepGroupEntity);
+		
+		assertTrue(cepUserEntity.getGroups().contains(cepGroupEntity));
+		assertTrue(cepGroupEntity.getUsers().contains(cepUserEntity));
+		
+		identityService.deleteMembership(cepUserEntity, cepGroupEntity);
+		
+		assertFalse(cepUserEntity.getGroups().contains(cepGroupEntity));
+		assertFalse(cepGroupEntity.getUsers().contains(cepUserEntity));
 	}
 
 	private CepUserEntity createUser() {
