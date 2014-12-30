@@ -7,8 +7,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import cz.muni.fi.cep.core.users.services.IdentityService;
-import cz.muni.fi.cep.core.users.services.UserService;
+import cz.muni.fi.cep.core.users.api.IdentityService;
+import cz.muni.fi.cep.core.users.api.UserService;
 
 /**
  * @author Jan Bruzl

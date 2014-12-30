@@ -5,15 +5,16 @@ import java.util.List;
 
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cz.muni.fi.cep.core.users.api.IdentityService;
 import cz.muni.fi.cep.core.users.dao.CepGroupDao;
 import cz.muni.fi.cep.core.users.dao.CepUserDao;
 import cz.muni.fi.cep.core.users.entities.CepGroupEntity;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
-import cz.muni.fi.cep.core.users.services.IdentityService;
 
 @Service
 @Transactional
@@ -66,7 +67,7 @@ public class CepIdentityService implements IdentityService {
 	}
 
 	@Override
-	public List<CepUserEntity> getCepUsers() {
+	public List<CepUserEntity> getAllCepUsers() {
 		List<CepUserEntity> cepUserEntities = new ArrayList<CepUserEntity>();
 
 		for (CepUserEntity entity : cepUserDao.findAll()) {
@@ -102,6 +103,8 @@ public class CepIdentityService implements IdentityService {
 
 	@Override
 	public CepGroupEntity getGroupById(Long id) {
+		if (id == null)
+			throw new NullPointerException("Id shouldn't be null.");
 		return cepGroupDao.findOne(id);
 	}
 

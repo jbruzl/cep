@@ -1,4 +1,4 @@
-package cz.muni.fi.cep.core.users.services;
+package cz.muni.fi.cep.core.users.api;
 
 import java.util.List;
 
