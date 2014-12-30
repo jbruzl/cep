@@ -19,7 +19,7 @@ public class CepUserEntity implements User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 
 	private String phoneNumber;
 
@@ -131,6 +131,14 @@ public class CepUserEntity implements User {
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "CepUserEntity [id=" + id + ", phoneNumber=" + phoneNumber
+				+ ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", password=" + password + ", email=" + email + ", groups="
+				+ groups + "]";
 	}
 
 }

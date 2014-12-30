@@ -98,4 +98,10 @@ public class CepGroupEntity implements Group {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "CepGroupEntity [id=" + id + ", code=" + code + ", name=" + name
+				+ ", type=" + type + ", users=" + users + "]";
+	}
+
 }

@@ -44,6 +44,7 @@ public class IdentityServiceTests extends BasicTest {
 		cepUserEntity.setId("3");
 		users.add(cepUserEntity);
 		Mockito.when(cepUserDao.findAll()).thenReturn(users);
+		Mockito.when(cepUserDao.save(createUser())).thenReturn(createUser());
 		identityService.setCepUserDao(cepUserDao);
 
 		cepGroupDao = Mockito.mock(CepGroupDao.class);
@@ -57,6 +58,7 @@ public class IdentityServiceTests extends BasicTest {
 		cepGroupEntity.setId("3");
 		groups.add(cepGroupEntity);
 		Mockito.when(cepGroupDao.findAll()).thenReturn(groups);
+		Mockito.when(cepGroupDao.save(createGroup())).thenReturn(createGroup());
 		identityService.setCepGroupDao(cepGroupDao);
 	}
 
@@ -127,6 +129,8 @@ public class IdentityServiceTests extends BasicTest {
 
 	@Test
 	public void getByIdTest() {
+		CepUserEntity cepUserEntity = createUser();
+
 		try {
 			identityService.getCepUserById(null);
 			fail("Null pointer exception should be thrown.");
@@ -135,9 +139,8 @@ public class IdentityServiceTests extends BasicTest {
 					IsInstanceOf.instanceOf(NullPointerException.class));
 		}
 		
-		CepUserEntity expected = createUser();
-		CepUserEntity given = identityService.getCepUserById(1L);
-		assertEquals(expected, given);
+		CepUserEntity given = identityService.getCepUserById(Long.parseLong(cepUserEntity.getId()));
+		assertEquals(cepUserEntity, given);
 		
 		try {
 			identityService.getGroupById(null);
@@ -155,14 +158,15 @@ public class IdentityServiceTests extends BasicTest {
 
 	@Test
 	public void getAllTest() {
-		List<CepUserEntity> users = identityService.getAllCepUsers();
-		assertNotNull(users);
-		assertEquals(3, users.size());
 		CepUserEntity cepUserEntity = createUser();
 		CepUserEntity cepUserEntity2 = createUser();
 		cepUserEntity2.setId("2");
 		CepUserEntity cepUserEntity3 = createUser();
 		cepUserEntity3.setId("3");
+		List<CepUserEntity> users = identityService.getAllCepUsers();
+		assertNotNull(users);
+		assertEquals(3, users.size());
+		
 		List<CepUserEntity> expectedUsers = Arrays.asList(cepUserEntity, cepUserEntity2, cepUserEntity3);
 		assertThat(expectedUsers, is(users));
 		

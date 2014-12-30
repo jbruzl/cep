@@ -3,9 +3,6 @@ package cz.muni.fi.cep.core.users.services;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +37,7 @@ public class CepIdentityService implements IdentityService {
 		if (user == null)
 			throw new NullPointerException("User shouldn't be null.");
 
-		cepUserDao.save(user);
+		user.setId(cepUserDao.save(user).getId());
 	}
 
 	@Override
@@ -82,7 +79,7 @@ public class CepIdentityService implements IdentityService {
 		if (cepGroupEntity == null)
 			throw new NullPointerException(
 					"IdentityService: CepGroupEntity is null.");
-		cepGroupDao.save(cepGroupEntity);
+		cepGroupEntity.setId(cepGroupDao.save(cepGroupEntity).getId());
 	}
 
 	@Override
@@ -127,10 +124,18 @@ public class CepIdentityService implements IdentityService {
 					"IdentityService: CepGroupEntity is null.");
 		if (cepUserEntity == null)
 			throw new NullPointerException("User shouldn't be null.");
-		
+
+		if (cepUserDao.findOne(Long.parseLong(cepUserEntity.getId())) == null) {
+			throw new IllegalArgumentException("Given "+cepUserEntity+" does not exists.");
+		}
+
+		if (cepGroupDao.findOne(Long.parseLong(cepGroupEntity.getId())) == null) {
+			throw new IllegalArgumentException("Given "+cepGroupEntity+" does not exists.");
+		}
+
 		cepUserEntity.getGroups().add(cepGroupEntity);
 		cepGroupEntity.getUsers().add(cepUserEntity);
-		
+
 		updateGroup(cepGroupEntity);
 		updateUser(cepUserEntity);
 	}
@@ -143,10 +148,10 @@ public class CepIdentityService implements IdentityService {
 					"IdentityService: CepGroupEntity is null.");
 		if (cepUserEntity == null)
 			throw new NullPointerException("User shouldn't be null.");
-		
+
 		cepUserEntity.getGroups().remove(cepGroupEntity);
 		cepGroupEntity.getUsers().remove(cepUserEntity);
-		
+
 		updateGroup(cepGroupEntity);
 		updateUser(cepUserEntity);
 	}
