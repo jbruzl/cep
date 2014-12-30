@@ -33,7 +33,7 @@ public class UserSubscriber extends Subscriber {
 
 		switch (getContactType()) {
 		case EMAIL:
-			contact = cepUserEntity.getPhoneNumber();
+			contact = cepUserEntity.getEmail();
 			break;
 		case PHONE:
 			contact = cepUserEntity.getPhoneNumber();

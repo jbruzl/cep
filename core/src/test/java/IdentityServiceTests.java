@@ -7,9 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-
-import cz.muni.fi.cep.core.App;
 import cz.muni.fi.cep.core.users.api.IdentityService;
 import cz.muni.fi.cep.core.users.dao.CepGroupDao;
 import cz.muni.fi.cep.core.users.dao.CepUserDao;
@@ -18,7 +15,7 @@ import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-@ContextConfiguration(classes = App.class)
+
 public class IdentityServiceTests extends BasicTest {
 	@Autowired
 	private IdentityService identityService;
