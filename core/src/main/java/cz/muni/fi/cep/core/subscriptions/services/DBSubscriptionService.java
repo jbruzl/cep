@@ -18,7 +18,7 @@ import cz.muni.fi.cep.core.subscriptions.entities.Subscriber;
 import cz.muni.fi.cep.core.subscriptions.entities.UserSubscriber;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
-@Service
+@Service("subscriptionService")
 @Transactional
 public class DBSubscriptionService implements SubscriptionService {
 	@Autowired
