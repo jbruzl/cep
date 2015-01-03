@@ -103,6 +103,8 @@ public class CepUserEntity implements User {
 
 	@Override
 	public String getId() {
+		if(id == null)
+			return "0";
 		return Long.toString(id);
 	}
 
