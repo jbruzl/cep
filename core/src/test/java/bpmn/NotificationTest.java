@@ -5,8 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +20,7 @@ import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
 import cz.muni.fi.cep.core.users.api.IdentityService;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
+
 public class NotificationTest extends ActivitiBasicTest {
 	private Wiser wiser;
 	
@@ -30,6 +30,7 @@ public class NotificationTest extends ActivitiBasicTest {
 	@Autowired
 	private SubscriptionService subscriptionService;
 	
+
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "bpmn/SendEmail.bpmn", "bpmn/SendSMS.bpmn", "bpmn/Notify.bpmn" })
 	public void deploymentTest() {
@@ -41,12 +42,6 @@ public class NotificationTest extends ActivitiBasicTest {
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "bpmn/SendEmail.bpmn", "bpmn/SendSMS.bpmn", "bpmn/Notify.bpmn" })
 	public void notificationDisabledTest() {
-		//TODO
-	}
-	
-	@Test
-	@org.activiti.engine.test.Deployment(resources = { "bpmn/SendEmail.bpmn", "bpmn/SendSMS.bpmn", "bpmn/Notify.bpmn" })
-	public void notificationTest() {		
 		HashMap<String, Object> params = new HashMap<>();
 		HashMap<String, String> message = new HashMap<>();
 		message.put("message", "default");
@@ -54,6 +49,27 @@ public class NotificationTest extends ActivitiBasicTest {
 		params.put("messageType", MessageType.NOTIFICATION);
 		params.put("templateKey", "default");
 		params.put("templateVariable", message);
+		params.put("notificationEnabled", "false");	//TODO load property in diagram script task
+		
+		ProcessInstance pi =  runtimeService.startProcessInstanceByKey("Notify", params);
+		assertNotNull(pi);
+
+		List<HistoricActivityInstance> haiList = historyService.createHistoricActivityInstanceQuery().activityType("endEvent").finished().list();
+		assertEquals(1, haiList.size());
+		assertEquals("notificationdisabled1",haiList.get(0).getActivityId());
+	}
+	
+	@Test
+	@org.activiti.engine.test.Deployment(resources = { "bpmn/SendEmail.bpmn", "bpmn/SendSMS.bpmn", "bpmn/Notify.bpmn" })
+	public void notificationTest() {			
+		HashMap<String, Object> params = new HashMap<>();
+		HashMap<String, String> message = new HashMap<>();
+		message.put("message", "default");
+		params.put("publisherCode", "001");
+		params.put("messageType", MessageType.NOTIFICATION);
+		params.put("templateKey", "default");
+		params.put("templateVariable", message);
+		params.put("notificationEnabled", "true");
 		
 		ProcessInstance pi =  runtimeService.startProcessInstanceByKey("Notify", params);
 		assertNotNull(pi);

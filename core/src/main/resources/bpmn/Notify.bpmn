@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
   <process id="Notify" name="Notify" isExecutable="true">
-    <startEvent id="startevent1" name="Start"></startEvent>
+    <startEvent id="startevent1" name="Start">
+      <extensionElements>
+        <activiti:formProperty  id="notificationEnabled" variable="notificationEnabled" expression="${notificationenable}" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
     <scriptTask id="verifyenablednotification1" name="Verify Enabled Notification" scriptFormat="groovy" activiti:autoStoreVariables="true">
-      <script>notificationEnabled = true</script>
+      <script>
+      	println(notificationEnabled) 
+      </script>
     </scriptTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="verifyenablednotification1"></sequenceFlow>
     <exclusiveGateway id="notificationeabled1" name="Notifivation enabled?"></exclusiveGateway>
@@ -88,24 +94,24 @@
     <endEvent id="endevent3" name="End"></endEvent>
     <sequenceFlow id="flow23" sourceRef="parallelgateway2" targetRef="endevent3"></sequenceFlow>
     <serviceTask id="sendmail1" name="Send Mail" activiti:type="mail">
-    	<extensionElements>
-	        <activiti:field name="to">
-	          <activiti:expression>${mailList}</activiti:expression>
-	        </activiti:field>
-	        <activiti:field name="from">
-	          <activiti:expression>${sender}</activiti:expression>
-	        </activiti:field>
-	        <activiti:field name="subject">
-	          <activiti:string><![CDATA[Subject]]></activiti:string>
-	        </activiti:field>
-	        <activiti:field name="charset">
-	          <activiti:string><![CDATA[utf-8]]></activiti:string>
-	        </activiti:field>
-	        <activiti:field name="html">
-	          <activiti:expression>${messageMail}</activiti:expression>
-	        </activiti:field>
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression>${mailList}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="from">
+          <activiti:expression>${sender}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Subject]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="charset">
+          <activiti:string><![CDATA[utf-8]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression>${messageMail}</activiti:expression>
+        </activiti:field>
       </extensionElements>
-      </serviceTask>
+    </serviceTask>
     <sequenceFlow id="flow32" sourceRef="sendmail1" targetRef="parallelgateway2"></sequenceFlow>
     <sequenceFlow id="flow33" sourceRef="preparemail1" targetRef="sendmail1"></sequenceFlow>
   </process>
