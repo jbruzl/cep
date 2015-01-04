@@ -6,12 +6,11 @@
   <packaging>pom</packaging>
   <name>City emegrency portal</name>
   <modules>
-  	<module>services</module>
-  	<module>sirenStub</module>
-  	<module>cep</module>
-  	<module>subscriptions</module>
+  	<module>SirenStubServer</module>
+  	<module>cep-legacy</module>
   	<module>core</module>
   	<module>api</module>
-  	<module>users</module>
+  	<module>tests</module>
+  	<module>activiti-notification</module>
   </modules>
 </project>

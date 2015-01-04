@@ -3,6 +3,7 @@ package cz.muni.fi.cep.core.users.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class CepUserEntity implements User {
 	private String firstName;
 	private String lastName;
 	private String password;
+	@Column(unique=true, nullable=false)
 	private String email;
 	
 	@ManyToMany(fetch=FetchType.LAZY)

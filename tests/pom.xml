@@ -6,11 +6,21 @@
 		<artifactId>city-emergency-portal</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>core</artifactId>
-	<name>Core</name>
-	<description>Core module</description>
+	<artifactId>tests</artifactId>
+	<name>tests</name>
+	<description>Test module</description>
 
 	<dependencies>
+		<dependency>
+			<groupId>cz.muni.fi.cep</groupId>
+			<artifactId>core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.muni.fi.cep</groupId>
+			<artifactId>activiti-notification</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -46,11 +56,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 			<version>4.0.7.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>cz.muni.fi.cep</groupId>
-			<artifactId>api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -97,7 +102,6 @@
 			<name>JBoss Maven Release Repository</name>
 			<url>https://repository.jboss.org/nexus/content/repositories/releases</url>
 		</repository>
-
 
 	</repositories>
 

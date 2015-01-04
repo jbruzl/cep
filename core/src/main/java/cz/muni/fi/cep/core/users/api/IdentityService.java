@@ -29,4 +29,6 @@ public interface IdentityService extends UserService, GroupService{
 
 	public abstract void setCepUserDao(CepUserDao cepUserDao);
 
+	public abstract void setAuthenticatedUserId(String authenticatedUserId);
+
 }

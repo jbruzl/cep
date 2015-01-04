@@ -45,6 +45,8 @@ public class CepGroupEntity implements Group {
 
 	@Override
 	public String getId() {
+		if(id == null)
+			return "0";
 		return Long.toString(id);
 	}
 

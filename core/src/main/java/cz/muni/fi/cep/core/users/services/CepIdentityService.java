@@ -3,6 +3,7 @@ package cz.muni.fi.cep.core.users.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.impl.identity.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,11 +127,13 @@ public class CepIdentityService implements IdentityService {
 			throw new NullPointerException("User shouldn't be null.");
 
 		if (cepUserDao.findOne(Long.parseLong(cepUserEntity.getId())) == null) {
-			throw new IllegalArgumentException("Given "+cepUserEntity+" does not exists.");
+			throw new IllegalArgumentException("Given " + cepUserEntity
+					+ " does not exists.");
 		}
 
 		if (cepGroupDao.findOne(Long.parseLong(cepGroupEntity.getId())) == null) {
-			throw new IllegalArgumentException("Given "+cepGroupEntity+" does not exists.");
+			throw new IllegalArgumentException("Given " + cepGroupEntity
+					+ " does not exists.");
 		}
 
 		cepUserEntity.getGroups().add(cepGroupEntity);
@@ -156,4 +159,8 @@ public class CepIdentityService implements IdentityService {
 		updateUser(cepUserEntity);
 	}
 
+	@Override
+	public void setAuthenticatedUserId(String authenticatedUserId) {
+		Authentication.setAuthenticatedUserId(authenticatedUserId);
+	}
 }
