@@ -3,12 +3,9 @@
  */
 package cz.muni.fi.cep.core.bpmn.servicetask;
 
-import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
@@ -32,6 +29,7 @@ public class InvokeSirenServiceTask implements JavaDelegate {
 	 */
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
+		/*
 		RestTemplate restTemplate = new RestTemplate();		
 		try {
 			restTemplate.getForObject(soundSirenUrl, Boolean.class);
@@ -39,5 +37,6 @@ public class InvokeSirenServiceTask implements JavaDelegate {
 			logger.error("Siren server {} refused connection. {}", soundSirenUrl, e.getMessage());
 			throw new BpmnError("SirenRefusedConnection");
 		}
+		*/
 	}
 }
