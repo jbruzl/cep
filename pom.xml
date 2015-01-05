@@ -12,5 +12,6 @@
   	<module>api</module>
   	<module>tests</module>
   	<module>activiti-notification</module>
+  	<module>web</module>
   </modules>
 </project>
