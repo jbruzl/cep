@@ -22,7 +22,12 @@ import cz.muni.fi.cep.core.users.api.IdentityService;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 import cz.muni.fi.cep.tests.activiti.ActivitiBasicTest;
 
-
+/**
+ * Test class for Notify.bpmn process.
+ * 
+ * @author Jan Bruzl
+ *
+ */
 public class NotificationTest extends ActivitiBasicTest {
 	private Wiser wiser;
 	
