@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cz.muni.fi.cep.core.activiti.notification.tasks;
+package cz.muni.fi.cep.activiti.notification.tasks;
 
 import groovy.lang.Writable;
 import groovy.text.SimpleTemplateEngine;

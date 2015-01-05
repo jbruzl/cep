@@ -39,7 +39,7 @@
       <endEvent id="endevent1" name="End"></endEvent>
       <serviceTask id="obtainsmscontacts1" name="Obtain SMS Contacts" activiti:expression="${subscriptionService.getContacts(publisherCode, contactType)}" activiti:resultVariableName="receiversSMS"></serviceTask>
       <sequenceFlow id="flow25" sourceRef="preparesmsmessage3" targetRef="obtainsmscontacts1"></sequenceFlow>
-      <serviceTask id="preparesmsmessage3" name="Prepare SMS Message" activiti:class="cz.muni.fi.cep.core.activiti.notification.tasks.LoadTemplateTask"></serviceTask>
+      <serviceTask id="preparesmsmessage3" name="Prepare SMS Message" activiti:class="cz.muni.fi.cep.activiti.notification.tasks.LoadTemplateTask"></serviceTask>
       <sequenceFlow id="flow26" sourceRef="startpreparesms2" targetRef="preparesmsinputs1"></sequenceFlow>
       <sequenceFlow id="flow27" sourceRef="preparesmsinputs1" targetRef="preparesmsmessage3"></sequenceFlow>
       <scriptTask id="preparesmsinputs1" name="Prepare SMS Inputs" scriptFormat="groovy" activiti:autoStoreVariables="true">
@@ -78,7 +78,7 @@
       <endEvent id="endevent2" name="End"></endEvent>
       <sequenceFlow id="flow22" sourceRef="verifymail1" targetRef="endevent2"></sequenceFlow>
       <serviceTask id="obtainmailcontacts2" name="Obtain Mail Contacts" activiti:expression="${subscriptionService.getContacts(publisherCode, contactType)}" activiti:resultVariableName="receiversEmail"></serviceTask>
-      <serviceTask id="preparemailmessage3" name="Prepare Mail Message" activiti:class="cz.muni.fi.cep.core.activiti.notification.tasks.LoadTemplateTask"></serviceTask>
+      <serviceTask id="preparemailmessage3" name="Prepare Mail Message" activiti:class="cz.muni.fi.cep.activiti.notification.tasks.LoadTemplateTask"></serviceTask>
       <sequenceFlow id="flow30" sourceRef="preparemailmessage3" targetRef="obtainmailcontacts2"></sequenceFlow>
       <sequenceFlow id="flow31" sourceRef="obtainmailcontacts2" targetRef="verifymail1"></sequenceFlow>
       <scriptTask id="verifymail1" name="Verify Mail" scriptFormat="groovy" activiti:autoStoreVariables="true">
