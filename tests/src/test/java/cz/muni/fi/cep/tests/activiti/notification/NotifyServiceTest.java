@@ -84,21 +84,18 @@ public class NotifyServiceTest extends ActivitiBasicTest {
 	}
 	
 	@Test
-	@org.activiti.engine.test.Deployment(resources = {"diagrams/SendSMS.bpmn", "diagrams/Notify.bpmn" })
 	public void deploymentTest() {
 		assertNotNull("Expecting deployed Notify process", repositoryService.createProcessDefinitionQuery().processDefinitionKey("Notify").singleResult());
 		assertNotNull("Expecting deployed SendSMS process", repositoryService.createProcessDefinitionQuery().processDefinitionKey("SendSMS").singleResult());
 	}
 	
 	@Test
-	@org.activiti.engine.test.Deployment(resources = {"diagrams/SendSMS.bpmn", "diagrams/Notify.bpmn" })
 	public void getDiagramTest() {
 		notifyService.init();
 		assertNotNull(notifyService.getProcessDiagram());
 	}
 	
 	@Test
-	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendSMS.bpmn", "diagrams/Notify.bpmn" })
 	public void notificationTest() {	
 		notifyService.init();
 		HashMap<String, String> message = new HashMap<>();
@@ -119,7 +116,6 @@ public class NotifyServiceTest extends ActivitiBasicTest {
 	}
 	
 	@Test
-	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendSMS.bpmn", "diagrams/Notify.bpmn" })
 	public void startFormTest() {
 		FormData formData = notifyService.getStartForm();
 		assertNotNull(formData);

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.impl.identity.Authentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,8 @@ public class CepIdentityService implements IdentityService {
 
 	@Autowired
 	private CepGroupDao cepGroupDao;
+	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public void setCepUserDao(CepUserDao cepUserDao) {
@@ -37,8 +41,9 @@ public class CepIdentityService implements IdentityService {
 	public void createUser(CepUserEntity user) {
 		if (user == null)
 			throw new NullPointerException("User shouldn't be null.");
-
+		
 		user.setId(cepUserDao.save(user).getId());
+		logger.info("User {} created", user);
 	}
 
 	@Override
@@ -47,11 +52,13 @@ public class CepIdentityService implements IdentityService {
 			throw new NullPointerException("User shouldn't be null.");
 
 		cepUserDao.delete(user);
+		logger.info("User {} deleted", user);
 	}
 
 	@Override
 	public void updateUser(CepUserEntity user) {
 		createUser(user);
+		logger.info("User {} updated", user);
 	}
 
 	@Override
@@ -60,7 +67,7 @@ public class CepIdentityService implements IdentityService {
 			throw new NullPointerException("Id shouldn't be null.");
 
 		CepUserEntity cepUserEntity = cepUserDao.findOne(id);
-
+		logger.info("Returning user {}", cepUserEntity);
 		return cepUserEntity;
 	}
 
@@ -71,7 +78,7 @@ public class CepIdentityService implements IdentityService {
 		for (CepUserEntity entity : cepUserDao.findAll()) {
 			cepUserEntities.add(entity);
 		}
-
+		logger.info("Returning list of users. Size: {}", cepUserEntities.size());
 		return cepUserEntities;
 	}
 
@@ -81,6 +88,7 @@ public class CepIdentityService implements IdentityService {
 			throw new NullPointerException(
 					"IdentityService: CepGroupEntity is null.");
 		cepGroupEntity.setId(cepGroupDao.save(cepGroupEntity).getId());
+		logger.info("Group {} created", cepGroupEntity);
 	}
 
 	@Override
@@ -89,6 +97,7 @@ public class CepIdentityService implements IdentityService {
 			throw new NullPointerException(
 					"IdentityService: CepGroupEntity is null.");
 		cepGroupDao.delete(cepGroupEntity);
+		logger.info("Group {} deleted", cepGroupEntity);
 	}
 
 	@Override
@@ -97,13 +106,17 @@ public class CepIdentityService implements IdentityService {
 			throw new NullPointerException(
 					"IdentityService: CepGroupEntity is null.");
 		createGroup(cepGroupEntity);
+		logger.info("Group {} updated", cepGroupEntity);
 	}
 
 	@Override
 	public CepGroupEntity getGroupById(Long id) {
 		if (id == null)
 			throw new NullPointerException("Id shouldn't be null.");
-		return cepGroupDao.findOne(id);
+		
+		CepGroupEntity group = cepGroupDao.findOne(id);
+		logger.info("Returning group {}", group);
+		return group;
 	}
 
 	@Override
@@ -113,7 +126,7 @@ public class CepIdentityService implements IdentityService {
 		for (CepGroupEntity entity : cepGroupDao.findAll()) {
 			cepGroupEntities.add(entity);
 		}
-
+		logger.info("Returning list of groups. Size: {}", cepGroupEntities.size());
 		return cepGroupEntities;
 	}
 
@@ -141,6 +154,7 @@ public class CepIdentityService implements IdentityService {
 
 		updateGroup(cepGroupEntity);
 		updateUser(cepUserEntity);
+		logger.info("Created membership of {} in {}", cepUserEntity, cepGroupEntity);
 	}
 
 	@Override
@@ -157,10 +171,12 @@ public class CepIdentityService implements IdentityService {
 
 		updateGroup(cepGroupEntity);
 		updateUser(cepUserEntity);
+		logger.info("Membership of {} in {} deleted", cepUserEntity, cepGroupEntity);
 	}
 
 	@Override
 	public void setAuthenticatedUserId(String authenticatedUserId) {
 		Authentication.setAuthenticatedUserId(authenticatedUserId);
+		logger.info("Setting authentication to {}", authenticatedUserId);
 	}
 }

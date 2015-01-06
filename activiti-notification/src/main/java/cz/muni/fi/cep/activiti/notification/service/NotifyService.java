@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
@@ -20,6 +19,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
  */
 @Service
 public class NotifyService {
-	private Logger logger = Logger.getLogger("NotifyService");
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private RepositoryService repositoryService;
@@ -62,9 +63,27 @@ public class NotifyService {
 
 	@PostConstruct
 	public void init() {
+		logger.info("Initialising Notify service");
+
 		subscriptionService.register(publisherCode);
+		logger.debug("Publisher {} registered", publisherCode);
+
+		if (repositoryService.createProcessDefinitionQuery()
+				.processDefinitionKey("Notify").singleResult() == null)
+			repositoryService.createDeployment()
+					.addClasspathResource("diagrams/SendSMS.bpmn")
+					.addClasspathResource("diagrams/Notify.bpmn").deploy();
+		logger.debug("Process Notify deployed");
+		logger.debug("Process SendSMS deployed");
+
 		processDefinition = repositoryService.createProcessDefinitionQuery()
 				.processDefinitionKey("Notify").singleResult();
+		if (processDefinition != null)
+			logger.debug("Process definition obtained");
+		else
+			logger.warn("Process definition could not be obtained");
+
+		logger.info("Notify service initialised");
 	}
 
 	public void unregisterService() {
@@ -79,12 +98,12 @@ public class NotifyService {
 			Map<String, String> message) {
 		logger.info("Checking service state");
 		if (processDefinition == null) {
-			logger.warning("Process definition not loaded, trying now.");
+			logger.warn("Process definition not loaded, trying now.");
 			processDefinition = repositoryService
 					.createProcessDefinitionQuery()
 					.processDefinitionKey("Notify").singleResult();
 			if (processDefinition == null) {
-				logger.severe("Could not load process definition.");
+				logger.error("Could not load process definition.");
 				return null;
 			}
 		}
@@ -101,19 +120,19 @@ public class NotifyService {
 
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(
 				processDefinition.getKey(), params);
-
+		logger.info("Process Notify started");
 		return pi;
 	}
 
 	public FormData getStartForm() {
 		logger.info("Checking service state");
 		if (processDefinition == null) {
-			logger.warning("Process definition not loaded, trying now.");
+			logger.warn("Process definition not loaded, trying now.");
 			processDefinition = repositoryService
 					.createProcessDefinitionQuery()
 					.processDefinitionKey("Notify").singleResult();
 			if (processDefinition == null) {
-				logger.severe("Could not load process definition.");
+				logger.error("Could not load process definition.");
 				return null;
 			}
 		}
@@ -121,6 +140,7 @@ public class NotifyService {
 
 		FormData formData = formService.getStartFormData(processDefinition
 				.getId());
+		logger.info("Returning process Notify start form data");
 		return formData;
 	}
 
@@ -141,11 +161,13 @@ public class NotifyService {
 			if (hai.getEndTime() != null)
 				progress += 1;
 		}
-		if (progress == 0.0)
-			return progress;
+		if (progress != 0.0) {
+			progress = progress / activitiList.size();
+		}
 
-		progress = progress / activitiList.size();
-
+		logger.info(
+				"Returning progress {} % of instance {} of process Notify.",
+				progress * 100, processInstanceId);
 		return progress;
 	}
 
@@ -176,22 +198,23 @@ public class NotifyService {
 	public BufferedImage getProcessDiagram() {
 		logger.info("Checking service state");
 		if (processDefinition == null) {
-			logger.warning("Process definition not loaded, trying now.");
+			logger.warn("Process definition not loaded, trying now.");
 			processDefinition = repositoryService
 					.createProcessDefinitionQuery()
 					.processDefinitionKey("Notify").singleResult();
 			if (processDefinition == null) {
-				logger.severe("Could not load process definition.");
+				logger.error("Could not load process definition.");
 				return null;
 			}
 		}
 		logger.info("Service state OK");
 
 		ProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();
-		
-		BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
-		return diagramGenerator.generatePngImage(
-				bpmnModel, 1);
+		logger.info("Generating PNG image of process Notify");
+		BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition
+				.getId());
+		logger.info("Returning generated PNG image of process Notify");
+		return diagramGenerator.generatePngImage(bpmnModel, 1);
 	}
 
 }
