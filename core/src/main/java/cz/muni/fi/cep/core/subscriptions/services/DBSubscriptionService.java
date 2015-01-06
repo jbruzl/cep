@@ -3,6 +3,8 @@ package cz.muni.fi.cep.core.subscriptions.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,8 @@ public class DBSubscriptionService implements SubscriptionService {
 	@Autowired
 	private SubscriberDao subscriberDao;
 
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -49,13 +53,6 @@ public class DBSubscriptionService implements SubscriptionService {
 		this.subscriberDao = subscriberDao;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#register
-	 * (java.lang.String)
-	 */
 	@Override
 	public void register(String code) {
 		if (code == null)
@@ -64,36 +61,27 @@ public class DBSubscriptionService implements SubscriptionService {
 		Publisher publisher = new Publisher();
 		publisher.setCode(code);
 
-		if (publisherDao.findByCode(code) == null)
+		if (publisherDao.findByCode(code) == null) {
+			logger.debug("Publisher with code {} not found, registering", code);
 			publisherDao.save(publisher);
+		}
+
+		logger.info("Publisher with code {} registered.", code);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#unregister
-	 * (java.lang.String)
-	 */
 	@Override
 	public void unregister(String code) {
 		if (code == null)
 			throw new NullPointerException("Event code is null.");
 
 		Publisher publisher = publisherDao.findByCode(code);
-		if (publisher != null)
-			publisherDao.delete(publisher); // TODO verify cascading
-
+		if (publisher != null) {
+			logger.debug("Publisher with code {} found, deleting", code);
+			publisherDao.delete(publisher);
+		}
+		logger.info("Publisher with code {} unregistered.", code);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#subscribeUser
-	 * (cz.muni.fi.cep.core.users.entities.CepUserEntity, java.lang.String,
-	 * cz.muni.fi.cep.api.DTO.ContactType)
-	 */
 	@Override
 	public void subscribeUser(CepUserEntity user, String code,
 			ContactType contactType) {
@@ -102,28 +90,25 @@ public class DBSubscriptionService implements SubscriptionService {
 		if (code == null)
 			throw new NullPointerException("Code parameter is null.");
 		if (contactType == null)
-			throw new NullPointerException(
-					"Contact type parameter is null.");
+			throw new NullPointerException("Contact type parameter is null.");
 
 		Subscriber subscriber = new UserSubscriber(user);
 		subscriber.setContactType(contactType);
 
 		Publisher publisher = publisherDao.findByCode(code);
-		if (publisher == null)
+		if (publisher == null) {
+			logger.debug("Publisher with code {} not found", code);
 			throw new IllegalArgumentException("Event with code: " + code
 					+ " does not exists.");
+		}
 
 		subscriber.setPublisher(publisher);
 		subscriberDao.save(subscriber);
+
+		logger.info("User {} subscribed to Publisher {} with contact type {}",
+				user, code, contactType);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#subscribe
-	 * (java.lang.String, java.lang.String, cz.muni.fi.cep.api.DTO.ContactType)
-	 */
 	@Override
 	public void subscribe(String contact, String code, ContactType contactType) {
 		if (contact == null)
@@ -131,28 +116,25 @@ public class DBSubscriptionService implements SubscriptionService {
 		if (code == null)
 			throw new NullPointerException("Code parameter is null.");
 		if (contactType == null)
-			throw new NullPointerException(
-					"Contact type parameter is null.");
+			throw new NullPointerException("Contact type parameter is null.");
 
 		Subscriber subscriber = new OrphanSubscriber(contact);
 		subscriber.setContactType(contactType);
 
 		Publisher publisher = publisherDao.findByCode(code);
-		if (publisher == null)
+		if (publisher == null) {
+			logger.debug("Publisher with code {} not found", code);
 			throw new IllegalArgumentException("Event with code: " + code
 					+ " does not exists.");
+		}
 
 		subscriber.setPublisher(publisher);
 		subscriberDao.save(subscriber);
+		logger.info(
+				"Contact {} subscribed to Publisher {} with contact type {}",
+				contact, code, contactType);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#
-	 * unsubscribeUser(cz.muni.fi.cep.core.users.entities.CepUserEntity,
-	 * java.lang.String, cz.muni.fi.cep.api.DTO.ContactType)
-	 */
 	@Override
 	public void unsubscribeUser(CepUserEntity user, String code,
 			ContactType contactType) {
@@ -172,18 +154,16 @@ public class DBSubscriptionService implements SubscriptionService {
 		}
 		for (Subscriber subscriber : subscribers) {
 			if (contactType == null
-					|| subscriber.getContactType().equals(contactType))
+					|| subscriber.getContactType().equals(contactType)) {				
+				logger.debug("Deleting subscription for {} to {} with contact type {}", user, code, subscriber.getContactType() );
 				subscriberDao.delete(subscriber);
+			}
 		}
+		logger.info(
+				"User {} unsubscribed from Publisher {} with contact type {}",
+				user, code, contactType);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#unsubscribe
-	 * (java.lang.String, java.lang.String, cz.muni.fi.cep.api.DTO.ContactType)
-	 */
 	@Override
 	public void unsubscribe(String contact, String code, ContactType contactType) {
 		if (contact == null)
@@ -202,19 +182,16 @@ public class DBSubscriptionService implements SubscriptionService {
 		}
 		for (Subscriber subscriber : subscribers) {
 			if (contactType == null
-					|| subscriber.getContactType().equals(contactType))
+					|| subscriber.getContactType().equals(contactType)) {
+				logger.debug("Deleting subscription for {} to {} with contact type {}", contact, code, subscriber.getContactType() );
 				subscriberDao.delete(subscriber);
+			}
 		}
-
+		logger.info(
+				"Contact {} unsubscribed from Publisher {} with contact type {}",
+				contact, code, contactType);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#
-	 * getUserSubscriptions(cz.muni.fi.cep.core.users.entities.CepUserEntity,
-	 * cz.muni.fi.cep.api.DTO.ContactType)
-	 */
 	@Override
 	public List<String> getUserSubscriptions(CepUserEntity user,
 			ContactType contactType) {
@@ -231,16 +208,10 @@ public class DBSubscriptionService implements SubscriptionService {
 					|| subscriber.getContactType().equals(contactType))
 				codes.add(subscriber.getPublisher().getCode());
 		}
-
+		logger.info("Returning user {} subscription with contact type {}. Size: {} ", user, contactType, codes.size());
 		return codes;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#
-	 * getSubscriptions(java.lang.String, cz.muni.fi.cep.api.DTO.ContactType)
-	 */
 	@Override
 	public List<String> getSubscriptions(String contact, ContactType contactType) {
 		if (contact == null)
@@ -256,17 +227,10 @@ public class DBSubscriptionService implements SubscriptionService {
 					|| subscriber.getContactType().equals(contactType))
 				codes.add(subscriber.getPublisher().getCode());
 		}
-
+		logger.info("Returning contact {} subscription with contact type {}. Size: {} ", contact, contactType, codes.size());
 		return codes;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#getSubscribers
-	 * (java.lang.String, cz.muni.fi.cep.api.DTO.ContactType)
-	 */
 	@Override
 	public List<String> getSubscribers(String code, ContactType contactType) {
 		if (code == null)
@@ -287,22 +251,16 @@ public class DBSubscriptionService implements SubscriptionService {
 				try {
 					contacts.add(subscriber.getContact());
 				} catch (Exception e) {
-					// TODO log
+					logger.error("Tryied to obtain contact of type {} from {} but failed.", contactType, subscriber);
 				}
 			}
 		}
-
+		logger.info("Returning publishers {} subscribed contacts with contact type {}. Size: {} ", publisher, contactType, contacts.size());
 		return contacts;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#
-	 * getUserSubscribers(java.lang.String, cz.muni.fi.cep.api.DTO.ContactType)
-	 */
 	@Override
-	public List<CepUser> getUserSubscribers(String code, ContactType contactType) {
+	public List<CepUserEntity> getUserSubscribers(String code, ContactType contactType) {
 		if (code == null)
 			throw new NullPointerException("Code is null.");
 
@@ -312,30 +270,23 @@ public class DBSubscriptionService implements SubscriptionService {
 			throw new IllegalArgumentException("Event type with code " + code
 					+ " does not exists.");
 
-		List<CepUser> users = new ArrayList<CepUser>();
+		List<CepUserEntity> users = new ArrayList<>();
 		for (Subscriber subscriber : publisher.getSubscribers()) {
 			if (!(subscriber instanceof UserSubscriber))
 				continue;
 			if (contactType == null
 					|| subscriber.getContactType().equals(contactType)) {
 				try {
-					// users.add(((UserSubscriber) subscriber).getId()); TODO
+					users.add(((UserSubscriber) subscriber).getCepUserEntity());
 				} catch (Exception e) {
-					// TODO log
+					logger.error("Tryied to obtain contact of type {} from {} but failed.", contactType, subscriber);
 				}
 			}
 		}
-
+		logger.info("Returning publishers {} subscribed users with contact type {}. Size: {} ", publisher, contactType, users.size());
 		return users;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#getContacts
-	 * (java.lang.String, cz.muni.fi.cep.api.DTO.ContactType)
-	 */
 	@Override
 	public List<String> getContacts(String code, ContactType contactType) {
 		if (code == null)
@@ -358,10 +309,10 @@ public class DBSubscriptionService implements SubscriptionService {
 			try {
 				contacts.add(subscriber.getContact());
 			} catch (Exception e) {
-				// TODO log error
+				logger.error("Tryied to obtain contact of type {} from {} but failed.", contactType, subscriber);
 			}
 		}
-
+		logger.info("Returning contacts for {} of type {}", code, contactType);
 		return contacts;
 	}
 
@@ -370,11 +321,12 @@ public class DBSubscriptionService implements SubscriptionService {
 		Iterable<Publisher> publishers = null;
 
 		publishers = publisherDao.findAll();
-		List<String> subscriberList = new ArrayList<>();
-		for(Publisher publisher : publishers) {
-			subscriberList.add(publisher.getCode());
+		List<String> publisherList = new ArrayList<>();
+		for (Publisher publisher : publishers) {
+			publisherList.add(publisher.getCode());
 		}
-		return subscriberList;
+		logger.info("Returning list of publisher codes. Size: {}", publisherList.size());
+		return publisherList;
 	}
 
 }

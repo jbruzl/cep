@@ -34,6 +34,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<version>1.2.0.RELEASE</version>
+			<exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>logback-classic</artifactId>
+                	<groupId>ch.qos.logback</groupId>
+                </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
@@ -43,6 +53,7 @@
 		  <exclusion>
 		   <groupId>org.springframework</groupId>
 		   <artifactId>spring-beans</artifactId>
+		   
 		  </exclusion>
 		  <exclusion>
 		   <groupId>org.slf4j</groupId>
@@ -95,6 +106,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>1.2.0.RELEASE</version>
+            
 		 <exclusions>
 		  <exclusion>
 		   <groupId>org.springframework</groupId>
@@ -130,6 +142,12 @@
     <groupId>org.springframework</groupId>
     <artifactId>spring-core</artifactId>
     <version>4.1.4.RELEASE</version>
+    <exclusions>
+    	<exclusion>
+    		<artifactId>commons-logging</artifactId>
+    		<groupId>commons-logging</groupId>
+    	</exclusion>
+    </exclusions>
    </dependency>
    <dependency>
     <groupId>org.slf4j</groupId>

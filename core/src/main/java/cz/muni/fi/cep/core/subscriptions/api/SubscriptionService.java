@@ -137,7 +137,7 @@ public interface SubscriptionService {
 	 * @param contactType
 	 * @return list of {@link CepUser}
 	 */
-	public List<CepUser> getUserSubscribers(String code, ContactType contactType);
+	public List<CepUserEntity> getUserSubscribers(String code, ContactType contactType);
 
 	/**
 	 * Returns list of all contacts for given event code and contact type.

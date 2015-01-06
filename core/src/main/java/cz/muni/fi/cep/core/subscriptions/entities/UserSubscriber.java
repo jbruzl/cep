@@ -26,6 +26,12 @@ public class UserSubscriber extends Subscriber {
 		super();
 		this.cepUserEntity = cepUserEntity;
 	}
+	
+	
+
+	public CepUserEntity getCepUserEntity() {
+		return cepUserEntity;
+	}
 
 	@Override
 	public String getContact() throws Exception {

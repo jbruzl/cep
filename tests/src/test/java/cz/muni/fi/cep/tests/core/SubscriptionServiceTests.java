@@ -35,17 +35,20 @@ public class SubscriptionServiceTests extends BasicTest {
 
 	@Test
 	public void registerUnregisterTest() {
+		int publisherSize = subscriptionService.getAllPublishers().size();
 		String code = "001";
 		subscriptionService.register(code);
+		
 		List<String> codes = subscriptionService.getAllPublishers();
 		assertNotNull(codes);
-		assertEquals(1, codes.size());
-		assertEquals(code, codes.get(0));
+		assertEquals(publisherSize+1, codes.size());
+		assertTrue(codes.contains(code));
 
 		subscriptionService.unregister(code);
 		codes = subscriptionService.getAllPublishers();
 		assertNotNull(codes);
-		assertEquals(0, codes.size());
+		assertEquals(publisherSize, codes.size());
+		assertFalse(codes.contains(code));
 	}
 
 	@Test
