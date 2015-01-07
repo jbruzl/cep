@@ -1,5 +1,5 @@
 *.DS_Store
 /bower_components/*
-!/bower_components/*/*.js
-!/bower_components/*/*.css
+!/bower_components/*.js
+!/bower_components/*.css
 /node_modules/*
