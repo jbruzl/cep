@@ -18,17 +18,22 @@
     
     <logger name="org.hibernate">
         <!-- Print only messages of level warn or above in the package org.hibernate -->
-        <level value="error"/> 
+        <level value="info"/> 
     </logger>
 
     <logger name="org.jboss">
         <!-- Print only messages of level warn or above in the package org.jboss -->
-        <level value="warn"/> 
+        <level value="info"/> 
+    </logger>
+    
+    <logger name="cz.muni.fi.cep">
+        <!-- Print only messages of level warn or above in the package org.jboss -->
+        <level value="trace"/> 
     </logger>
 
     <!-- Root logger -->
     <root>
-        <level value="TRACE" />
+        <level value="info" />
         <appender-ref ref="console" />
     </root>
 
