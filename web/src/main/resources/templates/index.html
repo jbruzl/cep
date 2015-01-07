@@ -1,0 +1,223 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Foundation</title>
+<link rel="stylesheet" th:href="@{css/app.css}" />
+<script th:src="@{bower_components/modernizr/modernizr.js}"></script>
+</head>
+<body>
+	<div class="sticky">
+		<nav class="top-bar" th:attr="data-topbar='a'">
+			<ul class="title-area">
+
+				<li class="name">
+					<h1>
+						<a href="#"> Městský krizový portál </a>
+					</h1>
+				</li>
+				<li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
+			</ul>
+
+			<section class="top-bar-section">
+				<ul class="right">
+					<li class="divider"></li>
+					<li class="has-dropdown"><a href="#">Procesy</a>
+						<ul class="dropdown">
+							<li><a href="#">Oznámení</a></li>
+						</ul></li>
+					<li class="divider"></li>
+					<li class="has-dropdown"><a href="#">Nastavení</a>
+						<ul class="dropdown">
+							<li><a href="#">Odběry</a></li>
+							<li><a href="#">Uživatelé</a></li>
+						</ul></li>
+					<li class="divider"></li>
+					<li><a href="#">Odběry</a></li>
+					<li class="divider"></li>
+					<li><a href="#">Historie</a></li>
+					<li class="divider"></li>
+					<li class="has-dropdown"><a href="#">Jan Bruzl</a>
+						<ul class="dropdown">
+							<li><a href="#">Účet</a></li>
+							<li><a href="#">Odhlásit se</a></li>
+						</ul></li>
+					<li><a href="#" data-reveal-id="loginModal">Přihlásit</a></li>
+				</ul>
+			</section>
+		</nav>
+	</div>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<img th:src="@{img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+			<div class="panel">
+				<img th:src="@{img/500x500.gif}" />
+			</div>
+
+			<div class="panel">
+				<h4>Header</h4>
+				<p>Fusce ullamcorper mauris in eros dignissim molestie posuere
+					felis blandit. Aliquam erat volutpat. Mauris ultricies posuere
+					vehicula. Sed sit amet posuere erat. Quisque in ipsum non augue
+					euismod dapibus non et eros.</p>
+			</div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+					Etiam odio lacus, finibus quis tempus ut, posuere quis lacus.
+					Phasellus ligula lectus, tincidunt sit amet dapibus sed, ultricies
+					quis velit. Ut id tristique eros. Ut in lacus vitae erat dapibus
+					eleifend. Nullam facilisis justo sit amet nibh lacinia, nec laoreet
+					mi consequat. Vivamus in libero quis tellus faucibus malesuada in
+					vitae diam. Sed lacinia libero at nunc fringilla, id rhoncus tellus
+					imperdiet. Duis sed eros eu dui ornare rhoncus sed eget velit.
+					Maecenas ut vestibulum nunc. Duis ut condimentum risus. Praesent
+					maximus turpis molestie justo condimentum posuere.</p>
+				<p>Cras interdum, odio quis facilisis bibendum, metus lorem
+					aliquam sem, in hendrerit tellus diam eget nulla. Ut sed maximus
+					diam. Curabitur malesuada, turpis vitae consectetur consectetur,
+					arcu ante rutrum enim, nec lacinia mi nulla vel dui. Ut cursus id
+					libero lacinia tristique. Nam tempor semper ipsum, sed commodo
+					felis mattis nec. Duis eget ligula id enim fringilla mollis id ut
+					magna. Aenean a iaculis orci, eget fermentum neque.</p>
+
+				<p>Pellentesque condimentum justo sed sapien varius lobortis sit
+					amet at risus. Pellentesque habitant morbi tristique senectus et
+					netus et malesuada fames ac turpis egestas. Curabitur iaculis
+					dignissim dui sed blandit. Aliquam tortor purus, auctor ac dui nec,
+					posuere viverra leo. Duis eros odio, condimentum in vestibulum in,
+					tristique ut velit. Suspendisse vel nulla feugiat, condimentum eros
+					vel, dapibus felis. Quisque sed nisi sit amet mi lobortis lobortis
+					nec ac dolor. Nullam dictum tincidunt nunc vitae imperdiet. Proin
+					rutrum id tortor vel molestie. Proin ac ultrices enim, eu consequat
+					ex. Etiam quis commodo ligula, ut suscipit elit. Praesent congue
+					eros sed sodales viverra. Vivamus id nibh id dolor cursus iaculis
+					eu eget orci. Fusce et efficitur nibh, a aliquam ante. Morbi porta
+					ut ante eu vehicula. Pellentesque nec nisl in dolor viverra
+					ultrices ac id est. Donec sit amet quam at urna tristique gravida.
+					In libero nunc, consequat sit amet lectus sed, dapibus sodales
+					tortor. Vivamus nisi orci, vestibulum id malesuada quis, volutpat
+					sit amet odio. Nunc turpis dui, tincidunt eu luctus id, iaculis sit
+					amet ante. Quisque vulputate est sapien, id venenatis urna mattis
+					non. Quisque non ligula ante. Nunc id ligula erat. Ut commodo
+					tortor id dignissim molestie. Nulla aliquet augue non tellus
+					finibus aliquam. Phasellus sollicitudin odio lorem. Praesent mollis
+					nulla non consectetur tempus. Vivamus sagittis porttitor lorem, non
+					mattis nulla vehicula nec. Donec feugiat, libero tempor vehicula
+					facilisis, arcu odio pretium felis, a auctor tortor turpis eu nisl.
+					Maecenas et magna commodo, consectetur ipsum id, suscipit mauris.
+					Aenean nec est sed felis bibendum efficitur. Pellentesque tempor
+					blandit placerat. Suspendisse cursus turpis ac sem porta, nec
+					viverra erat congue.</p>
+			</div>
+
+			<div class="row">
+				<div class="large-6 columns">
+					<div class="panel">
+						<h5>Subheader</h5>
+						<p>Sed sit amet posuere erat. Quisque in ipsum non augue
+							euismod dapibus non et eros.</p>
+						<a href="#" class="small button">Link</a>
+					</div>
+				</div>
+
+				<div class="large-6 columns">
+					<div class="panel">
+						<h5>Subheader</h5>
+						<p>Sed sit amet posuere erat. Quisque in ipsum non augue
+							euismod dapibus non et eros.</p>
+						<a href="#" class="small button">Link</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+
+	<footer class="row">
+		<div class="large-12 columns">
+			<hr />
+			<div class="row">
+
+				<div class="large-6 columns">
+					<p>CEP @ FI MUNI CZ</p>
+				</div>
+
+				<div class="large-6 columns">
+					<ul class="inline-list right">
+						<li><a href="#">Link 1</a></li>
+						<li><a href="#">Link 2</a></li>
+						<li><a href="#">Link 3</a></li>
+						<li><a href="#">Link 4</a></li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+	</footer>
+
+	<div id="loginModal" class="reveal-modal remove-whitespace" th:attr="data-reveal=a">
+		<div class="row">
+			<div class="large-6 columns auth-plain">
+				<div class="signup-panel left-solid">
+					<p class="welcome">Registrovaní uživatelé</p>
+					<form>
+						<div class="row collapse">
+							<div class="small-2  columns">
+								<span class="prefix"><i class="fi-torso-female"></i></span>
+							</div>
+							 <div class="small-10 columns">
+								<input type="text" placeholder="username" />
+							 </div>
+						</div>
+						<div class="row collapse">
+							<div class="small-2 columns ">
+								<span class="prefix"><i class="fi-lock"></i></span>
+							</div>
+							<div class="small-10 columns ">
+								<input type="text" placeholder="password" />
+							</div>
+						</div>
+					</form>
+					<a href="#" class="button ">Přihlásit se </a>
+				</div>
+			</div>
+
+			<div class="large-6 columns auth-plain">
+				<div class="signup-panel newusers">
+					<p class="welcome">Neregitrován?</p>
+					<p>By creating an account with us, you will be able to move
+						through the checkout process faster, view and track your orders,
+						and more.</p>
+					<br> <a href="#" class="button ">Zaregistrovat se</a></br>
+				</div>
+			</div>
+
+		</div>
+		<a class="close-reveal-modal">&#215;</a>
+	</div>
+
+	<script th:src="@{bower_components/jquery/dist/jquery.min.js}"></script>
+	<script th:src="@{bower_components/foundation/js/foundation.min.js}"></script>
+	<script th:src="@{js/app.js}"></script>
+</body>
+</html>
