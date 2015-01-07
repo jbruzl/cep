@@ -7,12 +7,13 @@
 	http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
 	<bean id="processEngineConfiguration"
-		class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
-		<property name="databaseType" value="h2" />
+		class="org.activiti.spring.SpringProcessEngineConfiguration">
 		<property name="databaseSchemaUpdate" value="true" />
 		<property name="jobExecutorActivate" value="false" />
 		<property name="history" value="full" />
 		<property name="mailServerPort" value="2025" />
+		<property name="databaseType" value="mysql" />
+		<property name="dataSource" ref="dataSource" />
 	</bean>
 
 </beans>
