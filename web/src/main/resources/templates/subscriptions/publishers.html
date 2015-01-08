@@ -1,0 +1,123 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="index :: head">
+</head>
+<body>
+	<div class="sticky" th:include="index :: menu"></div>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<img th:src="@{/img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+			<div class="panel"  th:include="/subscriptions/subscriptions :: sub-menu"></div>
+
+			<div class="panel">
+				<h5 class="subheader">Události</h5>
+				<p class="">Události jsou zdroje možných zpráv a upozornění. Je možné se přihlásit k odběru událostí s vybraným způsobem upozornění. 
+				Momentálně jsou podporovány upozornění přes email a sms. Pro správné fungování musíte mít vyplněný příslušný kontakt v profilu.</p>
+			</div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h4>Seznam událostí</h4>
+				<table>
+					<thead>
+						<tr>
+							<th>Událost</th>
+							<th>Kód</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="publisher : ${publishers}">
+							<td></td>
+							<td th:text="${publisher}">Publisher</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+
+
+
+	<footer class="row">
+		<div class="large-12 columns">
+			<hr />
+			<div class="row">
+
+				<div class="large-6 columns">
+					<p>CEP @ FI MUNI CZ</p>
+				</div>
+
+				<div class="large-6 columns">
+					<ul class="inline-list right">
+						<li><a href="#">Link 1</a></li>
+						<li><a href="#">Link 2</a></li>
+						<li><a href="#">Link 3</a></li>
+						<li><a href="#">Link 4</a></li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+	</footer>
+
+	<div id="loginModal" class="reveal-modal remove-whitespace"
+		th:attr="data-reveal=a">
+		<div class="row">
+			<div class="large-6 columns auth-plain">
+				<div class="signup-panel left-solid">
+					<p class="welcome">Registrovaní uživatelé</p>
+					<form>
+						<div class="row collapse">
+							<div class="small-2  columns">
+								<span class="prefix"><i class="fi-torso-female"></i></span>
+							</div>
+							<div class="small-10 columns">
+								<input type="text" placeholder="username" />
+							</div>
+						</div>
+						<div class="row collapse">
+							<div class="small-2 columns ">
+								<span class="prefix"><i class="fi-lock"></i></span>
+							</div>
+							<div class="small-10 columns ">
+								<input type="text" placeholder="password" />
+							</div>
+						</div>
+					</form>
+					<a href="#" class="button ">Přihlásit se </a>
+				</div>
+			</div>
+
+			<div class="large-6 columns auth-plain">
+				<div class="signup-panel newusers">
+					<p class="welcome">Neregitrován?</p>
+					<p>By creating an account with us, you will be able to move
+						through the checkout process faster, view and track your orders,
+						and more.</p>
+					<br> <a href="#" class="button ">Zaregistrovat se</a></br>
+				</div>
+			</div>
+
+		</div>
+		<a class="close-reveal-modal">&#215;</a>
+	</div>
+
+	<div th:include="index :: foot-scripts"></div>
+</body>
+</html>
