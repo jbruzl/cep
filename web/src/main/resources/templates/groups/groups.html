@@ -21,20 +21,19 @@
 	<div class="row">
 
 		<div class="large-3 columns">
-			<div class="panel">
+			<div class="panel" th:fragment="sub-menu">
 				<h4>Skupiny</h4>
+				<ul>
+					<li><a th:href="@{/skupiny}">Přehled skupin</a></li>
+					<li><a th:href="@{/skupiny/pridat}">Přidat skupinu</a></li>
+				</ul>
 			</div>
 
-			<div class="panel">
-				<img th:src="@{/img/500x500.gif}" />
-			</div>
-
-			<div class="panel">
-				<h4>Header</h4>
-				<p>Fusce ullamcorper mauris in eros dignissim molestie posuere
-					felis blandit. Aliquam erat volutpat. Mauris ultricies posuere
-					vehicula. Sed sit amet posuere erat. Quisque in ipsum non augue
-					euismod dapibus non et eros.</p>
+			<div class="panel" th:fragment="desc">
+				<h4>Skupiny</h4>
+				<p>Skupiny slouží pro rozlišení přístupových práv uživatelů k
+					jednotlivým sekcím portálu a k definují role v implementovaných
+					procesech.</p>
 			</div>
 		</div>
 
@@ -55,9 +54,8 @@
 							<td th:text="${group.name}">Name</td>
 							<td th:text="${group.code}">Code</td>
 							<td th:text="${group.type}">Type</td>
-							<td th:text="${group.users.size}">Members</td>
-							<td>
-								<a th:href="@{/skupiny/edit(id=${group.id})}">Členové</a> 
+							<td th:text="${group.users.size()}">Members</td>
+							<td><a th:href="@{/skupiny/edit(id=${group.id})}">Členové</a>
 							</td>
 						</tr>
 					</tbody>
@@ -66,72 +64,7 @@
 		</div>
 
 	</div>
-
-
-
-	<footer class="row">
-		<div class="large-12 columns">
-			<hr />
-			<div class="row">
-
-				<div class="large-6 columns">
-					<p>CEP @ FI MUNI CZ</p>
-				</div>
-
-				<div class="large-6 columns">
-					<ul class="inline-list right">
-						<li><a href="#">Link 1</a></li>
-						<li><a href="#">Link 2</a></li>
-						<li><a href="#">Link 3</a></li>
-						<li><a href="#">Link 4</a></li>
-					</ul>
-				</div>
-
-			</div>
-		</div>
-	</footer>
-
-	<div id="loginModal" class="reveal-modal remove-whitespace"
-		th:attr="data-reveal=a">
-		<div class="row">
-			<div class="large-6 columns auth-plain">
-				<div class="signup-panel left-solid">
-					<p class="welcome">Registrovaní uživatelé</p>
-					<form>
-						<div class="row collapse">
-							<div class="small-2  columns">
-								<span class="prefix"><i class="fi-torso-female"></i></span>
-							</div>
-							<div class="small-10 columns">
-								<input type="text" placeholder="username" />
-							</div>
-						</div>
-						<div class="row collapse">
-							<div class="small-2 columns ">
-								<span class="prefix"><i class="fi-lock"></i></span>
-							</div>
-							<div class="small-10 columns ">
-								<input type="text" placeholder="password" />
-							</div>
-						</div>
-					</form>
-					<a href="#" class="button ">Přihlásit se </a>
-				</div>
-			</div>
-
-			<div class="large-6 columns auth-plain">
-				<div class="signup-panel newusers">
-					<p class="welcome">Neregitrován?</p>
-					<p>By creating an account with us, you will be able to move
-						through the checkout process faster, view and track your orders,
-						and more.</p>
-					<br> <a href="#" class="button ">Zaregistrovat se</a></br>
-				</div>
-			</div>
-
-		</div>
-		<a class="close-reveal-modal">&#215;</a>
-	</div>
+	<footer class="row" th:include="index :: footer"> </footer>
 
 	<div th:include="index :: foot-scripts"></div>
 </body>
