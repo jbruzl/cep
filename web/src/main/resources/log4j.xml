@@ -30,6 +30,12 @@
         <!-- Print only messages of level warn or above in the package org.jboss -->
         <level value="trace"/> 
     </logger>
+    
+    <logger name="org.thymeleaf">
+        <!-- Print only messages of level warn or above in the package org.jboss -->
+        <level value="info"/> 
+    </logger>
+    
 
     <!-- Root logger -->
     <root>
