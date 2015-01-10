@@ -21,13 +21,10 @@
 	<div class="row">
 
 		<div class="large-3 columns">
-			<div class="panel"  th:include="/subscriptions/subscriptions :: sub-menu"></div>
+			<div class="panel"
+				th:include="/subscriptions/subscriptions :: sub-menu"></div>
 
-			<div class="panel">
-				<h5 class="subheader">Události</h5>
-				<p class="">Události jsou zdroje možných zpráv a upozornění. Je možné se přihlásit k odběru událostí s vybraným způsobem upozornění. 
-				Momentálně jsou podporovány upozornění přes email a sms. Pro správné fungování musíte mít vyplněný příslušný kontakt v profilu.</p>
-			</div>
+			<div class="panel" th:include="/subscriptions/subscriptions :: desc"></div>
 		</div>
 
 		<div class="large-9 columns">
@@ -35,72 +32,63 @@
 				<h4>Přihlášení odběru</h4>
 			</div>
 		</div>
-		
 
-			<div class="large-4 columns">
-				<div class="panel">
-					<h5>Přihlásit uživatele</h5>
-					<div>
-						<form action="#" th:action="@{/odbery/prihlasit-uzivatele-submit}" method="post">
-							<label for="user">Uživatel</label>
-							<select name="user">
-								<option th:each="user : ${users}" 
-						          th:value="${user.id}" 
-						          th:text="${user.firstName+' ' + user.lastName}">User</option>
-							</select>
-							<label for="publisher">Událost</label>
-							<select name="publisher">
-								<option th:each="publisher : ${publishers}" 
-						          th:value="${publisher}" 
-						          th:text="${publisher}">Publisher</option>
-							</select>
-							<label for="contactType">Typ kontaktu</label>
-							<select name="contactType">
-								<option th:each="contactType : ${contactTypes}" 
-						          th:value="${contactType}" 
-						          th:text="${contactType}">Contact Type</option>
-							</select>
-							<input class="small button" type="reset" name="submit" value="Reset" />
-							<input class="small button" type="submit" name="submit" value="Odeslat" />
-						</form>
-					</div>
+
+		<div class="large-4 columns">
+			<div class="panel">
+				<h5>Přihlásit uživatele</h5>
+				<div>
+					<form action="#" th:action="@{/odbery/prihlasit-uzivatele-submit}"
+						method="post">
+						<label for="user">Uživatel</label> <select name="user">
+							<option th:each="user : ${users}" th:value="${user.id}"
+								th:text="${user.firstName+' ' + user.lastName}">User</option>
+						</select> <label for="publisher">Událost</label> <select name="publisher">
+							<option th:each="publisher : ${publishers}"
+								th:value="${publisher}" th:text="${publisher}">Publisher</option>
+						</select> <label for="contactType">Typ kontaktu</label> <select
+							name="contactType">
+							<option th:each="contactType : ${contactTypes}"
+								th:value="${contactType}" th:text="${contactType}">Contact
+								Type</option>
+						</select> <input class="small button" type="reset" name="submit"
+							value="Reset" /> <input class="small button" type="submit"
+							name="submit" value="Odeslat" />
+					</form>
 				</div>
 			</div>
-			
-			<div class="large-5 columns">
-				<div class="panel">
-					<h5>Přihlásit kontakt</h5>
-					<div>
-						<form action="#" th:action="@{/odbery/prihlasit-kontakt-submit}" method="post">
-							<label for="contact">Kontakt</label>
-							<input type="text" name="contact" />
-							<label for="publisher">Událost</label>
-							<select name="publisher">
-								<option th:each="publisher : ${publishers}" 
-						          th:value="${publisher}" 
-						          th:text="${publisher}">Publisher</option>
-							</select>
-							<label for="contactType">Typ kontaktu</label>
-							<select name="contactType">
-								<option th:each="contactType : ${contactTypes}" 
-						          th:value="${contactType}" 
-						          th:text="${contactType}">Contact Type</option>
-							</select>
-							<input class="small button" type="reset" name="submit" value="Reset" />
-							<input class="small button" type="submit" name="submit" value="Odeslat" />							
-						</form>
-					</div>
+		</div>
+
+		<div class="large-5 columns">
+			<div class="panel">
+				<h5>Přihlásit kontakt</h5>
+				<div>
+					<form action="#" th:action="@{/odbery/prihlasit-kontakt-submit}"
+						method="post">
+						<label for="contact">Kontakt</label> <input type="text"
+							name="contact" /> <label for="publisher">Událost</label> <select
+							name="publisher">
+							<option th:each="publisher : ${publishers}"
+								th:value="${publisher}" th:text="${publisher}">Publisher</option>
+						</select> <label for="contactType">Typ kontaktu</label> <select
+							name="contactType">
+							<option th:each="contactType : ${contactTypes}"
+								th:value="${contactType}" th:text="${contactType}">Contact
+								Type</option>
+						</select> <input class="small button" type="reset" name="submit"
+							value="Reset" /> <input class="small button" type="submit"
+							name="submit" value="Odeslat" />
+					</form>
 				</div>
 			</div>
-	
+		</div>
+
 
 	</div>
 
 
 
-	<footer class="row" th:include="index :: footer">
-		
-	</footer>
+	<footer class="row" th:include="index :: footer"> </footer>
 
 	<div th:include="index :: foot-scripts"></div>
 </body>

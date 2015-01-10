@@ -19,7 +19,7 @@ public class UserController {
 	@RequestMapping(value = { "" })
 	public String index(Model model) {
 		model.addAttribute("users", identityService.getAllCepUsers());
-		return "users";
+		return "users/users";
 	}
 
 	@RequestMapping(value = { "/pridat" })
@@ -63,10 +63,10 @@ public class UserController {
 		CepUserEntity cepUserEntity = identityService.getCepUserById(id);
 		if(cepUserEntity==null) {
 			//TODO error message
-			return "users";
+			return "redirect:/uzivatele";
 		}
 		identityService.deleteUser(cepUserEntity);
-		return "users";
+		return "redirect:/uzivatele";
 	}
 	
 	@RequestMapping(value= {"/edit"})
@@ -93,7 +93,7 @@ public class UserController {
 		CepUserEntity user = identityService.getCepUserById(Long.parseLong(id));
 		if(user==null) {
 			//TODO error message
-			return "users"; 
+			return "redirect:/uzivatele";
 		}
 		user.setFirstName(name);
 		user.setLastName(surname);
