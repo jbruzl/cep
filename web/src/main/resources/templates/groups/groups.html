@@ -55,7 +55,7 @@
 							<td th:text="${group.code}">Code</td>
 							<td th:text="${group.type}">Type</td>
 							<td th:text="${group.users.size()}">Members</td>
-							<td><a th:href="@{/skupiny/edit(id=${group.id})}">Členové</a>
+							<td><a th:href="@{/skupiny/clenove(id=${group.id})}">Členové</a> <a th:href="@{/skupiny/odebrat(id=${group.id})}">Odstranit</a>
 							</td>
 						</tr>
 					</tbody>

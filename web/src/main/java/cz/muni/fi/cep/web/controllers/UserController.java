@@ -1,5 +1,7 @@
 package cz.muni.fi.cep.web.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import cz.muni.fi.cep.core.users.api.IdentityService;
+import cz.muni.fi.cep.core.users.entities.CepGroupEntity;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 @Controller
@@ -23,7 +26,8 @@ public class UserController {
 	}
 
 	@RequestMapping(value = { "/pridat" })
-	public String add() {
+	public String add(Model model) {
+		model.addAttribute("groups", identityService.getAllGroups());
 		return "users/add";
 	}
 
@@ -34,7 +38,8 @@ public class UserController {
 			@RequestParam(value = "password") String password,
 			@RequestParam(value = "password2") String password2,
 			@RequestParam(value = "email") String mail,
-			@RequestParam(value = "phone") String phone) {
+			@RequestParam(value = "phone") String phone,
+			@RequestParam(value = "groups") List<String> groups) {
 
 		CepUserEntity user = new CepUserEntity();
 		user.setFirstName(name);
@@ -44,6 +49,12 @@ public class UserController {
 		user.setPhoneNumber(phone);
 		
 		identityService.createUser(user);
+		for(String group : groups) {
+			CepGroupEntity groupEntity = identityService.getGroupById(Long.parseLong(group));
+			if(groupEntity == null)
+				continue;
+			identityService.createMembership(user, groupEntity);
+		}
 		return "redirect:/uzivatele";
 	}
 	

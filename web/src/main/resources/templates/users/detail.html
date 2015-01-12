@@ -21,9 +21,9 @@
 	<div class="row">
 
 		<div class="large-3 columns">
-			<div class="panel" th:include="/user/users :: sub-menu"></div>
+			<div class="panel" th:include="/users/users :: sub-menu"></div>
 
-			<div class="panel" th:include="/user/users :: desc"></div>
+			<div class="panel" th:include="/users/users :: desc"></div>
 		</div>
 
 		<div class="large-9 columns">
@@ -46,7 +46,19 @@
 				<div class="large-6 columns">
 					<div class="panel">
 						<h5>Dodatečné informace</h5>
-
+						<h6 class="subheader">Skupiny</h6>
+						<table>
+							<thead>
+								<tr>
+									<th>Skupina</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="group : ${user.groups}">
+									<td th:text="${group.name}">Name</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>

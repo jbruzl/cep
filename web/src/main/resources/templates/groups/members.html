@@ -1,0 +1,93 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="index :: head">
+</head>
+<body>
+	<div class="sticky" th:include="index :: menu"></div>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<img th:src="@{/img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+			<div class="panel" th:fragment="sub-menu">
+				<h4>Skupiny</h4>
+				<ul>
+					<li><a th:href="@{/skupiny}">Přehled skupin</a></li>
+					<li><a th:href="@{/skupiny/pridat}">Přidat skupinu</a></li>
+				</ul>
+			</div>
+
+			<div class="panel" th:fragment="desc">
+				<h4>Skupiny</h4>
+				<p>Skupiny slouží pro rozlišení přístupových práv uživatelů k
+					jednotlivým sekcím portálu a k definují role v implementovaných
+					procesech.</p>
+			</div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h4>Detail skupiny</h4>
+				<div>
+					<label for="name">Název</label><span name="name"
+						th:text="${group.name}">Name</span>
+				</div>
+				<div>
+					<label for="code">Kód</label><span name="code"
+						th:text="${group.code}">Code</span>
+				</div>
+				<div>
+					<label for="type">Typ</label><span name="type"
+						th:text="${group.type}">Type</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h5>Členové</h5>
+				<form action="#" th:action="@{/skupiny/pridat-clena-submit}"
+					method="post">
+					<input type="hidden" name="group" th:value="${group.id}" />
+					<label for="id">Nový člen</label><select name="id"><option
+							th:each="user : ${users}" th:value="${user.id}"
+							th:text="${user.firstName+' ' + user.lastName}">User</option></select>
+							 <input name="submit" type="submit" value="Přidat" class="button small" />
+				</form>
+				<table>
+					<thead>
+						<tr>
+							<th>Jméno</th>
+							<th>Email</th>
+							<th>Odebrat</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user : ${group.users}">
+							<td th:text="${user.firstName + ' ' + user.lastName}"></td>
+							<td th:text="${user.email}"></td>
+							<td><a th:href="@{/skupiny/odebrat-clena(id=${group.id},user=${user.id})}">Odstranit</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+	<footer class="row" th:include="index :: footer"> </footer>
+
+	<div th:include="index :: foot-scripts"></div>
+</body>
+</html>
