@@ -38,7 +38,7 @@ public class CepUserEntity implements User {
 	}
 
 	public void setGroups(List<CepGroupEntity> groups) {
-		this.groups = groups;
+		this.groups = groups; 
 	}
 
 	/**
@@ -141,8 +141,7 @@ public class CepUserEntity implements User {
 	public String toString() {
 		return "CepUserEntity [id=" + id + ", phoneNumber=" + phoneNumber
 				+ ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", password=" + password + ", email=" + email + ", groups="
-				+ groups + "]";
+				+ ", password=" + password + ", email=" + email + "]";
 	}
 
 }

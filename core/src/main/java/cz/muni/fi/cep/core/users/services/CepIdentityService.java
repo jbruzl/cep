@@ -24,7 +24,7 @@ public class CepIdentityService implements IdentityService {
 
 	@Autowired
 	private CepGroupDao cepGroupDao;
-	
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -41,17 +41,29 @@ public class CepIdentityService implements IdentityService {
 	public void createUser(CepUserEntity user) {
 		if (user == null)
 			throw new NullPointerException("User shouldn't be null.");
-		
+
 		user.setId(cepUserDao.save(user).getId());
 		logger.info("User {} created", user);
 	}
 
 	@Override
-	public void deleteUser(CepUserEntity user) {
-		if (user == null)
+	public void deleteUser(CepUserEntity cepUser) {
+		if (cepUser == null)
 			throw new NullPointerException("User shouldn't be null.");
 
+		CepUserEntity user = getCepUserById(Long.parseLong(cepUser.getId()));
+		List<Long> groups = new ArrayList<>();
+		for(CepGroupEntity entity : user.getGroups()) {
+			groups.add(Long.parseLong(entity.getId()));
+		}
+		for(Long id : groups) {
+			deleteMembership(user, getGroupById(id));
+		}
+		if(user.getGroups().size()!=0) {
+			logger.error("Could not delete {} because still contains users: {}", user, user.getGroups());
+		}
 		cepUserDao.delete(user);
+		
 		logger.info("User {} deleted", user);
 	}
 
@@ -96,7 +108,18 @@ public class CepIdentityService implements IdentityService {
 		if (cepGroupEntity == null)
 			throw new NullPointerException(
 					"IdentityService: CepGroupEntity is null.");
-		cepGroupDao.delete(cepGroupEntity);
+		CepGroupEntity group = getGroupById(Long.parseLong(cepGroupEntity.getId()));
+		List<Long> users = new ArrayList<>();
+		for(CepUserEntity entity : group.getUsers()) {
+			users.add(Long.parseLong(entity.getId()));
+		}
+		for(Long id : users) {
+			deleteMembership(getCepUserById(id), group);
+		}
+		if(group.getUsers().size()!=0) {
+			logger.error("Could not delete {} because still contains users: {}", group, users);
+		}
+		cepGroupDao.delete(group);
 		logger.info("Group {} deleted", cepGroupEntity);
 	}
 
@@ -113,7 +136,7 @@ public class CepIdentityService implements IdentityService {
 	public CepGroupEntity getGroupById(Long id) {
 		if (id == null)
 			throw new NullPointerException("Id shouldn't be null.");
-		
+
 		CepGroupEntity group = cepGroupDao.findOne(id);
 		logger.info("Returning group {}", group);
 		return group;
@@ -126,7 +149,8 @@ public class CepIdentityService implements IdentityService {
 		for (CepGroupEntity entity : cepGroupDao.findAll()) {
 			cepGroupEntities.add(entity);
 		}
-		logger.info("Returning list of groups. Size: {}", cepGroupEntities.size());
+		logger.info("Returning list of groups. Size: {}",
+				cepGroupEntities.size());
 		return cepGroupEntities;
 	}
 
@@ -149,12 +173,17 @@ public class CepIdentityService implements IdentityService {
 					+ " does not exists.");
 		}
 
-		cepUserEntity.getGroups().add(cepGroupEntity);
-		cepGroupEntity.getUsers().add(cepUserEntity);
+		List<CepGroupEntity> groups = cepUserEntity.getGroups();
+		if (!groups.contains(cepGroupEntity))
+			groups.add(cepGroupEntity);
+		List<CepUserEntity> users = cepGroupEntity.getUsers();
+		if (!users.contains(cepUserEntity))
+			users.add(cepUserEntity);
 
 		updateGroup(cepGroupEntity);
 		updateUser(cepUserEntity);
-		logger.info("Created membership of {} in {}", cepUserEntity, cepGroupEntity);
+		logger.info("Created membership of {} in {}", cepUserEntity,
+				cepGroupEntity);
 	}
 
 	@Override
@@ -166,12 +195,17 @@ public class CepIdentityService implements IdentityService {
 		if (cepUserEntity == null)
 			throw new NullPointerException("User shouldn't be null.");
 
-		cepUserEntity.getGroups().remove(cepGroupEntity);
-		cepGroupEntity.getUsers().remove(cepUserEntity);
+		List<CepGroupEntity> groups = cepUserEntity.getGroups();
+		if (groups.contains(cepGroupEntity))
+			groups.remove(cepGroupEntity);
+		List<CepUserEntity> users = cepGroupEntity.getUsers();
+		if (users.contains(cepUserEntity))
+			users.remove(cepUserEntity);
 
 		updateGroup(cepGroupEntity);
 		updateUser(cepUserEntity);
-		logger.info("Membership of {} in {} deleted", cepUserEntity, cepGroupEntity);
+		logger.info("Membership of {} in {} deleted", cepUserEntity,
+				cepGroupEntity);
 	}
 
 	@Override

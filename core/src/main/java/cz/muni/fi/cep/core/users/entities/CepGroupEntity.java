@@ -15,6 +15,20 @@ import org.activiti.engine.identity.Group;
 
 @Entity
 public class CepGroupEntity implements Group {
+	
+
+	private static final long serialVersionUID = 7994771811850733591L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	@Column(unique = true, nullable = false)
+	private String code;
+	private String name;
+	private String type;
+	
+	@ManyToMany(mappedBy="groups", fetch=FetchType.LAZY)
+	private List<CepUserEntity> users = new ArrayList<>();
+
 	public String getCode() {
 		return code;
 	}
@@ -30,19 +44,7 @@ public class CepGroupEntity implements Group {
 	public void setUsers(List<CepUserEntity> users) {
 		this.users = users;
 	}
-
-	private static final long serialVersionUID = 7994771811850733591L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	@Column(unique = true, nullable = false)
-	private String code;
-	private String name;
-	private String type;
 	
-	@ManyToMany(mappedBy="groups", fetch=FetchType.LAZY)
-	private List<CepUserEntity> users = new ArrayList<>();
-
 	@Override
 	public String getId() {
 		if(id == null)
@@ -103,7 +105,7 @@ public class CepGroupEntity implements Group {
 	@Override
 	public String toString() {
 		return "CepGroupEntity [id=" + id + ", code=" + code + ", name=" + name
-				+ ", type=" + type + ", users=" + users + "]";
+				+ ", type=" + type + "]";
 	}
 
 }
