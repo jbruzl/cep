@@ -3,14 +3,20 @@
  */
 package cz.muni.fi.cep.activiti.notification.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.client.RestTemplate;
+
+import com.twilio.sdk.TwilioRestClient;
+import com.twilio.sdk.TwilioRestException;
+import com.twilio.sdk.resource.factory.MessageFactory;
 
 import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
 
@@ -18,15 +24,20 @@ import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
  * @author Jan Bruzl
  *
  */
-public class SendSMSTask implements JavaDelegate {
+public class SendSMSTaskTwilio implements JavaDelegate {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final static String LOGIN = "bruzl_h1";
+	// twilio credentials
+	// TODO move to property file
+	private static final String ACCOUNT_SID = "ACabbccc26315f0e1dd04fbd3802ca10cf";
+	private static final String AUTH_TOKEN = "a50c88393dc38156842334da611d99a9";
 
-	private final static String PASSWORD = "1b727ac0";
+	// twilio sender number
+	// TODO move to property file
+	private static final String SENDER = "+12012796704";
 
 	/**
-	 * Sends SMS via smsbrana.cz
+	 * Sends SMS via twilio provider.
 	 * 
 	 * @see org.activiti.engine.delegate.JavaDelegate#execute(org.activiti.engine.delegate.DelegateExecution)
 	 */
@@ -63,16 +74,23 @@ public class SendSMSTask implements JavaDelegate {
 
 		try {
 			logger.info("Starting to send sms");
-			for (String smsReceiver : receivers) {
-				RestTemplate restTemplate = new RestTemplate();
-				String response = restTemplate
-						.getForObject(
-								"http://api.smsbrana.cz/smsconnect/http.php?login={login}&password={heslo}&action=send_sms&number={number}&message={message}",
-								String.class, LOGIN, PASSWORD, smsReceiver,
-								message);
-				logger.info(response);
-			}
+			TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID,
+					AUTH_TOKEN);
+			MessageFactory messageFactory = client.getAccount()
+					.getMessageFactory();
 
+			for (String smsReceiver : receivers) {
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("Body", message));
+				params.add(new BasicNameValuePair("From", SENDER));
+				params.add(new BasicNameValuePair("To", smsReceiver));
+				try {
+					messageFactory.create(params);
+				} catch (TwilioRestException ex) {
+					logger.error("Could not send sms to {}, exception: {}",
+							smsReceiver, ex.toString());
+				}
+			}
 			logger.info("Sms sending ends");
 		} catch (Exception ex) {
 			logger.error("Exception occured while sending SMS: {}",
@@ -81,4 +99,5 @@ public class SendSMSTask implements JavaDelegate {
 		}
 
 	}
+
 }

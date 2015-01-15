@@ -41,8 +41,8 @@ public class NotificationTest extends ActivitiBasicTest {
 	@Test
 	@org.activiti.engine.test.Deployment(resources = {"diagrams/SendSMS.bpmn", "diagrams/Notify.bpmn" })
 	public void deploymentTest() {
-		assertNotNull("Expecting deployed Notify process", repositoryService.createProcessDefinitionQuery().processDefinitionKey("Notify").singleResult());
-		assertNotNull("Expecting deployed SendSMS process", repositoryService.createProcessDefinitionQuery().processDefinitionKey("SendSMS").singleResult());
+		assertNotNull("Expecting deployed Notify process", repositoryService.createProcessDefinitionQuery().processDefinitionKey("Notify").list().size()>0);
+		assertNotNull("Expecting deployed SendSMS process", repositoryService.createProcessDefinitionQuery().processDefinitionKey("SendSMS").list().size()>0);
 	}
 	
 	

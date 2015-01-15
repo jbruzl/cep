@@ -22,8 +22,7 @@ public class SendSMSTest extends ActivitiBasicTest{
 	public void testSMSTask() {
 		Map<String, Object> processVariables = new HashMap<>();
 		List<String> receivers = new ArrayList<String>();
-		receivers.add("+420728484615");
-		receivers.add("+420728484615");
+		receivers.add("728484615");
 		processVariables.put("message", "Hello World!");		
 		processVariables.put("receivers", receivers);
 		processVariables.put("messageType", MessageType.NOTIFICATION);
