@@ -43,9 +43,7 @@
       <scriptTask id="preparesmsinputs1" name="Prepare SMS Inputs" scriptFormat="groovy" activiti:autoStoreVariables="true">
         <script>
       		contactType = cz.muni.fi.cep.api.DTO.ContactType.SMS
-      		
-      		println(contactType)
-      		println(publisherCode)
+
       		resource = 'templates/sms/'+templateKey
 			templatePath = this.getClass().getResource( resource )
 			

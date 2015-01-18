@@ -58,7 +58,7 @@ public class SubscriptionController {
 		return "subscriptions/subscribe";
 	}
 	
-	@RequestMapping(value= {"/odbery/prihlasit-uzivatele-submit"}, method=RequestMethod.POST)
+	@RequestMapping(value= {"/prihlasit-uzivatele-submit"}, method=RequestMethod.POST)
 	public String subscribeUser(
 			@RequestParam(required=true, value="user") String userId,
 			@RequestParam(required=true, value="publisher") String publisherCode,
@@ -75,7 +75,7 @@ public class SubscriptionController {
 		return "redirect:/odbery";
 	}
 	
-	@RequestMapping(value= {"/odbery/prihlasit-kontakt-submit"}, method=RequestMethod.POST)
+	@RequestMapping(value= {"/prihlasit-kontakt-submit"}, method=RequestMethod.POST)
 	public String subscribeContact(
 			@RequestParam(required=true, value="contact") String contact,
 			@RequestParam(required=true, value="publisher") String publisherCode,
@@ -84,5 +84,10 @@ public class SubscriptionController {
 		subscriptionService.subscribe(contact, publisherCode, contactType);
 		
 		return "redirect:/odbery";
+	}
+	
+	public String selectPublisher() {
+		
+		return "subscriptions/selectPublisher";
 	}
 }

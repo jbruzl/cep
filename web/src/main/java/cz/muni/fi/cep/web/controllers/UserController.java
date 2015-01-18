@@ -19,7 +19,7 @@ public class UserController {
 	@Autowired
 	private IdentityService identityService;
 
-	@RequestMapping(value = { "" })
+	@RequestMapping(value = { "", "/" })
 	public String index(Model model) {
 		model.addAttribute("users", identityService.getAllCepUsers());
 		return "users/users";
