@@ -4,14 +4,12 @@
     <startEvent id="startevent1" name="Start" activiti:initiator="initiator">
       <extensionElements>
         <activiti:formProperty id="message" name="Message" type="string" required="true"></activiti:formProperty>
-        <activiti:formProperty id="templateKey" name="Template Key" type="string" required="true"></activiti:formProperty>
-        <activiti:formProperty id="templateVariable" name="Template Variable" required="true"></activiti:formProperty>
-        <activiti:formProperty id="publisherCode" name="Publisher Code" type="string" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <scriptTask id="verifyenablednotification1" name="Verify Enabled Notification" scriptFormat="groovy" activiti:autoStoreVariables="true">
       <script>
-      	println(notificationEnabled) 
+      	println(publisherCode) 
+      	
       </script>
     </scriptTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="verifyenablednotification1"></sequenceFlow>
@@ -45,6 +43,9 @@
       <scriptTask id="preparesmsinputs1" name="Prepare SMS Inputs" scriptFormat="groovy" activiti:autoStoreVariables="true">
         <script>
       		contactType = cz.muni.fi.cep.api.DTO.ContactType.SMS
+      		
+      		println(contactType)
+      		println(publisherCode)
       		resource = 'templates/sms/'+templateKey
 			templatePath = this.getClass().getResource( resource )
 			
@@ -66,7 +67,6 @@
       <startEvent id="startpreparemail3" name="Start Prepare Mail"></startEvent>
       <scriptTask id="preparemailmessage1" name="Prepare Mail Message" scriptFormat="groovy" activiti:autoStoreVariables="true">
         <script>
-     	sender = "sender@localhost.com"
 		contactType = cz.muni.fi.cep.api.DTO.ContactType.EMAIL
     	resource = 'templates/mail/'+templateKey
 		templatePath = this.getClass().getResource( resource )
@@ -100,9 +100,6 @@
       <extensionElements>
         <activiti:field name="to">
           <activiti:expression>${mailList}</activiti:expression>
-        </activiti:field>
-        <activiti:field name="from">
-          <activiti:expression>${sender}</activiti:expression>
         </activiti:field>
         <activiti:field name="subject">
           <activiti:string><![CDATA[Subject]]></activiti:string>
