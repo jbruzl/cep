@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="warningChmi" name="Warning CHMI" isExecutable="true">
+    <startEvent id="timerstartevent1" name="Timer start">
+      <timerEventDefinition></timerEventDefinition>
+    </startEvent>
+    <sequenceFlow id="flow1" sourceRef="timerstartevent1" targetRef="checksettings1"></sequenceFlow>
+    <scriptTask id="checksettings1" name="Check settings" scriptFormat="groovy" activiti:autoStoreVariables="false"></scriptTask>
+    <sequenceFlow id="flow2" sourceRef="checksettings1" targetRef="obtainwarningreport1"></sequenceFlow>
+    <serviceTask id="obtainwarningreport1" name="Obtain warning report"></serviceTask>
+    <userTask id="evaluatewarningreport1" name="Evaluate warning report"></userTask>
+    <sequenceFlow id="flow3" sourceRef="obtainwarningreport1" targetRef="evaluatewarningreport1"></sequenceFlow>
+    <exclusiveGateway id="warningchanged1" name="Warning changed?"></exclusiveGateway>
+    <sequenceFlow id="flow4" sourceRef="evaluatewarningreport1" targetRef="warningchanged1"></sequenceFlow>
+    <endEvent id="nothingchanged1" name="Nothing changed"></endEvent>
+    <sequenceFlow id="flow5" name="No" sourceRef="warningchanged1" targetRef="nothingchanged1"></sequenceFlow>
+    <exclusiveGateway id="warninglevelrisen1" name="Warnning level risen?"></exclusiveGateway>
+    <sequenceFlow id="flow6" name="Yes" sourceRef="warningchanged1" targetRef="warninglevelrisen1"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="warninglevelrisen1" targetRef="scripttask1"></sequenceFlow>
+    <scriptTask id="scripttask1" name="Lower warning level" activiti:autoStoreVariables="false"></scriptTask>
+    <callActivity id="notifywarninglevellowered1" name="Notify warning level lowered" calledElement="Notify"></callActivity>
+    <sequenceFlow id="flow8" sourceRef="scripttask1" targetRef="notifywarninglevellowered1"></sequenceFlow>
+    <endEvent id="warninglevellowered1" name="Warning level lowered"></endEvent>
+    <sequenceFlow id="flow9" sourceRef="notifywarninglevellowered1" targetRef="warninglevellowered1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_warningChmi">
+    <bpmndi:BPMNPlane bpmnElement="warningChmi" id="BPMNPlane_warningChmi">
+      <bpmndi:BPMNShape bpmnElement="timerstartevent1" id="BPMNShape_timerstartevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="50.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="checksettings1" id="BPMNShape_checksettings1">
+        <omgdc:Bounds height="55.0" width="105.0" x="130.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="obtainwarningreport1" id="BPMNShape_obtainwarningreport1">
+        <omgdc:Bounds height="71.0" width="111.0" x="280.0" y="102.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="evaluatewarningreport1" id="BPMNShape_evaluatewarningreport1">
+        <omgdc:Bounds height="63.0" width="115.0" x="430.0" y="106.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="warningchanged1" id="BPMNShape_warningchanged1">
+        <omgdc:Bounds height="40.0" width="40.0" x="590.0" y="118.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="nothingchanged1" id="BPMNShape_nothingchanged1">
+        <omgdc:Bounds height="35.0" width="35.0" x="593.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="warninglevelrisen1" id="BPMNShape_warninglevelrisen1">
+        <omgdc:Bounds height="40.0" width="40.0" x="675.0" y="119.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask1" id="BPMNShape_scripttask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="760.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="notifywarninglevellowered1" id="BPMNShape_notifywarninglevellowered1">
+        <omgdc:Bounds height="73.0" width="105.0" x="920.0" y="21.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="warninglevellowered1" id="BPMNShape_warninglevellowered1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1070.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="85.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="130.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="235.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="280.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="391.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="430.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="545.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="590.0" y="138.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="610.0" y="118.0"></omgdi:waypoint>
+        <omgdi:waypoint x="610.0" y="65.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="610.0" y="103.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="630.0" y="138.0"></omgdi:waypoint>
+        <omgdi:waypoint x="675.0" y="139.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="640.0" y="138.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="695.0" y="119.0"></omgdi:waypoint>
+        <omgdi:waypoint x="695.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="760.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="865.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="920.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="1025.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1070.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -13,5 +13,6 @@
   	<module>tests</module>
   	<module>activiti-notification</module>
   	<module>web</module>
+  	<module>activiti-warning-chmi</module>
   </modules>
 </project>
