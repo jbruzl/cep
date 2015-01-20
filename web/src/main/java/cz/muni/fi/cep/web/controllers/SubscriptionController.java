@@ -1,7 +1,9 @@
 package cz.muni.fi.cep.web.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -86,8 +88,20 @@ public class SubscriptionController {
 		return "redirect:/odbery";
 	}
 	
-	public String selectPublisher() {
-		
-		return "subscriptions/selectPublisher";
+	@RequestMapping("/prehled")
+	public String selectPublisher(Model model, @RequestParam(value="publisher", required=false) String publisher) {
+		model.addAttribute("publishers", subscriptionService.getAllPublishers());
+		if(publisher!= null) {
+			Map<String, List<CepUserEntity>> userSubscribers = new HashMap<>();
+			userSubscribers.put(ContactType.EMAIL.toString(), subscriptionService.getUserSubscribers(publisher, ContactType.EMAIL));
+			userSubscribers.put(ContactType.SMS.toString(), subscriptionService.getUserSubscribers(publisher, ContactType.SMS));
+			model.addAttribute("userSubscribers", userSubscribers);
+			
+			Map<ContactType, List<String>> contactSubscribers = new HashMap<>();
+			contactSubscribers.put(ContactType.EMAIL, subscriptionService.getSubscribers(publisher, ContactType.EMAIL));
+			contactSubscribers.put(ContactType.SMS, subscriptionService.getSubscribers(publisher, ContactType.SMS));
+			model.addAttribute("contactSubscribers", contactSubscribers);
+		}
+		return "subscriptions/subscribers";
 	}
 }
