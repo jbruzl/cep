@@ -87,7 +87,7 @@ public class NotifyService {
 	}
 
 	public void unregisterService() {
-		subscriptionService.unregister(publisherCode);
+		//subscriptionService.unregister(publisherCode);
 	}
 
 	public static String getPublisherCode() {
