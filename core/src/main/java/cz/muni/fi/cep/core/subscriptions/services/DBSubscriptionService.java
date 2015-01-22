@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.DTO.ContactType;
 import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
 import cz.muni.fi.cep.core.subscriptions.dao.PublisherDao;

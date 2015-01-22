@@ -4,8 +4,6 @@
 package cz.muni.fi.cep.core.bpmn.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
@@ -13,15 +11,16 @@ import org.activiti.engine.delegate.JavaDelegate;
  *
  */
 public class InvokeSirenServiceTask implements JavaDelegate {
+	/*
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	private String soundSirenUrl = "http://localhost:9000/soundSiren";
-
+*/
 	/**
 	 * @param soundSirenUrl the soundSirenUrl to set
 	 */
 	public void setSoundSirenUrl(String soundSirenUrl) {
-		this.soundSirenUrl = soundSirenUrl;
+		//this.soundSirenUrl = soundSirenUrl;
 	}
 
 	/* (non-Javadoc)
