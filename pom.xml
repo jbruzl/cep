@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cz.muni.fi.cep</groupId>
 	<artifactId>city-emergency-portal</artifactId>
@@ -9,9 +9,11 @@
 	<modules>
 		<module>api</module>
 		<module>core</module>
+		<module>activiti-archetype</module>
 		<module>activiti-notification</module>
 		<module>activiti-warning-chmi</module>
 		<module>tests</module>
 		<module>web</module>
-	</modules>
+    <module>activiti-radio</module>
+  </modules>
 </project>
