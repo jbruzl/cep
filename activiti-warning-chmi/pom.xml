@@ -193,6 +193,11 @@
 			<artifactId>ehcache-core</artifactId>
 			<version>2.4.3</version>
 		</dependency>
+		<dependency>
+			<groupId>bsf</groupId>
+			<artifactId>bsf</artifactId>
+			<version>2.4.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
