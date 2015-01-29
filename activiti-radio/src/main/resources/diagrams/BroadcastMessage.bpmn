@@ -8,7 +8,7 @@
     </startEvent>
     <scriptTask id="scripttask1" name="Verify input" scriptFormat="groovy" activiti:autoStoreVariables="true">
       <script>
-      inputCheck = (radioMessage != null)
+      inputCheck = (radioMessage instanceof cz.muni.fi.cep.activiti.radio.messages.RadioMessage)
       </script>
     </scriptTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="scripttask1"></sequenceFlow>

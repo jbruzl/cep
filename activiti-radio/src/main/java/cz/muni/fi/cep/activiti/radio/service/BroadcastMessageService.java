@@ -1,9 +1,10 @@
 package cz.muni.fi.cep.activiti.radio.service;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -24,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
+import cz.muni.fi.cep.activiti.radio.messages.FileRadioMessage;
 import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
 
 /**
@@ -34,8 +35,8 @@ import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
  * 
  * @author Jan Bruzl
  */
-//@Service
-public class MyProcessService {
+@Service
+public class BroadcastMessageService {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -53,52 +54,41 @@ public class MyProcessService {
 	@Autowired
 	private SubscriptionService subscriptionService;
 
-	private static final String publisherCode = "code";
-
 	private ProcessDefinition processDefinition;
 
+	private final String processDefinitionKey = "broadcastmessage";
 
 	@PostConstruct
 	public void init() {
-		logger.info("Initialising Notify service");
-
-		subscriptionService.register(publisherCode);
-		logger.debug("Publisher {} registered", publisherCode);
+		logger.info("Initialising Broadcast Message service");
 
 		if (repositoryService.createProcessDefinitionQuery()
-				.processDefinitionKey("Notify").singleResult() == null)
+				.processDefinitionKey(processDefinitionKey).singleResult() == null)
 			repositoryService.createDeployment()
-					.addClasspathResource("diagrams/SendSMS.bpmn")
-					.addClasspathResource("diagrams/Notify.bpmn").deploy();
-		logger.debug("Process Notify deployed");
-		logger.debug("Process SendSMS deployed");
+					.addClasspathResource("diagrams/BroadcastMessage.bpmn").deploy();
+		logger.debug("Process Broadcast Message deployed");
 
 		processDefinition = repositoryService.createProcessDefinitionQuery()
-				.processDefinitionKey("Notify").singleResult();
+				.processDefinitionKey(processDefinitionKey).singleResult();
 		if (processDefinition != null)
 			logger.debug("Process definition obtained");
 		else
 			logger.warn("Process definition could not be obtained");
 
-		logger.info("Notify service initialised");
+		logger.info("Broadcast Message service initialised");
 	}
 
 	public void unregisterService() {
-		//subscriptionService.unregister(publisherCode);
 	}
 
-	public static String getPublisherCode() {
-		return publisherCode;
-	}
 
-	public ProcessInstance startTask(String templateKey,
-			Map<String, String> message) {
+	public ProcessInstance startTask(String messageFile) {
 		logger.info("Checking service state");
 		if (processDefinition == null) {
 			logger.warn("Process definition not loaded, trying now.");
 			processDefinition = repositoryService
 					.createProcessDefinitionQuery()
-					.processDefinitionKey("Notify").singleResult();
+					.processDefinitionKey(processDefinitionKey).singleResult();
 			if (processDefinition == null) {
 				logger.error("Could not load process definition.");
 				return null;
@@ -106,14 +96,19 @@ public class MyProcessService {
 		}
 		logger.info("Service state OK");
 
+		File f = new File(messageFile);
+		if(!f.exists())
+			return null;
+		
+		FileRadioMessage frm = new FileRadioMessage();
+		frm.setAudioFileName(f.getPath());
+		frm.setAuthor("");
+		frm.setRecordDate(GregorianCalendar.getInstance());
+		
+		
 		HashMap<String, Object> params = new HashMap<>();
-		params.put("publisherCode", publisherCode);
-		params.put("templateKey", templateKey);
-		params.put("templateVariable", message);
-		params.put("notificationEnabled", "true"); // TODO remove later when
-													// config manager is
-													// implemented in process
-		params.put("messageType", MessageType.NOTIFICATION);
+		params.put("radioMessage", frm);
+
 
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(
 				processDefinition.getKey(), params);
@@ -127,7 +122,7 @@ public class MyProcessService {
 			logger.warn("Process definition not loaded, trying now.");
 			processDefinition = repositoryService
 					.createProcessDefinitionQuery()
-					.processDefinitionKey("Notify").singleResult();
+					.processDefinitionKey(processDefinitionKey).singleResult();
 			if (processDefinition == null) {
 				logger.error("Could not load process definition.");
 				return null;
@@ -137,7 +132,7 @@ public class MyProcessService {
 
 		FormData formData = formService.getStartFormData(processDefinition
 				.getId());
-		logger.info("Returning process Notify start form data");
+		logger.info("Returning process Broadcast Message start form data");
 		return formData;
 	}
 
@@ -163,7 +158,7 @@ public class MyProcessService {
 		}
 
 		logger.info(
-				"Returning progress {} % of instance {} of process Notify.",
+				"Returning progress {} % of instance {} of process Broadcast Message.",
 				progress * 100, processInstanceId);
 		return progress;
 	}
@@ -198,7 +193,7 @@ public class MyProcessService {
 			logger.warn("Process definition not loaded, trying now.");
 			processDefinition = repositoryService
 					.createProcessDefinitionQuery()
-					.processDefinitionKey("Notify").singleResult();
+					.processDefinitionKey(processDefinitionKey).singleResult();
 			if (processDefinition == null) {
 				logger.error("Could not load process definition.");
 				return null;
@@ -210,7 +205,7 @@ public class MyProcessService {
 		logger.info("Generating PNG image of process Notify");
 		BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition
 				.getId());
-		logger.info("Returning generated PNG image of process Notify");
+		logger.info("Returning generated PNG image of process Broadcast Message");
 		return diagramGenerator.generatePngImage(bpmnModel, 1);
 	}
 
