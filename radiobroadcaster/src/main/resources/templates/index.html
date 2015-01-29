@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Web STUB for radio broadcast</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>Date</th>
+				<th>Author</th>
+				<th>Message</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="message : ${messages}">
+				<td
+					th:text="${#calendars.format(message.recordDate, 'dd. MM. yyyy HH:mm')}">date</td>
+				<td th:text="${message.author}">author</td>
+				<td><a
+					th:href="@{/getMessage(message=${message.audioFileName})}"
+					th:text="${message.audioFileName}">message</a></td>
+				<td><embed
+						th:src="@{/getMessage(message=${message.audioFileName})}"
+						autostart="false" loop="false" /></td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
