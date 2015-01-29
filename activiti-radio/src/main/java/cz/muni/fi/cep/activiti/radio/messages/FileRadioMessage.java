@@ -1,7 +1,7 @@
 package cz.muni.fi.cep.activiti.radio.messages;
 
 import java.io.File;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 import org.springframework.core.io.FileSystemResource;
 
@@ -16,7 +16,7 @@ public class FileRadioMessage implements RadioMessage {
 
 	private String author;
 
-	private GregorianCalendar recordDate;
+	private Calendar recordDate;
 
 	private String audioFileName;
 
@@ -42,11 +42,11 @@ public class FileRadioMessage implements RadioMessage {
 	}
 
 	@Override
-	public GregorianCalendar getRecordDate() {
+	public Calendar getRecordDate() {
 		return recordDate;
 	}
 
-	public void setRecordDate(GregorianCalendar recordDate) {
+	public void setRecordDate(Calendar recordDate) {
 		this.recordDate = recordDate;
 	}
 

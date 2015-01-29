@@ -1,7 +1,7 @@
 package cz.muni.fi.cep.activiti.radio.messages;
 
 import java.io.Serializable;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 import org.springframework.core.io.FileSystemResource;
 
@@ -29,5 +29,5 @@ public interface RadioMessage extends Serializable {
 	 * Returns date when audio message was recorded.
 	 * @return {@link String}
 	 */
-	public GregorianCalendar getRecordDate();
+	public Calendar getRecordDate();
 }
