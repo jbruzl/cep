@@ -1,13 +1,9 @@
 package cz.muni.fi.cep.activiti.radio.messages;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.GregorianCalendar;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
 
 /**
  * Implementation of {@link RadioMessage} where audio message is stored in
@@ -17,7 +13,6 @@ import org.slf4j.LoggerFactory;
  */
 public class FileRadioMessage implements RadioMessage {
 	private static final long serialVersionUID = 465622643087983258L;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private String author;
 
@@ -56,16 +51,9 @@ public class FileRadioMessage implements RadioMessage {
 	}
 
 	@Override
-	public InputStream getRadioMessage() {
+	public FileSystemResource getRadioMessage() {
 		File file = new File(audioFileName);
-
-		try (FileInputStream fis = new FileInputStream(file)) {
-			return fis;
-		} catch (IOException e) {
-			logger.error("Could not load file: {}. Stack trace: {}",
-					audioFileName, e.toString());
-		}
-		return null;
+		return new FileSystemResource(file);
 	}
 
 }

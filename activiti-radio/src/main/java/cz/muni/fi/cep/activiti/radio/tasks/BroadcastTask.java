@@ -3,18 +3,18 @@
  */
 package cz.muni.fi.cep.activiti.radio.tasks;
 
-import java.io.InputStream;
-
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 import cz.muni.fi.cep.activiti.radio.messages.RadioMessage;
@@ -28,6 +28,18 @@ import cz.muni.fi.cep.core.configuration.ConfigurationManager;
 public class BroadcastTask implements JavaDelegate {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
+	private RestOperations restTemplate;
+	
+	public void setRestTemplate(RestOperations restTemplate) {
+		this.restTemplate = restTemplate;
+	}
+	
+	public BroadcastTask() {
+		restTemplate = new RestTemplate();
+	}
+
+
+
 	@Autowired
 	private ConfigurationManager configurationManager;
 	
@@ -56,7 +68,7 @@ public class BroadcastTask implements JavaDelegate {
 			throw new BpmnError("broadcasterror");
 		}
 
-		InputStream is = rm.getRadioMessage();
+		FileSystemResource is = rm.getRadioMessage();
 		if (is == null) {
 			logger.error(
 					"Can't continue broadcast message {}, couldn't obtain audio message.",
@@ -66,15 +78,14 @@ public class BroadcastTask implements JavaDelegate {
 		
 		try {
 			MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
-			parts.add("audio", is);
+			parts.add("message", is);
+			parts.add("author", rm.getAuthor());
 
-			RestTemplate template = new RestTemplate();
-			template.postForObject("", parts, String.class);
+			String response = restTemplate.postForObject(broadcastUrl, parts, String.class);
+			System.out.println(response);
 		}catch(RestClientException ex) {
 			logger.error("Couldn't contact broadcast service. {}", ex.toString());
 			throw new BpmnError("broadcasterror");
-		} finally {
-			is.close();
-		}
+		} 
 	}
 }

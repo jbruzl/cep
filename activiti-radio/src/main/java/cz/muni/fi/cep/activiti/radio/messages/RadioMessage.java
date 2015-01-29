@@ -1,8 +1,9 @@
 package cz.muni.fi.cep.activiti.radio.messages;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.GregorianCalendar;
+
+import org.springframework.core.io.FileSystemResource;
 
 /**
  * Describes interface for class that contains audio message.
@@ -14,9 +15,9 @@ public interface RadioMessage extends Serializable {
 	/**
 	 * Returns stored audio message as input stream.
 	 * 
-	 * @return {@link InputStream}
+	 * @return {@link FileSystemResource}
 	 */
-	public InputStream getRadioMessage();
+	public FileSystemResource getRadioMessage();
 	
 	/**
 	 * Returns author of audio message.
