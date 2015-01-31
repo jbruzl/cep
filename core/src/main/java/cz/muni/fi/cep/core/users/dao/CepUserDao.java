@@ -9,5 +9,6 @@ import cz.muni.fi.cep.core.users.entities.CepUserEntity;
  * @author Jan Bruzl
  */
 public interface CepUserDao extends CrudRepository<CepUserEntity, Long> {
-
+	
+	public CepUserEntity findByEmail(String email);
 }
