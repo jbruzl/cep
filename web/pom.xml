@@ -22,6 +22,17 @@
 		</dependency>
 		<dependency>
 			<groupId>cz.muni.fi.cep</groupId>
+			<artifactId>activiti-radio</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>cz.muni.fi.cep</groupId>
 			<artifactId>activiti-notification</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<exclusions>
@@ -46,6 +57,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>1.2.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity3</artifactId>
+            <version>2.1.1.RELEASE</version>
+        </dependency>
+		
 		<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>

@@ -7,7 +7,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>activiti-radio</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>cz.muni.fi.cep</groupId>
@@ -186,5 +185,4 @@
 		</plugins>
 	</build>
 
-	<groupId>cz.muni.fi.cep</groupId>
-</project>
+	</project>
