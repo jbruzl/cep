@@ -18,7 +18,7 @@
     <sequenceFlow id="flow3" name="No" sourceRef="inputok1" targetRef="badinput1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${inputCheck==false}]]></conditionExpression>
     </sequenceFlow>
-    <serviceTask id="servicetask1" name="Service Task" activiti:delegateExpression="${broadcastTask}"></serviceTask>
+    <serviceTask id="servicetask1" name="Broadcast message" activiti:delegateExpression="${broadcastTask}"></serviceTask>
     <sequenceFlow id="flow4" name="Yes" sourceRef="inputok1" targetRef="servicetask1"></sequenceFlow>
     <endEvent id="endok" name="End OK"></endEvent>
     <sequenceFlow id="flow5" sourceRef="servicetask1" targetRef="endok"></sequenceFlow>
@@ -45,11 +45,11 @@
       <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
         <omgdc:Bounds height="55.0" width="105.0" x="705.0" y="181.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="boundaryerror1" id="BPMNShape_boundaryerror1">
-        <omgdc:Bounds height="30.0" width="30.0" x="795.0" y="220.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endok" id="BPMNShape_endok">
         <omgdc:Bounds height="35.0" width="35.0" x="855.0" y="191.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror1" id="BPMNShape_boundaryerror1">
+        <omgdc:Bounds height="30.0" width="30.0" x="795.0" y="220.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="broadcasterror3" id="BPMNShape_broadcasterror3">
         <omgdc:Bounds height="35.0" width="35.0" x="792.0" y="300.0"></omgdc:Bounds>
