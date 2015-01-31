@@ -40,9 +40,9 @@ public class SubscriptionController {
 	@RequestMapping(value= {""})
 	public String index(Model model) {
 		List<Subscriber> subs = new ArrayList<>();
-		for(String code : subscriptionService.getAllPublishers()) {
+		/*for(String code : subscriptionService.getAllPublishers()) {
 			//subs.addAll(subscriptionService.getUserSubscribers(code, null));
-		}
+		}*/
 		model.addAttribute("userSubscriptions", subs);
 		return "subscriptions/publishers";
 	}

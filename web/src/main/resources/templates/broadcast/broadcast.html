@@ -1,0 +1,71 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="index :: head">
+</head>
+<body>
+	<div class="sticky" th:include="index :: menu"></div>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<img th:src="@{/img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+			<div class="panel" th:fragment="sub-menu">
+				<h4>Rozhlas</h4>
+
+			</div>
+
+			<div class="panel" th:fragment="desc">
+				<h4>Vyhlášení zprávy</h4>
+				<p></p>
+			</div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h4>Spustit rozhlas</h4>
+				<form action="#" th:action="@{/rozhlas/start-process}"
+					method="post" enctype="multipart/form-data">
+					<table>
+						<tbody>
+							<tr>
+								<td><label for="message">Zpráva</label></td>
+								<td><input type="file" name="message" id="message"  accept="audio/*;capture=microphone" /></td>
+							</tr>
+						</tbody>
+					</table>
+					<input class="small button" type="reset" name="submit"
+						value="Reset" /> <input class="small button" type="submit"
+						name="submit" value="Odeslat" />
+				</form>
+			</div>
+		</div>
+
+	</div>
+	<div class="row">
+		<div class="large-12 columns">
+			<div class="panel">
+				<h4>Diagram procesu</h4>
+				<img alt="process diagram" th:src="@{/rozhlas/diagram}"></img>
+			</div>
+		</div>
+	</div>
+
+
+
+	<footer class="row" th:include="index :: footer"></footer>
+
+	<div th:include="index :: foot-scripts"></div>
+</body>
+</html>

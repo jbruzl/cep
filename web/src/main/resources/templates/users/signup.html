@@ -1,0 +1,74 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="index :: head">
+</head>
+<body>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<img th:src="@{/img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+			<div class="panel">
+				<h4>Nový uživatel</h4>
+				<p>Fusce ullamcorper mauris in eros dignissim molestie posuere
+					felis blandit. Aliquam erat volutpat. Mauris ultricies posuere
+					vehicula. Sed sit amet posuere erat. Quisque in ipsum non augue
+					euismod dapibus non et eros.</p>
+			</div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h4>Registrovat nového uživatele</h4>
+			</div>
+			<form action="#" th:action="@{/signup-submit}" method="post">
+				<div class="row">
+					<div class="large-12 columns">
+						<div class="panel">
+							<h5>Základní informace</h5>
+							<label for="name">Jméno</label> <input type="text"
+								th:value="${firstName}" name="name" /> <label for="surname">Příjmení</label><input
+								type="text" th:value="${lastName}" name="surname" /> <label
+								for="email">Email</label><input type="text" th:value="${email}"
+								name="email" /> <label for="password">Heslo</label><input
+								type="password" th:value="${password}" name="password" /> <label
+								for="password2">Kontrola hesla</label><input type="password"
+								th:value="${password2}" name="password2" /> <label for="phone">Telefon</label><input
+								type="text" th:value="${phone}" name="phone" />
+
+
+						</div>
+					</div>
+
+				</div>
+				<div class="row">
+					<div class="large-12 columns">
+						<div class="panel center">
+							<input class="small button" type="reset" name="submit"
+								value="Reset" /> <input class="small button" type="submit"
+								name="submit" value="Odeslat" />
+						</div>
+					</div>
+				</div>
+			</form>
+
+		</div>
+
+	</div>
+	<footer class="row" th:include="index :: footer"></footer>
+
+	<div th:include="index :: foot-scripts"></div>
+</body>
+</html>

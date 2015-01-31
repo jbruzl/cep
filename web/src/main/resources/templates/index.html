@@ -27,6 +27,7 @@
 					<li class="has-dropdown"><a href="#">Procesy</a>
 						<ul class="dropdown">
 							<li><a th:href="@{/upozorneni}">Oznámení</a></li>
+							<li><a th:href="@{/rozhlas}">Rozhlas</a></li>
 						</ul></li>
 					<li class="divider"></li>
 					<li class="has-dropdown"><a href="#">Nastavení</a>
@@ -40,12 +41,14 @@
 					<li class="divider"></li>
 					<li><a href="#">Historie</a></li>
 					<li class="divider"></li>
-					<li class="has-dropdown"><a href="#">Jan Bruzl</a>
+					<li class="has-dropdown"><a href="#" sec:authentication="name"
+						sec:authorize="isAuthenticated()">Jan Bruzl</a>
 						<ul class="dropdown">
-							<li><a href="#">Účet</a></li>
-							<li><a href="#">Odhlásit se</a></li>
+							<li><a th:href="@{/profile(user=${#authentication.name})}">Účet</a></li>
+							<li><a th:href="@{/logout}">Odhlásit se</a></li>
 						</ul></li>
-					<li><a href="#" data-reveal-id="loginModal">Přihlásit</a></li>
+					<li><a href="#" data-reveal-id="loginModal"
+						sec:authorize="!isAuthenticated()">Přihlásit</a></li>
 				</ul>
 			</section>
 		</nav>
@@ -175,54 +178,65 @@
 			</div>
 		</div>
 		<div id="loginModal" class="reveal-modal remove-whitespace"
-		th:attr="data-reveal=a">
-		<div class="row">
-			<div class="large-6 columns auth-plain">
-				<div class="signup-panel left-solid">
-					<p class="welcome">Registrovaní uživatelé</p>
-					<form>
-						<div class="row collapse">
-							<div class="small-2  columns">
-								<span class="prefix"><i class="fi-torso-female"></i></span>
+			th:attr="data-reveal=a">
+			<div class="row">
+				<div class="large-6 columns auth-plain">
+					<div class="signup-panel left-solid">
+						<p class="welcome">Registrovaní uživatelé</p>
+						<form action="#" th:action="@{/login-submit}" method="post">
+							<div class="row collapse">
+								<div class="small-2  columns">
+									<span class="prefix"><i class="fi-torso-female"></i></span>
+								</div>
+								<div class="small-10 columns">
+									<input type="text" name="username" id="username"
+										placeholder="username" />
+								</div>
 							</div>
-							<div class="small-10 columns">
-								<input type="text" placeholder="username" />
+							<div class="row collapse">
+								<div class="small-2 columns ">
+									<span class="prefix"><i class="fi-lock"></i></span>
+								</div>
+								<div class="small-10 columns ">
+									<input type="password" name="password" id="password"
+										placeholder="password" />
+								</div>
 							</div>
-						</div>
-						<div class="row collapse">
-							<div class="small-2 columns ">
-								<span class="prefix"><i class="fi-lock"></i></span>
-							</div>
-							<div class="small-10 columns ">
-								<input type="text" placeholder="password" />
-							</div>
-						</div>
-					</form>
-					<a href="#" class="button ">Přihlásit se </a>
+							<input class="small button" type="submit" name="submit"
+								value="Přihlásit se" />
+						</form>
+					</div>
 				</div>
-			</div>
 
-			<div class="large-6 columns auth-plain">
-				<div class="signup-panel newusers">
-					<p class="welcome">Neregitrován?</p>
-					<p>By creating an account with us, you will be able to move
-						through the checkout process faster, view and track your orders,
-						and more.</p>
-					<br> <a href="#" class="button ">Zaregistrovat se</a></br>
+				<div class="large-6 columns auth-plain">
+					<div class="signup-panel newusers">
+						<p class="welcome">Neregitrován?</p>
+						<p>By creating an account with us, you will be able to move
+							through the checkout process faster, view and track your orders,
+							and more.</p>
+						<br> <a th:href="@{/signup}" class="button ">Zaregistrovat
+							se</a></br>
+					</div>
 				</div>
-			</div>
 
+			</div>
+			<a class="close-reveal-modal">&#215;</a>
 		</div>
-		<a class="close-reveal-modal">&#215;</a>
-	</div>
 	</footer>
 
-	
+
 
 	<div th:fragment="foot-scripts">
 		<script th:src="@{/bower_components/jquery/dist/jquery.min.js}"></script>
 		<script th:src="@{/bower_components/foundation/js/foundation.min.js}"></script>
 		<script th:src="@{/js/app.js}"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				if (window.location.hash.indexOf("login") > -1) {
+					$('#loginModal').foundation('reveal', 'open');
+				}
+			});
+		</script>
 	</div>
 </body>
 </html>

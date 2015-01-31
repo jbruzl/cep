@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.thymeleaf.extras.springsecurity3.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
@@ -39,12 +40,16 @@ public class App extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public SpringTemplateEngine templateEngine() {
-		SpringTemplateEngine ste = new SpringTemplateEngine();
-		ste.setTemplateResolver(templateResolver());
-		//ste.setMessageSource(messageSource());
-		return ste;
-	}
+    public SpringSecurityDialect thymeleafSecurityDialect(){
+        return new SpringSecurityDialect();
+    } 
+    @Bean
+    public SpringTemplateEngine templateEngine() {
+        SpringTemplateEngine ste = new SpringTemplateEngine();
+        ste.setTemplateResolver(templateResolver());
+        ste.addDialect(thymeleafSecurityDialect());
+        return ste;
+    }
 
 	@Bean
 	public ViewResolver viewResolver() {
