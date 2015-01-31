@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.activiti.radio.messages.FileRadioMessage;
-import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
+import cz.muni.fi.cep.core.configuration.ConfigurationManager;
 
 /**
  * Service class for BPMN diagram.
@@ -50,13 +50,14 @@ public class BroadcastMessageService {
 
 	@Autowired
 	private HistoryService historicService;
-
+	
 	@Autowired
-	private SubscriptionService subscriptionService;
+	private ConfigurationManager configurationManager;
 
 	private ProcessDefinition processDefinition;
 
 	private final String processDefinitionKey = "broadcastmessage";
+	private final String broadcastUrlKey = "activiti.radio.broadcast.url";
 
 	@PostConstruct
 	public void init() {
@@ -74,6 +75,9 @@ public class BroadcastMessageService {
 			logger.debug("Process definition obtained");
 		else
 			logger.warn("Process definition could not be obtained");
+		
+		configurationManager.setKey(broadcastUrlKey,
+				"http://localhost:8080/broadcast");	//TODO load from external resource
 
 		logger.info("Broadcast Message service initialised");
 	}
