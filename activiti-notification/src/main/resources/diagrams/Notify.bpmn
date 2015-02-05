@@ -23,16 +23,8 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${notificationEnabled == true}]]></conditionExpression>
     </sequenceFlow>
     <parallelGateway id="parallelgateway1" name="Exclusive Gateway"></parallelGateway>
-    <callActivity id="callsendsms1" name="Send SMS" calledElement="SendSMS">
-      <extensionElements>
-        <activiti:in sourceExpression="${messageSMS}" target="message"></activiti:in>
-        <activiti:in sourceExpression="${receiversSMS}" target="receivers"></activiti:in>
-        <activiti:in sourceExpression="${messageTypeSMS}" target="messageType"></activiti:in>
-      </extensionElements>
-    </callActivity>
     <parallelGateway id="parallelgateway2" name="Exclusive Gateway"></parallelGateway>
-    <sequenceFlow id="flow12" sourceRef="callsendsms1" targetRef="parallelgateway2"></sequenceFlow>
-    <subProcess id="preparesms1" name="Prepare SMS">
+    <subProcess id="sms1" name="SMS">
       <startEvent id="startpreparesms2" name="Start Prepare SMS"></startEvent>
       <endEvent id="endevent1" name="End"></endEvent>
       <serviceTask id="obtainsmscontacts1" name="Obtain SMS Contacts" activiti:expression="${subscriptionService.getContacts(publisherCode, contactType)}" activiti:resultVariableName="receiversSMS"></serviceTask>
@@ -50,7 +42,9 @@
       	</script>
       </scriptTask>
       <sequenceFlow id="flow28" sourceRef="obtainsmscontacts1" targetRef="verifysms1"></sequenceFlow>
-      <sequenceFlow id="flow29" sourceRef="verifysms1" targetRef="endevent1"></sequenceFlow>
+      <sequenceFlow id="flow29" name="No" sourceRef="anyreceiver" targetRef="endevent1">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${receiversSMS.size()==0}]]></conditionExpression>
+      </sequenceFlow>
       <scriptTask id="verifysms1" name="Verify SMS" scriptFormat="groovy" activiti:autoStoreVariables="true">
         <script>
       		messageSMS = template
@@ -58,10 +52,22 @@
 
       	</script>
       </scriptTask>
+      <exclusiveGateway id="anyreceiver" name="Any receiver?"></exclusiveGateway>
+      <sequenceFlow id="flow36" sourceRef="verifysms1" targetRef="anyreceiver"></sequenceFlow>
+      <callActivity id="callsendsms1" name="Send SMS" calledElement="SendSMS">
+        <extensionElements>
+          <activiti:in sourceExpression="${messageSMS}" target="message"></activiti:in>
+          <activiti:in sourceExpression="${receiversSMS}" target="receivers"></activiti:in>
+          <activiti:in sourceExpression="${messageTypeSMS}" target="messageType"></activiti:in>
+        </extensionElements>
+      </callActivity>
+      <sequenceFlow id="flow37" name="Yes" sourceRef="anyreceiver" targetRef="callsendsms1">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${receiversSMS.size()!=0}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow38" sourceRef="callsendsms1" targetRef="endevent1"></sequenceFlow>
     </subProcess>
-    <sequenceFlow id="flow13" sourceRef="parallelgateway1" targetRef="preparesms1"></sequenceFlow>
-    <sequenceFlow id="flow14" sourceRef="preparesms1" targetRef="callsendsms1"></sequenceFlow>
-    <subProcess id="preparemail1" name="Prepare Mail">
+    <sequenceFlow id="flow13" sourceRef="parallelgateway1" targetRef="sms1"></sequenceFlow>
+    <subProcess id="mail1" name="Mail">
       <startEvent id="startpreparemail3" name="Start Prepare Mail"></startEvent>
       <scriptTask id="preparemailmessage1" name="Prepare Mail Message" scriptFormat="groovy" activiti:autoStoreVariables="true">
         <script>
@@ -74,7 +80,9 @@
       <sequenceFlow id="flow20" sourceRef="startpreparemail3" targetRef="preparemailmessage1"></sequenceFlow>
       <sequenceFlow id="flow21" sourceRef="preparemailmessage1" targetRef="preparemailmessage3"></sequenceFlow>
       <endEvent id="endevent2" name="End"></endEvent>
-      <sequenceFlow id="flow22" sourceRef="verifymail1" targetRef="endevent2"></sequenceFlow>
+      <sequenceFlow id="flow22" sourceRef="anyreceiver2" targetRef="endevent2">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${receiversEmail.size()==0}]]></conditionExpression>
+      </sequenceFlow>
       <serviceTask id="obtainmailcontacts2" name="Obtain Mail Contacts" activiti:expression="${subscriptionService.getContacts(publisherCode, contactType)}" activiti:resultVariableName="receiversEmail"></serviceTask>
       <serviceTask id="preparemailmessage3" name="Prepare Mail Message" activiti:class="cz.muni.fi.cep.activiti.notification.tasks.LoadTemplateTask"></serviceTask>
       <sequenceFlow id="flow30" sourceRef="preparemailmessage3" targetRef="obtainmailcontacts2"></sequenceFlow>
@@ -90,28 +98,34 @@
 			}
       	</script>
       </scriptTask>
+      <exclusiveGateway id="anyreceiver2" name="Any receiver?"></exclusiveGateway>
+      <sequenceFlow id="flow32" sourceRef="verifymail1" targetRef="anyreceiver2"></sequenceFlow>
+      <serviceTask id="sendmail1" name="Send Mail" activiti:type="mail">
+        <extensionElements>
+          <activiti:field name="to">
+            <activiti:expression>${mailList}</activiti:expression>
+          </activiti:field>
+          <activiti:field name="subject">
+            <activiti:string><![CDATA[Subject]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="charset">
+            <activiti:string><![CDATA[utf-8]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="html">
+            <activiti:expression>${messageMail}</activiti:expression>
+          </activiti:field>
+        </extensionElements>
+      </serviceTask>
+      <sequenceFlow id="flow33" sourceRef="anyreceiver2" targetRef="sendmail1">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${receiversEmail.size()!=0}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow34" sourceRef="sendmail1" targetRef="endevent2"></sequenceFlow>
     </subProcess>
-    <sequenceFlow id="flow16" sourceRef="parallelgateway1" targetRef="preparemail1"></sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="parallelgateway1" targetRef="mail1"></sequenceFlow>
     <endEvent id="endevent3" name="End"></endEvent>
     <sequenceFlow id="flow23" sourceRef="parallelgateway2" targetRef="endevent3"></sequenceFlow>
-    <serviceTask id="sendmail1" name="Send Mail" activiti:type="mail">
-      <extensionElements>
-        <activiti:field name="to">
-          <activiti:expression>${mailList}</activiti:expression>
-        </activiti:field>
-        <activiti:field name="subject">
-          <activiti:string><![CDATA[Subject]]></activiti:string>
-        </activiti:field>
-        <activiti:field name="charset">
-          <activiti:string><![CDATA[utf-8]]></activiti:string>
-        </activiti:field>
-        <activiti:field name="html">
-          <activiti:expression>${messageMail}</activiti:expression>
-        </activiti:field>
-      </extensionElements>
-    </serviceTask>
-    <sequenceFlow id="flow32" sourceRef="sendmail1" targetRef="parallelgateway2"></sequenceFlow>
-    <sequenceFlow id="flow33" sourceRef="preparemail1" targetRef="sendmail1"></sequenceFlow>
+    <sequenceFlow id="flow35" sourceRef="mail1" targetRef="parallelgateway2"></sequenceFlow>
+    <sequenceFlow id="flow39" sourceRef="sms1" targetRef="parallelgateway2"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_Notify">
     <bpmndi:BPMNPlane bpmnElement="Notify" id="BPMNPlane_Notify">
@@ -130,20 +144,17 @@
       <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
         <omgdc:Bounds height="40.0" width="40.0" x="405.0" y="179.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="callsendsms1" id="BPMNShape_callsendsms1">
-        <omgdc:Bounds height="55.0" width="105.0" x="1348.0" y="48.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="parallelgateway2" id="BPMNShape_parallelgateway2">
-        <omgdc:Bounds height="40.0" width="40.0" x="1380.0" y="177.0"></omgdc:Bounds>
+        <omgdc:Bounds height="40.0" width="40.0" x="1452.0" y="177.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="preparesms1" id="BPMNShape_preparesms1">
-        <omgdc:Bounds height="111.0" width="736.0" x="490.0" y="20.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="sms1" id="BPMNShape_sms1">
+        <omgdc:Bounds height="111.0" width="937.0" x="490.0" y="20.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="startpreparesms2" id="BPMNShape_startpreparesms2">
         <omgdc:Bounds height="35.0" width="35.0" x="500.0" y="59.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="1180.0" y="60.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="1380.0" y="61.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="obtainsmscontacts1" id="BPMNShape_obtainsmscontacts1">
         <omgdc:Bounds height="62.0" width="121.0" x="870.0" y="46.0"></omgdc:Bounds>
@@ -157,8 +168,14 @@
       <bpmndi:BPMNShape bpmnElement="verifysms1" id="BPMNShape_verifysms1">
         <omgdc:Bounds height="55.0" width="105.0" x="1036.0" y="50.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="preparemail1" id="BPMNShape_preparemail1">
-        <omgdc:Bounds height="111.0" width="738.0" x="488.0" y="145.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="anyreceiver" id="BPMNShape_anyreceiver">
+        <omgdc:Bounds height="40.0" width="40.0" x="1186.0" y="58.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="callsendsms1" id="BPMNShape_callsendsms1">
+        <omgdc:Bounds height="55.0" width="105.0" x="1250.0" y="51.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mail1" id="BPMNShape_mail1">
+        <omgdc:Bounds height="111.0" width="939.0" x="488.0" y="145.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="startpreparemail3" id="BPMNShape_startpreparemail3">
         <omgdc:Bounds height="35.0" width="35.0" x="510.0" y="184.0"></omgdc:Bounds>
@@ -167,7 +184,7 @@
         <omgdc:Bounds height="65.0" width="121.0" x="570.0" y="169.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
-        <omgdc:Bounds height="35.0" width="35.0" x="1160.0" y="184.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="1380.0" y="184.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="obtainmailcontacts2" id="BPMNShape_obtainmailcontacts2">
         <omgdc:Bounds height="55.0" width="105.0" x="880.0" y="174.0"></omgdc:Bounds>
@@ -178,11 +195,14 @@
       <bpmndi:BPMNShape bpmnElement="verifymail1" id="BPMNShape_verifymail1">
         <omgdc:Bounds height="55.0" width="105.0" x="1030.0" y="174.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
-        <omgdc:Bounds height="35.0" width="35.0" x="1452.0" y="180.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="anyreceiver2" id="BPMNShape_anyreceiver2">
+        <omgdc:Bounds height="40.0" width="40.0" x="1170.0" y="181.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sendmail1" id="BPMNShape_sendmail1">
-        <omgdc:Bounds height="55.0" width="105.0" x="1260.0" y="173.0"></omgdc:Bounds>
+        <omgdc:Bounds height="55.0" width="105.0" x="1240.0" y="174.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="1520.0" y="180.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
         <omgdi:waypoint x="91.0" y="197.0"></omgdi:waypoint>
@@ -206,10 +226,6 @@
           <omgdc:Bounds height="14.0" width="38.0" x="319.0" y="185.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
-        <omgdi:waypoint x="1400.0" y="103.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1400.0" y="177.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
         <omgdi:waypoint x="825.0" y="77.0"></omgdi:waypoint>
         <omgdi:waypoint x="870.0" y="77.0"></omgdi:waypoint>
@@ -227,17 +243,33 @@
         <omgdi:waypoint x="1036.0" y="77.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+        <omgdi:waypoint x="1206.0" y="58.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1206.0" y="41.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1397.0" y="41.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1397.0" y="61.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="1216.0" y="58.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow36" id="BPMNEdge_flow36">
         <omgdi:waypoint x="1141.0" y="77.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1180.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1186.0" y="78.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow37" id="BPMNEdge_flow37">
+        <omgdi:waypoint x="1226.0" y="78.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1250.0" y="78.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="1236.0" y="78.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow38" id="BPMNEdge_flow38">
+        <omgdi:waypoint x="1355.0" y="78.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1380.0" y="78.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
         <omgdi:waypoint x="425.0" y="179.0"></omgdi:waypoint>
         <omgdi:waypoint x="424.0" y="73.0"></omgdi:waypoint>
         <omgdi:waypoint x="490.0" y="75.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
-        <omgdi:waypoint x="1226.0" y="75.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1348.0" y="75.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
         <omgdi:waypoint x="545.0" y="201.0"></omgdi:waypoint>
@@ -248,8 +280,10 @@
         <omgdi:waypoint x="720.0" y="201.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
-        <omgdi:waypoint x="1135.0" y="201.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1160.0" y="201.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1190.0" y="181.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1190.0" y="161.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1397.0" y="161.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1397.0" y="184.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
         <omgdi:waypoint x="825.0" y="201.0"></omgdi:waypoint>
@@ -259,21 +293,34 @@
         <omgdi:waypoint x="985.0" y="201.0"></omgdi:waypoint>
         <omgdi:waypoint x="1030.0" y="201.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
+        <omgdi:waypoint x="1135.0" y="201.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1170.0" y="201.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
+        <omgdi:waypoint x="1210.0" y="201.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1240.0" y="201.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow34" id="BPMNEdge_flow34">
+        <omgdi:waypoint x="1345.0" y="201.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1380.0" y="201.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
         <omgdi:waypoint x="445.0" y="199.0"></omgdi:waypoint>
         <omgdi:waypoint x="488.0" y="200.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
-        <omgdi:waypoint x="1420.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1492.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1520.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow35" id="BPMNEdge_flow35">
+        <omgdi:waypoint x="1427.0" y="200.0"></omgdi:waypoint>
         <omgdi:waypoint x="1452.0" y="197.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
-        <omgdi:waypoint x="1365.0" y="200.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1380.0" y="197.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
-        <omgdi:waypoint x="1226.0" y="200.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1260.0" y="200.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow39" id="BPMNEdge_flow39">
+        <omgdi:waypoint x="1427.0" y="75.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1472.0" y="75.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1472.0" y="177.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

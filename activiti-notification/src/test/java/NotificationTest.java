@@ -94,19 +94,48 @@ public class NotificationTest extends ActivitiBasicTest {
 				params);
 		assertNotNull(pi);
 
-		// TODO test sms implementation
-
 		List<WiserMessage> messages = wiser.getMessages();
 		assertEquals(2, messages.size());
 
 		List<HistoricActivityInstance> haiList = historyService
 				.createHistoricActivityInstanceQuery().activityType("endEvent")
-				.activityId("endevent3").finished().list();
-		assertEquals(1, haiList.size());
+				.finished().orderByHistoricActivityInstanceEndTime().asc().list();
+		assertEquals(4, haiList.size());
 		assertEquals(
 				"Process didn't finish in expected end event. Finished in: "
-						+ haiList.get(0).getActivityId(), "endevent3", haiList
-						.get(0).getActivityId());
+						+ haiList.get(3).getActivityId(),
+				"endevent3", haiList.get(3).getActivityId());
+	}
+	
+	@Test
+	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendSMS.bpmn",
+			"diagrams/Notify.bpmn" })
+	public void noReceiversTest() {
+		HashMap<String, Object> params = new HashMap<>();
+		HashMap<String, String> message = new HashMap<>();
+		message.put("message", "default");
+		params.put("publisherCode", "002");
+		params.put("messageType", MessageType.NOTIFICATION);
+		params.put("templateKey", "default");
+		params.put("templateVariable", message);
+		params.put("notificationEnabled", "true"); // TODO load property in
+													// diagram script task
+
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey("Notify",
+				params);
+		assertNotNull(pi);
+
+		List<HistoricActivityInstance> haiList = historyService
+				.createHistoricActivityInstanceQuery().activityType("endEvent")
+				.finished().orderByHistoricActivityInstanceEndTime().asc().list();
+		assertEquals(3, haiList.size());
+		assertEquals(
+				"Process didn't finish in expected end event. Finished in: "
+						+ haiList.get(2).getActivityId(),
+				"endevent3", haiList.get(2).getActivityId());
+
+		List<WiserMessage> messages = wiser.getMessages();
+		assertEquals(0, messages.size());
 	}
 
 	@Before

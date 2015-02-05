@@ -42,13 +42,13 @@ public class ActivitiConfig {
         pec.setDatabaseType("mysql");
         
         //Mail settings
-        pec.setMailServerPort(587);
-        pec.setMailServerHost("smtp.gmail.com");
+        pec.setMailServerPort(465);
+        pec.setMailServerHost("smtp.seznam.cz");
         pec.setMailServerUseTLS(true);
         pec.setMailServerUseSSL(true);
         pec.setMailServerDefaultFrom("bruzl.jan@gmail.com");
-        pec.setMailServerUsername("bruzl.jan@gmail.com");
-        pec.setMailServerPassword("Adic321&");
+        pec.setMailServerUsername("info.cep@email.cz");
+        pec.setMailServerPassword("cep123");
 
         pec.setTransactionManager(transactionManager);
         pec.setApplicationContext(context);
