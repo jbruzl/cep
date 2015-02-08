@@ -20,13 +20,17 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
+import org.dozer.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.activiti.radio.messages.FileRadioMessage;
 import cz.muni.fi.cep.core.configuration.ConfigurationManager;
+import cz.muni.fi.cep.core.users.api.IdentityService;
 
 /**
  * Service class for BPMN diagram.
@@ -36,7 +40,7 @@ import cz.muni.fi.cep.core.configuration.ConfigurationManager;
  * @author Jan Bruzl
  */
 @Service
-public class BroadcastMessageService {
+public class BroadcastMessageService{
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -53,6 +57,12 @@ public class BroadcastMessageService {
 	
 	@Autowired
 	private ConfigurationManager configurationManager;
+	
+	@Autowired
+	private IdentityService identityService;
+	
+	@Autowired
+	private Mapper mapper;
 
 	private ProcessDefinition processDefinition;
 
@@ -114,8 +124,12 @@ public class BroadcastMessageService {
 		params.put("radioMessage", frm);
 
 
+		final String user = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+		identityService.setAuthenticatedUserId(user);
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(
 				processDefinition.getKey(), params);
+		identityService.setAuthenticatedUserId(null);
+		
 		logger.info("Process Notify started");
 		return pi;
 	}

@@ -151,5 +151,4 @@ public class BroadcastMessageTest extends ActivitiBasicTest {
 				haiList.get(0).getActivityId());
 
 	}
-
 }
