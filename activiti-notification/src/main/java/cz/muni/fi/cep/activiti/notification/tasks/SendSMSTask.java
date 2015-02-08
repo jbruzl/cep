@@ -65,12 +65,12 @@ public class SendSMSTask implements JavaDelegate {
 			logger.info("Starting to send sms");
 			for (String smsReceiver : receivers) {
 				RestTemplate restTemplate = new RestTemplate();
-				String response = restTemplate
+				/*String response = restTemplate
 						.getForObject(
 								"http://api.smsbrana.cz/smsconnect/http.php?login={login}&password={heslo}&action=send_sms&number={number}&message={message}",
 								String.class, LOGIN, PASSWORD, smsReceiver,
 								message);
-				logger.info(response);
+				logger.info(response);*/
 			}
 
 			logger.info("Sms sending ends");

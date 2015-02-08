@@ -22,10 +22,13 @@ import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
 import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
+import cz.muni.fi.cep.core.users.api.IdentityService;
 
 /**
  * Service class for BPMN diagram Notify.
@@ -52,6 +55,9 @@ public class NotifyService {
 
 	@Autowired
 	private SubscriptionService subscriptionService;
+	
+	@Autowired
+	private IdentityService identityService;
 
 	private static final String publisherCode = "Notify";
 
@@ -118,8 +124,11 @@ public class NotifyService {
 													// implemented in process
 		params.put("messageType", MessageType.NOTIFICATION);
 
+		final String user = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+		identityService.setAuthenticatedUserId(user);
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(
 				processDefinition.getKey(), params);
+		identityService.setAuthenticatedUserId(null);
 		logger.info("Process Notify started");
 		return pi;
 	}
