@@ -295,9 +295,10 @@ public class DBSubscriptionService implements SubscriptionService {
 
 		Publisher publisher = publisherDao.findByCode(code);
 
-		if (publisher == null)
-			throw new IllegalArgumentException("Event with code: " + code
-					+ " does not exists.");
+		if (publisher == null) {
+			logger.error("Event with code: {} does not exists.", code);
+			return new ArrayList<>();
+		}
 
 		Iterable<Subscriber> subscribers = subscriberDao
 				.findAllByPublisherAndContactType(publisher, contactType);
