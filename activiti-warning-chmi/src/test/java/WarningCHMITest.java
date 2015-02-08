@@ -45,7 +45,7 @@ public class WarningCHMITest extends ActivitiBasicTest {
 			"diagrams/Warning CHMI.bpmn", "diagrams/Notify.bpmn",
 			"diagrams/SendSMS.bpmn" })
 	public void startTest() {
-		Map<String, String> message = new HashMap<>();
+		/*Map<String, String> message = new HashMap<>();
 		message.put("message", "hello");
 		HashMap<String, Object> params = new HashMap<>();
 		params.put("publisherCode", publisherCode);
@@ -67,7 +67,7 @@ public class WarningCHMITest extends ActivitiBasicTest {
 				report = (Report) hvu.getValue();
 
 		}
-
+*/
 	}
 
 	@Before
