@@ -1,0 +1,117 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="index :: head">
+</head>
+<body>
+	<div class="sticky" th:include="index :: menu"></div>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<img th:src="@{/img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+			<div class="panel" th:include="history/history :: sub-menu"></div>
+
+			<div class="panel" th:include="history/history :: desc"></div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h4 th:text="${processName}">Proces</h4>
+
+				<div th:if="${process}!=null">
+					<div class="row">
+						<div class="small-2 column">
+							<label>Uživatel</label>
+						</div>
+						<div class="small-4 column"
+							th:text="${process.startUserId==null?'-':process.startUserId}"></div>
+						<div class="small-2 column">
+							<label>Jméno</label>
+						</div>
+						<div class="small-4 column"
+							th:text="${process.name==null?'-':process.name}"></div>
+					</div>
+
+					<div class="row">
+						<div class="small-2 column">
+							<label>Spuštěno</label>
+						</div>
+						<div class="small-4 column" th:text="${process.startTime}"></div>
+
+						<div class="small-2 column">
+							<label>Skončeno</label>
+						</div>
+						<div class="small-4 column" th:text="${process.endTime}"></div>
+					</div>
+
+					<div class="row">
+						<div class="small-2 column">
+							<label>Trvání</label>
+						</div>
+						<div class="small-4 column end"
+							th:text="${process.durationInMillis + ' ms'}"></div>
+
+						<div class="small-2 column">
+							<label>Nadřazený proces</label>
+						</div>
+						<div class="small-4 column"
+							th:text="${process.superProcessInstanceId}"></div>
+					</div>
+
+					<div class="row">
+						<div class="small-2 column">
+							<label>Start</label>
+						</div>
+						<div class="small-4 column" th:text="${process.startActivityId}"></div>
+
+						<div class="small-2 column">
+							<label>Konečný stav</label>
+						</div>
+						<div class="small-4 column" th:text="${process.endActivityId}"></div>
+					</div>
+
+					<div class="row">
+						<div class="small-2 column">
+							<label>Proces</label>
+						</div>
+						<div class="small-4 column"
+							th:text="${process.processDefinitionId}"></div>
+
+						<div class="small-2 column">
+							<label>Instance ID</label>
+						</div>
+						<div class="small-4 column" th:text="${process.processInstanceId}"></div>
+					</div>
+					
+					<h5>Proměnné</h5>
+					
+					
+					
+					<h5>Historie</h5>
+					
+				</div>
+
+			</div>
+
+			<div></div>
+
+		</div>
+
+	</div>
+	<footer class="row" th:include="index :: footer"> </footer>
+
+	<div th:include="index :: foot-scripts"></div>
+</body>
+</html>

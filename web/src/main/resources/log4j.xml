@@ -28,7 +28,7 @@
     
     <logger name="cz.muni.fi.cep">
         <!-- Print only messages of level warn or above in the package org.jboss -->
-        <level value="trace"/> 
+        <level value="debug"/> 
     </logger>
     
     <logger name="org.thymeleaf">
@@ -38,7 +38,7 @@
     
     <logger name="org.activiti">
         <!-- Print only messages of level warn or above in the package org.jboss -->
-        <level value="debug"/> 
+        <level value="trace"/> 
     </logger>
     
 

@@ -1,0 +1,62 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="index :: head">
+</head>
+<body>
+	<div class="sticky" th:include="index :: menu"></div>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<img th:src="@{/img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+			<div class="panel" th:include="history/history :: sub-menu"></div>
+
+			<div class="panel" th:include="history/history :: desc"></div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h4 th:text="${process}">Procesy</h4>
+			</div>
+
+			<div class="panel">
+				<table class="large-12">
+					<thead>
+						<tr>
+							<th>Spuštěno</th>
+							<th>Uživatel</th>
+							<th>Stav</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="processInstance : ${processInstances}">
+							<td th:text="${processInstance.startTime}"></td>
+							<td th:text="${processInstance.startUserId}"></td>
+							<td
+								th:text="${(processInstance.endTime == 'null'?'Běží':'Dokončená')}"></td>
+							<td><a th:href="@{/historie/instance(proces=${process}, pid=${processInstance.processInstanceId})}">Detail...</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+
+	</div>
+	<footer class="row" th:include="index :: footer"> </footer>
+
+	<div th:include="index :: foot-scripts"></div>
+</body>
+</html>

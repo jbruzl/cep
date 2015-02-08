@@ -1,0 +1,53 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="index :: head">
+</head>
+<body>
+	<div class="sticky" th:include="index :: menu"></div>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<img th:src="@{/img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+			<div class="panel" th:fragment="sub-menu">
+				<h4>Procesy</h4>
+				<ul >
+					<li th:each="process : ${processes}"><a th:href="@{/historie/proces(proces=${process})}" th:text="${process}">Proces</a></li>
+					<li><a th:href="@{/historie/proces}">Všechny</a></li>
+				</ul>
+				
+			</div>
+
+			<div class="panel" th:fragment="desc">
+				<h4>Historie</h4>
+				<p>Přehled všech procesů a spuštěných instancí.</p>
+			</div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h4>Statistika</h4>
+				<p>
+				...
+				</p>
+			</div>
+		</div>
+
+	</div>
+	<footer class="row" th:include="index :: footer"> </footer>
+
+	<div th:include="index :: foot-scripts"></div>
+</body>
+</html>

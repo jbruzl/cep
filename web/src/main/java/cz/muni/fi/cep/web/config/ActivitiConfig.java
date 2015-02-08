@@ -46,7 +46,7 @@ public class ActivitiConfig {
         pec.setMailServerHost("smtp.seznam.cz");
         pec.setMailServerUseTLS(true);
         pec.setMailServerUseSSL(true);
-        pec.setMailServerDefaultFrom("bruzl.jan@gmail.com");
+        pec.setMailServerDefaultFrom("info.cep@email.cz");
         pec.setMailServerUsername("info.cep@email.cz");
         pec.setMailServerPassword("cep123");
 

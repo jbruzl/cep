@@ -1,9 +1,14 @@
 package cz.muni.fi.cep.web.config;
 
+import java.net.Authenticator.RequestorType;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -13,6 +18,9 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  *
@@ -36,12 +44,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
             .ignoring()
-            .antMatchers("/js/**", "/css/**", "/images/**", "/fonts/**", "/img/**", "/bower_components/**");
+            .antMatchers("/js/**", "/css/**", "/images/**", "/fonts/**", "/img/**", "/bower_components/**", "/icons/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-       // http.antMatcher("/rest/*").anonymous();
+    	RequestMatcher csrfRequestMatcher = new RequestMatcher() {
+            AntPathRequestMatcher matcherIndex = new AntPathRequestMatcher("/*");
+            AntPathRequestMatcher matcherLogout = new AntPathRequestMatcher("/logout");
+            @Override
+            public boolean matches(HttpServletRequest request) {
+                if (matcherIndex.matches(request) || matcherLogout.matches(request)) {
+                    return false;
+                }
+                return request.getMethod().equals(HttpMethod.POST.toString());
+            }
+        };
+    	
         http
                 .authorizeRequests()
                 .antMatchers("/","/index","/signup", "/signup-submit").permitAll()
@@ -51,14 +70,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/#login")
                     .loginProcessingUrl("/login-submit")
                     .defaultSuccessUrl("/")
-                    .failureUrl("/?error#login")
+                    .failureUrl("/")
                     .permitAll()
                 .and()
                 .logout()
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/")
                     .permitAll()
-                ;
+                .and().csrf().requireCsrfProtectionMatcher(csrfRequestMatcher);
     }
 
     @Bean
