@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
+	<mapping type="one-way">
+		<class-a>org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
+		</class-a>
+		<class-b>cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance</class-b>
+		<field>
+			<a get-method="getProcessInstanceId"></a>
+			<b>processInstanceId</b>
+		</field>
+		<field>
+			<a get-method="getDurationInMillis"></a>
+			<b>durationInMillis</b>
+		</field>
+		<field>
+			<a get-method="getEndTime"></a>
+			<b>endTime</b>
+		</field>
+		<field>
+			<a get-method="getStartTime"></a>
+			<b>startTime</b>
+		</field>
+		<field>
+			<a get-method="getProcessDefinitionId"></a>
+			<b>processDefinitionId</b>
+		</field>
+		<field>
+			<a>name</a>
+			<b>name</b>
+		</field>
+		<field>
+			<a>superProcessInstanceId</a>
+			<b>superProcessInstanceId</b>
+		</field>
+		<field>
+			<a>startActivityId</a>
+			<b>startActivityId</b>
+		</field>
+		<field>
+			<a>startUserId</a>
+			<b>startUserId</b>
+		</field>
+		<field>
+			<a>businessKey</a>
+			<b>businessKey</b>
+		</field>
+		<field>
+			<a>endActivityId</a>
+			<b>endActivityId</b>
+		</field>
+	</mapping>
+</mappings>
