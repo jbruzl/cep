@@ -1,4 +1,4 @@
-package cz.muni.fi.cep.api.interfaces;
+package cz.muni.fi.cep.api.services;
 
 import java.util.List;
 
