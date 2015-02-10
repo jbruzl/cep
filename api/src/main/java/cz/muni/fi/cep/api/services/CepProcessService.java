@@ -4,8 +4,10 @@
 package cz.muni.fi.cep.api.services;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 import cz.muni.fi.cep.api.DTO.CepFormData;
 
@@ -65,5 +67,18 @@ public interface CepProcessService {
 	 */
 	public CepFormData getStartForm();
 	
-	//TODO interactions with running process
+	/**
+	 * Returns list of {@link Task}s of given pid.
+	 * 
+	 * @param pid {@link ProcessInstance}
+	 * @return {@link List} of {@link Task}
+	 */
+	public List<Task> getTasks(ProcessInstance pid);
+	
+	/**
+	 * Given {@link Task} is completed with given {@link CepFormData}
+	 * @param task {@link Task}
+	 * @param data {@link CepFormData}
+	 */
+	public void complete(Task task, CepFormData data);
 }
