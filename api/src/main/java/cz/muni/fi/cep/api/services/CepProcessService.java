@@ -38,7 +38,7 @@ public interface CepProcessService {
 	public BufferedImage getDiagram();
 	
 	/**
-	 * Returnd {@link BufferedImage} of process with highlighted state of given {@link ProcessInstance}.
+	 * Return {@link BufferedImage} of process with highlighted state of given {@link ProcessInstance}.
 	 * 
 	 * @param pid {@link ProcessInstance}
 	 * @return {@link BufferedImage}
@@ -52,6 +52,22 @@ public interface CepProcessService {
 	 * @return {@link String}
 	 */
 	public String getName();
+	
+	/**
+	 * Returns key of start point.
+	 * 
+	 * Defined as processKey:id
+	 * 
+	 * @return {@link String}
+	 */
+	public String getKey();
+	
+	/**
+	 * Returns key of process.
+	 * 
+	 * @return {@link String}
+	 */
+	public String getProcessKey();
 	
 	/**
 	 * Returns description of process.
