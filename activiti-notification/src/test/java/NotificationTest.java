@@ -10,11 +10,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.client.match.MockRestRequestMatchers;
+import org.springframework.test.web.client.response.MockRestResponseCreators;
+import org.springframework.web.client.RestTemplate;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
+import cz.muni.fi.cep.activiti.notification.tasks.SendSMSTask;
 import cz.muni.fi.cep.api.DTO.ContactType;
 import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
+import cz.muni.fi.cep.core.configuration.ConfigurationManager;
 import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
 import cz.muni.fi.cep.core.users.api.IdentityService;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
@@ -34,15 +42,26 @@ public class NotificationTest extends ActivitiBasicTest {
 	@Autowired
 	private SubscriptionService subscriptionService;
 
+	@Autowired
+	private SendSMSTask sendSMSTask;
+
+	@Autowired
+	private ConfigurationManager configurationManager;
+
+	private String message = "Hello_World!";
+	private String receiver = "728484615";
+	private String publisherCode = "001";
+	private MockRestServiceServer mockServer;
+
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendSMS.bpmn",
 			"diagrams/Notify.bpmn" })
 	public void deploymentTest() {
 		assertNotNull("Expecting deployed Notify process", repositoryService
-				.createProcessDefinitionQuery().processDefinitionKey("Notify")
+				.createProcessDefinitionQuery().processDefinitionKey("notify")
 				.list().size() > 0);
 		assertNotNull("Expecting deployed SendSMS process", repositoryService
-				.createProcessDefinitionQuery().processDefinitionKey("SendSMS")
+				.createProcessDefinitionQuery().processDefinitionKey("sendsms")
 				.list().size() > 0);
 	}
 
@@ -52,15 +71,15 @@ public class NotificationTest extends ActivitiBasicTest {
 	public void notificationDisabledTest() {
 		HashMap<String, Object> params = new HashMap<>();
 		HashMap<String, String> message = new HashMap<>();
-		message.put("message", "default");
-		params.put("publisherCode", "001");
+		message.put("message", this.message);
+		params.put("publisherCode", publisherCode);
 		params.put("messageType", MessageType.NOTIFICATION);
 		params.put("templateKey", "default");
 		params.put("templateVariable", message);
-		params.put("notificationEnabled", "false"); // TODO load property in
-													// diagram script task
 
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey("Notify",
+		configurationManager.setKey("cep.notify.enabled", "false");
+
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey("notify",
 				params);
 		assertNotNull(pi);
 
@@ -83,14 +102,15 @@ public class NotificationTest extends ActivitiBasicTest {
 	public void notificationTest() {
 		HashMap<String, Object> params = new HashMap<>();
 		HashMap<String, String> message = new HashMap<>();
-		message.put("message", "default");
-		params.put("publisherCode", "001");
+		message.put("message", this.message);
+		params.put("publisherCode", publisherCode);
 		params.put("messageType", MessageType.NOTIFICATION);
 		params.put("templateKey", "default");
 		params.put("templateVariable", message);
-		params.put("notificationEnabled", "true");
 
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey("Notify",
+		configurationManager.setKey("cep.notify.enabled", "true");
+
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey("notify",
 				params);
 		assertNotNull(pi);
 
@@ -99,14 +119,17 @@ public class NotificationTest extends ActivitiBasicTest {
 
 		List<HistoricActivityInstance> haiList = historyService
 				.createHistoricActivityInstanceQuery().activityType("endEvent")
-				.finished().orderByHistoricActivityInstanceEndTime().asc().list();
+				.finished().orderByHistoricActivityInstanceEndTime().asc()
+				.list();
 		assertEquals(4, haiList.size());
 		assertEquals(
 				"Process didn't finish in expected end event. Finished in: "
-						+ haiList.get(3).getActivityId(),
-				"endevent3", haiList.get(3).getActivityId());
+						+ haiList.get(3).getActivityId(), "endevent3", haiList
+						.get(3).getActivityId());
+
+		mockServer.verify();
 	}
-	
+
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendSMS.bpmn",
 			"diagrams/Notify.bpmn" })
@@ -118,21 +141,22 @@ public class NotificationTest extends ActivitiBasicTest {
 		params.put("messageType", MessageType.NOTIFICATION);
 		params.put("templateKey", "default");
 		params.put("templateVariable", message);
-		params.put("notificationEnabled", "true"); // TODO load property in
-													// diagram script task
 
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey("Notify",
+		configurationManager.setKey("cep.notify.enabled", "true");
+
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey("notify",
 				params);
 		assertNotNull(pi);
 
 		List<HistoricActivityInstance> haiList = historyService
 				.createHistoricActivityInstanceQuery().activityType("endEvent")
-				.finished().orderByHistoricActivityInstanceEndTime().asc().list();
+				.finished().orderByHistoricActivityInstanceEndTime().asc()
+				.list();
 		assertEquals(3, haiList.size());
 		assertEquals(
 				"Process didn't finish in expected end event. Finished in: "
-						+ haiList.get(2).getActivityId(),
-				"endevent3", haiList.get(2).getActivityId());
+						+ haiList.get(2).getActivityId(), "endevent3", haiList
+						.get(2).getActivityId());
 
 		List<WiserMessage> messages = wiser.getMessages();
 		assertEquals(0, messages.size());
@@ -147,7 +171,7 @@ public class NotificationTest extends ActivitiBasicTest {
 		userEntity.setFirstName("Jan");
 		userEntity.setLastName("Bruzl");
 		userEntity.setEmail("notify@gmail.com");
-		userEntity.setPhoneNumber("+420728484615");
+		userEntity.setPhoneNumber(receiver);
 		userEntity.setPassword("01234");
 
 		CepUserEntity userEntity2 = new CepUserEntity();
@@ -164,20 +188,40 @@ public class NotificationTest extends ActivitiBasicTest {
 			identityService.setAuthenticatedUserId(userEntity.getEmail());
 		}
 
-		subscriptionService.register("001");
-		if (subscriptionService.getUserSubscribers("001", null).isEmpty()) {
-			subscriptionService.subscribeUser(userEntity, "001",
+		subscriptionService.register(publisherCode);
+		if (subscriptionService.getUserSubscribers(publisherCode, null)
+				.isEmpty()) {
+			subscriptionService.subscribeUser(userEntity, publisherCode,
 					ContactType.EMAIL);
-			subscriptionService.subscribeUser(userEntity, "001",
+			subscriptionService.subscribeUser(userEntity, publisherCode,
 					ContactType.SMS);
-			subscriptionService.subscribeUser(userEntity2, "001",
+			subscriptionService.subscribeUser(userEntity2, publisherCode,
 					ContactType.EMAIL);
-			subscriptionService.subscribeUser(userEntity2, "001",
-					ContactType.SMS);
 		}
 		wiser = new Wiser();
 		wiser.setPort(2025);
 		wiser.start();
+
+		configurationManager.setKey("cep.notify.sms.login", "login");
+		configurationManager.setKey("cep.notify.sms.password", "password");
+
+		RestTemplate restTemplate = new RestTemplate();
+		String requestUrl = new StringBuilder()
+				.append("http://api.smsbrana.cz/smsconnect/http.php")
+				.append("?login=")
+				.append(configurationManager.getKey("cep.notify.sms.login"))
+				.append("&password=")
+				.append(configurationManager.getKey("cep.notify.sms.password"))
+				.append("&action=send_sms").append("&number=").append(receiver)
+				.append("&message=").append(message).toString();
+		mockServer = MockRestServiceServer.createServer(restTemplate);
+		mockServer
+				.expect(MockRestRequestMatchers.requestTo(requestUrl))
+				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+				.andRespond(
+						MockRestResponseCreators.withSuccess("",
+								MediaType.TEXT_PLAIN));
+		sendSMSTask.setRestTemplate(restTemplate);
 	}
 
 	@After

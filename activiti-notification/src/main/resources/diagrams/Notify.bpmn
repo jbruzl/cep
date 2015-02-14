@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="Notify" name="Notify" isExecutable="true">
+  <process id="notify" name="Notify" isExecutable="true">
     <startEvent id="startevent1" name="Start" activiti:initiator="initiator">
       <extensionElements>
-        <activiti:formProperty id="message" name="Message" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="message" name="Message" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
-    <scriptTask id="verifyenablednotification1" name="Verify Enabled Notification" scriptFormat="groovy" activiti:autoStoreVariables="true">
-      <script>
-      	println(publisherCode) 
-      	
-      </script>
-    </scriptTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="verifyenablednotification1"></sequenceFlow>
     <exclusiveGateway id="notificationeabled1" name="Notifivation enabled?"></exclusiveGateway>
     <sequenceFlow id="flow2" sourceRef="verifyenablednotification1" targetRef="notificationeabled1"></sequenceFlow>
@@ -54,7 +48,7 @@
       </scriptTask>
       <exclusiveGateway id="anyreceiver" name="Any receiver?"></exclusiveGateway>
       <sequenceFlow id="flow36" sourceRef="verifysms1" targetRef="anyreceiver"></sequenceFlow>
-      <callActivity id="callsendsms1" name="Send SMS" calledElement="SendSMS">
+      <callActivity id="callsendsms1" name="Send SMS" calledElement="sendsms">
         <extensionElements>
           <activiti:in sourceExpression="${messageSMS}" target="message"></activiti:in>
           <activiti:in sourceExpression="${receiversSMS}" target="receivers"></activiti:in>
@@ -126,14 +120,12 @@
     <sequenceFlow id="flow23" sourceRef="parallelgateway2" targetRef="endevent3"></sequenceFlow>
     <sequenceFlow id="flow35" sourceRef="mail1" targetRef="parallelgateway2"></sequenceFlow>
     <sequenceFlow id="flow39" sourceRef="sms1" targetRef="parallelgateway2"></sequenceFlow>
+    <serviceTask id="verifyenablednotification1" name="Verify Enabled Notification" activiti:expression="${configurationManager.getKey(&quot;cep.notify.enabled&quot;)}" activiti:resultVariableName="notificationEnabled"></serviceTask>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_Notify">
-    <bpmndi:BPMNPlane bpmnElement="Notify" id="BPMNPlane_Notify">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_notify">
+    <bpmndi:BPMNPlane bpmnElement="notify" id="BPMNPlane_notify">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="56.0" y="180.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="verifyenablednotification1" id="BPMNShape_verifyenablednotification1">
-        <omgdc:Bounds height="71.0" width="116.0" x="130.0" y="162.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="notificationeabled1" id="BPMNShape_notificationeabled1">
         <omgdc:Bounds height="40.0" width="40.0" x="283.0" y="180.0"></omgdc:Bounds>
@@ -204,6 +196,9 @@
       <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
         <omgdc:Bounds height="35.0" width="35.0" x="1520.0" y="180.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="verifyenablednotification1" id="BPMNShape_verifyenablednotification1">
+        <omgdc:Bounds height="71.0" width="116.0" x="130.0" y="162.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
         <omgdi:waypoint x="91.0" y="197.0"></omgdi:waypoint>
         <omgdi:waypoint x="130.0" y="197.0"></omgdi:waypoint>
@@ -248,7 +243,7 @@
         <omgdi:waypoint x="1397.0" y="41.0"></omgdi:waypoint>
         <omgdi:waypoint x="1397.0" y="61.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="1216.0" y="58.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="13.0" x="1216.0" y="58.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow36" id="BPMNEdge_flow36">
@@ -259,7 +254,7 @@
         <omgdi:waypoint x="1226.0" y="78.0"></omgdi:waypoint>
         <omgdi:waypoint x="1250.0" y="78.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="1236.0" y="78.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="20.0" x="1236.0" y="78.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow38" id="BPMNEdge_flow38">

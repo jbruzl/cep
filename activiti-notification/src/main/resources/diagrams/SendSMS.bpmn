@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/procdefs">
-  <process id="SendSMS" name="Send SMS" isExecutable="true">
+  <process id="sendsms" name="Send SMS" isExecutable="true">
     <startEvent id="startevent1" name="Start">
       <extensionElements>
         <activiti:formProperty id="message" name="Message" type="string" writable="false" required="true"></activiti:formProperty>
@@ -11,7 +11,7 @@
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="sendSMS"></sequenceFlow>
     <endEvent id="endevent1" name="End"></endEvent>
     <sequenceFlow id="flow2" sourceRef="sendSMS" targetRef="endevent1"></sequenceFlow>
-    <serviceTask id="sendSMS" name="Send SMS" activiti:class="cz.muni.fi.cep.activiti.notification.tasks.SendSMSTask"></serviceTask>
+    <serviceTask id="sendSMS" name="Send SMS" activiti:delegateExpression="${sendSMSTask}"></serviceTask>
     <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="sendSMS">
       <errorEventDefinition></errorEventDefinition>
     </boundaryEvent>
@@ -20,8 +20,8 @@
     </endEvent>
     <sequenceFlow id="flow3" sourceRef="boundaryerror1" targetRef="errorendevent1"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_SendSMS">
-    <bpmndi:BPMNPlane bpmnElement="SendSMS" id="BPMNPlane_SendSMS">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_sendsms">
+    <bpmndi:BPMNPlane bpmnElement="sendsms" id="BPMNPlane_sendsms">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="120.0" y="180.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
