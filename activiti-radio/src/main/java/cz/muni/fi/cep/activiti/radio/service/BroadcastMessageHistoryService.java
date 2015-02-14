@@ -1,5 +1,8 @@
 package cz.muni.fi.cep.activiti.radio.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
@@ -10,17 +13,18 @@ import cz.muni.fi.cep.core.servicemanager.history.DefaultHistoryService;
  * 
  * @author Jan Bruzl
  */
-@Service("BroadcastMessageHistoryService")
+@Service
+@PropertySource("classpath:config/application.properties")
 public class BroadcastMessageHistoryService extends DefaultHistoryService {
 
-	public BroadcastMessageHistoryService() {
-		processDefinitionKey = "broadcastmessage";
+	@Autowired
+	public BroadcastMessageHistoryService(@Value("${cep.radio.key}")String key) {
+		processDefinitionKey = key;
 	}
 
 	@Override
 	public CepHistoryProcessInstance getDetail(String pid)
 			throws IllegalArgumentException {
-		// TODO Auto-generated method stub
 		return super.getDetail(pid);
 	}
 
