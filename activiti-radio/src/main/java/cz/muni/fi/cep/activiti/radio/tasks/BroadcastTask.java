@@ -38,8 +38,6 @@ public class BroadcastTask implements JavaDelegate {
 		restTemplate = new RestTemplate();
 	}
 
-
-
 	@Autowired
 	private ConfigurationManager configurationManager;
 	
@@ -82,7 +80,7 @@ public class BroadcastTask implements JavaDelegate {
 			parts.add("author", rm.getAuthor());
 
 			String response = restTemplate.postForObject(broadcastUrl, parts, String.class);
-			System.out.println(response);
+			logger.info("Response: {}", response);
 		}catch(RestClientException ex) {
 			logger.error("Couldn't contact broadcast service. {}", ex.toString());
 			throw new BpmnError("broadcasterror");
