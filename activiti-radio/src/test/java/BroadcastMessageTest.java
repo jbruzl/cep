@@ -35,7 +35,7 @@ public class BroadcastMessageTest extends ActivitiBasicTest {
 	@Autowired
 	private BroadcastTask broadcastTask;
 
-	private final String broadcastUrlKey = "activiti.radio.broadcast.url";
+	private final String broadcastUrlKey = "cep.radio.broadcast.url";
 
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/BroadcastMessage.bpmn" })
