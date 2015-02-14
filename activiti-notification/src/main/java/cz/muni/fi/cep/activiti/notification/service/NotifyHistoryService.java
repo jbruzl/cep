@@ -1,5 +1,8 @@
 package cz.muni.fi.cep.activiti.notification.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
@@ -11,16 +14,17 @@ import cz.muni.fi.cep.core.servicemanager.history.DefaultHistoryService;
  * @author Jan Bruzl
  */
 @Service("NotifyHistoryService")
+@PropertySource("classpath:config/application.properties")
 public class NotifyHistoryService extends DefaultHistoryService {
 
-	public NotifyHistoryService() {
-		processDefinitionKey = "Notify";
+	@Autowired
+	public NotifyHistoryService(@Value("${cep.notify.key}")String key) {
+		processDefinitionKey = key;
 	}
 
 	@Override
 	public CepHistoryProcessInstance getDetail(String pid)
 			throws IllegalArgumentException {
-		// TODO Auto-generated method stub
 		return super.getDetail(pid);
 	}
 

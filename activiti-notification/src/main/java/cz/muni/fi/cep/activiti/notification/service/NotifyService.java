@@ -1,34 +1,26 @@
 package cz.muni.fi.cep.activiti.notification.service;
 
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.FormService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.form.FormData;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.image.ProcessDiagramGenerator;
-import org.activiti.image.impl.DefaultProcessDiagramGenerator;
+import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import cz.muni.fi.cep.api.DTO.CepFormData;
+import cz.muni.fi.cep.api.DTO.CepFormProperty;
 import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
+import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
 import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
-import cz.muni.fi.cep.core.users.api.IdentityService;
 
 /**
  * Service class for BPMN diagram Notify.
@@ -38,33 +30,31 @@ import cz.muni.fi.cep.core.users.api.IdentityService;
  * @author Jan Bruzl
  */
 @Service
-public class NotifyService {
+@PropertySource("classpath:config/application.properties")
+public class NotifyService extends AbstractCepProcessService {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private RepositoryService repositoryService;
-
-	@Autowired
-	private RuntimeService runtimeService;
-
-	@Autowired
-	private FormService formService;
-
-	@Autowired
-	private HistoryService historicService;
-
-	@Autowired
 	private SubscriptionService subscriptionService;
+
+	@Value("${cep.notify.publishercode}")
+	private String publisherCode;
 	
+	@Value("${cep.notify.enabled}")
+	private String defNotificationEnabled;
+
 	@Autowired
-	private IdentityService identityService;
+	public NotifyService(@Value("${cep.notify.process.key}") String processKey,
+			@Value("${cep.notify.process.name}") String processName,
+			@Value("${cep.notify.key}") String key,
+			@Value("${cep.notify.name}") String name,
+			@Value("${cep.notify.description}") String description) {
 
-	private static final String publisherCode = "Notify";
-
-	private ProcessDefinition processDefinition;
-
-	public NotifyService() {
-
+		this.processKey = processKey;
+		this.processName = processName;
+		this.key = key;
+		this.name = name;
+		this.description = description;
 	}
 
 	@PostConstruct
@@ -73,9 +63,11 @@ public class NotifyService {
 
 		subscriptionService.register(publisherCode);
 		logger.debug("Publisher {} registered", publisherCode);
+		
+		configurationManager.setKey("cep.notify.enabled", defNotificationEnabled);
 
 		if (repositoryService.createProcessDefinitionQuery()
-				.processDefinitionKey("Notify").singleResult() == null)
+				.processDefinitionKey(processKey).singleResult() == null)
 			repositoryService.createDeployment()
 					.addClasspathResource("diagrams/SendSMS.bpmn")
 					.addClasspathResource("diagrams/Notify.bpmn").deploy();
@@ -83,7 +75,7 @@ public class NotifyService {
 		logger.debug("Process SendSMS deployed");
 
 		processDefinition = repositoryService.createProcessDefinitionQuery()
-				.processDefinitionKey("Notify").singleResult();
+				.processDefinitionKey(processKey).singleResult();
 		if (processDefinition != null)
 			logger.debug("Process definition obtained");
 		else
@@ -92,39 +84,38 @@ public class NotifyService {
 		logger.info("Notify service initialised");
 	}
 
-	public void unregisterService() {
-		//subscriptionService.unregister(publisherCode);
-	}
-
-	public static String getPublisherCode() {
+	public String getPublisherCode() {
 		return publisherCode;
 	}
 
-	public ProcessInstance startTask(String templateKey,
-			Map<String, String> message) {
-		logger.info("Checking service state");
-		if (processDefinition == null) {
-			logger.warn("Process definition not loaded, trying now.");
-			processDefinition = repositoryService
-					.createProcessDefinitionQuery()
-					.processDefinitionKey("Notify").singleResult();
-			if (processDefinition == null) {
-				logger.error("Could not load process definition.");
-				return null;
-			}
-		}
-		logger.info("Service state OK");
-
+	@Override
+	public ProcessInstance runProcess(CepFormData data) {
 		HashMap<String, Object> params = new HashMap<>();
 		params.put("publisherCode", publisherCode);
-		params.put("templateKey", templateKey);
-		params.put("templateVariable", message);
-		params.put("notificationEnabled", "true"); // TODO remove later when
-													// config manager is
-													// implemented in process
 		params.put("messageType", MessageType.NOTIFICATION);
+		params.put("templateKey", "default");
+		HashMap<String, String> templateVars = new HashMap<>();
+		params.put("templateVariable", templateVars);
+		
+		String message = null;
+		
+		for (FormProperty fp : data.getFormProperties()) {
+			if (fp instanceof CepFormProperty) {
+				switch (fp.getId()) {
+				case "message":
+					message = (String) ((CepFormProperty) fp).getInput();
+					break;
+				}
+			}
+		}
+		
+		if(message == null)
+			return null;
+	
+		templateVars.put("message", message);
 
-		final String user = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+		final String user = ((User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal()).getUsername();
 		identityService.setAuthenticatedUserId(user);
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(
 				processDefinition.getKey(), params);
@@ -133,97 +124,10 @@ public class NotifyService {
 		return pi;
 	}
 
-	public FormData getStartForm() {
-		logger.info("Checking service state");
-		if (processDefinition == null) {
-			logger.warn("Process definition not loaded, trying now.");
-			processDefinition = repositoryService
-					.createProcessDefinitionQuery()
-					.processDefinitionKey("Notify").singleResult();
-			if (processDefinition == null) {
-				logger.error("Could not load process definition.");
-				return null;
-			}
-		}
-		logger.info("Service state OK");
-
-		FormData formData = formService.getStartFormData(processDefinition
-				.getId());
-		logger.info("Returning process Notify start form data");
-		return formData;
-	}
-
-	/**
-	 * Returns percentage progress of process instance with given id. Percentage
-	 * is computed as ratio of completed tasks to overall tasks.
-	 * 
-	 * TODO move to history service
-	 * 
-	 * @param processInstanceId
-	 * @return Float within range 0 - 1
-	 */
-	public Float getProcessInstanceProgress(String processInstanceId) {
-		List<HistoricActivityInstance> activitiList = getProcessActivitiHistory(processInstanceId);
-
-		Float progress = new Float(0);
-		for (HistoricActivityInstance hai : activitiList) {
-			if (hai.getEndTime() != null)
-				progress += 1;
-		}
-		if (progress != 0.0) {
-			progress = progress / activitiList.size();
-		}
-
-		logger.info(
-				"Returning progress {} % of instance {} of process Notify.",
-				progress * 100, processInstanceId);
-		return progress;
-	}
-
-	/**
-	 * Returns list of {@link HistoricActivityInstance} of process instance with
-	 * given id.
-	 * 
-	 * TODO move to history service
-	 * 
-	 * @param processInstanceId
-	 * @return List of {@link HistoricActivityInstance}
-	 */
-	public List<HistoricActivityInstance> getProcessActivitiHistory(
-			String processInstanceId) {
-		return historicService.createHistoricActivityInstanceQuery()
-				.orderByHistoricActivityInstanceEndTime().asc()
-				.processInstanceId(processInstanceId).list();
-	}
-
-	/**
-	 * Gives access to a deployed process diagram, e.g., a PNG image, through a
-	 * stream of bytes.
-	 *
-	 * @return {@link BufferedImage}
-	 * @throws ActivitiObjectNotFoundException
-	 *             when the process diagram doesn't exist.
-	 */
-	public BufferedImage getProcessDiagram() {
-		logger.info("Checking service state");
-		if (processDefinition == null) {
-			logger.warn("Process definition not loaded, trying now.");
-			processDefinition = repositoryService
-					.createProcessDefinitionQuery()
-					.processDefinitionKey("Notify").singleResult();
-			if (processDefinition == null) {
-				logger.error("Could not load process definition.");
-				return null;
-			}
-		}
-		logger.info("Service state OK");
-
-		ProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();
-		logger.info("Generating PNG image of process Notify");
-		BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition
-				.getId());
-		logger.info("Returning generated PNG image of process Notify");
-		return diagramGenerator.generatePngImage(bpmnModel, 1);
+	@Override
+	public void complete(Task task, CepFormData data) {
+		// Is not needed in this process
+		logger.error("Called not needed method: complete() in {}", getClass());
 	}
 
 }
