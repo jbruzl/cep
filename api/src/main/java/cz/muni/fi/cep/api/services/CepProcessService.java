@@ -84,7 +84,7 @@ public interface CepProcessService {
 	public CepFormData getStartForm();
 	
 	/**
-	 * Returns list of {@link Task}s of given pid.
+	 * Returns list of unfinished {@link Task}s of given pid.
 	 * 
 	 * @param pid {@link ProcessInstance}
 	 * @return {@link List} of {@link Task}

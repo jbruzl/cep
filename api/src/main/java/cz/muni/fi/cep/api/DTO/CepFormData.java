@@ -3,6 +3,7 @@
  */
 package cz.muni.fi.cep.api.DTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.form.FormData;
@@ -17,7 +18,7 @@ import org.activiti.engine.form.FormProperty;
 public class CepFormData implements FormData {
 	private String formKey;
 	private String deploymentId;
-	List<FormProperty> formProperties;
+	List<FormProperty> formProperties = new ArrayList<>();;
 	
 	public void setFormKey(String formKey) {
 		this.formKey = formKey;

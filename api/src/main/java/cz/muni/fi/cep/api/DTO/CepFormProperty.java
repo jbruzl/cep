@@ -27,6 +27,9 @@ public class CepFormProperty implements FormProperty {
 	private FormType type;
 	private Object input;
 
+	public CepFormProperty() {
+	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
