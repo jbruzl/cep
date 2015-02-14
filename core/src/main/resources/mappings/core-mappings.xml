@@ -49,5 +49,58 @@
 			<a>endActivityId</a>
 			<b>endActivityId</b>
 		</field>
+		<field>
+			<a get-method="getId"></a>
+			<b>id</b>
+		</field>
+	</mapping>
+	<mapping type="one-way" wildcard="false">
+		<class-a>org.activiti.engine.form.FormData</class-a>
+		<class-b>cz.muni.fi.cep.api.DTO.CepFormData</class-b>
+		<field>
+			<a get-method="getDeploymentId"></a>
+			<b>deploymentId</b>
+		</field>
+		<field>
+			<a get-method="getFormKey"></a>
+			<b>formKey</b>
+		</field>
+
+		<field-exclude type="one-way">
+			<a get-method="getFormProperties"></a>
+			<b set-method="setFormProperties">formProperties</b>
+		</field-exclude>
+	</mapping>
+	<mapping type="one-way">
+		<class-a>org.activiti.engine.form.FormProperty</class-a>
+		<class-b>cz.muni.fi.cep.api.DTO.CepFormProperty</class-b>
+		<field>
+			<a get-method="getType"></a>
+			<b>type</b>
+		</field>
+		<field>
+			<a get-method="isRequired"></a>
+			<b>required</b>
+		</field>
+		<field>
+			<a get-method="isWritable"></a>
+			<b>writable</b>
+		</field>
+		<field>
+			<a get-method="isReadable"></a>
+			<b>readable</b>
+		</field>
+		<field>
+			<a get-method="getValue"></a>
+			<b>value</b>
+		</field>
+		<field>
+			<a get-method="getName"></a>
+			<b>name</b>
+		</field>
+		<field>
+			<a get-method="getId"></a>
+			<b>id</b>
+		</field>
 	</mapping>
 </mappings>
