@@ -9,7 +9,7 @@ import java.util.List;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
-import cz.muni.fi.cep.api.DTO.CepFormData;
+import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 
 /**
  * Interface of service for process.
@@ -97,4 +97,10 @@ public interface CepProcessService {
 	 * @param data {@link CepFormData}
 	 */
 	public void complete(Task task, CepFormData data);
+	
+	/**
+	 * Returns {@link CepHistoryService} associated with service.
+	 * @return {@link CepHistoryService}
+	 */
+	public CepHistoryService getHistoryService();
 }

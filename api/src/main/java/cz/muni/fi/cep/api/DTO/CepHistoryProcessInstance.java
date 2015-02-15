@@ -119,6 +119,10 @@ public class CepHistoryProcessInstance implements Serializable,
 		this.name = name;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	@Override
 	public String toString() {
 		return "CepHistoryProcessInstance [processDefinitionId="

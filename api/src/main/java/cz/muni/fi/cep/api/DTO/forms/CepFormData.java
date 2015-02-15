@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cz.muni.fi.cep.api.DTO;
+package cz.muni.fi.cep.api.DTO.forms;
 
 import java.util.ArrayList;
 import java.util.List;

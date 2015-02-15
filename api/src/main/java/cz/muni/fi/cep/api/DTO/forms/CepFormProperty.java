@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cz.muni.fi.cep.api.DTO;
+package cz.muni.fi.cep.api.DTO.forms;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
@@ -24,7 +24,7 @@ public class CepFormProperty implements FormProperty {
 	private boolean readable;
 	private boolean writable;
 	private boolean required;
-	private FormType type;
+	private FormType formType;
 	private Object input;
 
 	public CepFormProperty() {
@@ -55,7 +55,7 @@ public class CepFormProperty implements FormProperty {
 	}
 
 	public void setType(FormType type) {
-		this.type = type;
+		this.formType = type;
 	}
 
 	public void setInput(Object input) {
@@ -82,7 +82,7 @@ public class CepFormProperty implements FormProperty {
 
 	@Override
 	public FormType getType() {
-		return type;
+		return formType;
 	}
 
 	@Override
