@@ -16,7 +16,9 @@ public class CoreConfig {
 	
 	@Bean
 	public Mapper getMapper() {
-		return new DozerBeanMapper();
+		DozerBeanMapper mapper = new DozerBeanMapper();
+		mapper.addMapping(ClassLoader.getSystemResourceAsStream("mappings/core-mappings.xml"));
+		return mapper;
 	}
 	
 }

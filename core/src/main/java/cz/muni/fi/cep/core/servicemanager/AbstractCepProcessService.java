@@ -29,9 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import cz.muni.fi.cep.api.DTO.CepFormData;
-import cz.muni.fi.cep.api.DTO.CepFormProperty;
+import cz.muni.fi.cep.api.DTO.forms.CepFormData;
+import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
+import cz.muni.fi.cep.api.services.CepHistoryService;
 import cz.muni.fi.cep.api.services.CepProcessService;
+import cz.muni.fi.cep.api.services.CepProcessServiceManager;
 import cz.muni.fi.cep.core.configuration.ConfigurationManager;
 import cz.muni.fi.cep.core.users.api.IdentityService;
 
@@ -43,6 +45,9 @@ import cz.muni.fi.cep.core.users.api.IdentityService;
 public abstract class AbstractCepProcessService implements CepProcessService {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	@Autowired
+	protected CepProcessServiceManager processServiceManager;
+	
 	@Autowired
 	protected RepositoryService repositoryService;
 	@Autowired
@@ -60,12 +65,21 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 	@Autowired(required=true)
 	protected Mapper mapper;
 	
+	protected CepHistoryService cepHistoryService;
+	
 	protected ProcessDefinition processDefinition;
 	protected String processKey;
 	protected String processName;
 	protected String key;
 	protected String name;
 	protected String description;
+
+	
+	
+	@Override
+	public CepHistoryService getHistoryService() {
+		return cepHistoryService;
+	}
 
 	@Override
 	public BufferedImage getDiagram() {
@@ -129,9 +143,7 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 	public CepFormData getStartForm() {
 		FormData startData = formService.getStartFormData(processDefinition.getId());
 
-		CepFormData cepStartForm = new CepFormData();
-		cepStartForm.setDeploymentId(startData.getDeploymentId());
-		cepStartForm.setFormKey(startData.getFormKey());
+		CepFormData cepStartForm = mapper.map(startData, CepFormData.class);
 		for(FormProperty fp: startData.getFormProperties()) {
 			CepFormProperty cfp = mapper.map(fp, CepFormProperty.class);
 			cepStartForm.getFormProperties().add(cfp);

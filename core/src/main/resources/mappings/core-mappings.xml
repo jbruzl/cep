@@ -2,105 +2,79 @@
 <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
 	<mapping type="one-way">
-		<class-a>org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
-		</class-a>
+		<class-a>org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity</class-a>
 		<class-b>cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance</class-b>
 		<field>
-			<a get-method="getProcessInstanceId"></a>
+			<a get-method="getProcessInstanceId">processInstanceId</a>
 			<b>processInstanceId</b>
 		</field>
 		<field>
-			<a get-method="getDurationInMillis"></a>
+			<a get-method="getDurationInMillis">durationInMillis</a>
 			<b>durationInMillis</b>
 		</field>
 		<field>
-			<a get-method="getEndTime"></a>
+			<a get-method="getEndTime">endTime</a>
 			<b>endTime</b>
 		</field>
 		<field>
-			<a get-method="getStartTime"></a>
+			<a get-method="getStartTime">startTime</a>
 			<b>startTime</b>
 		</field>
 		<field>
-			<a get-method="getProcessDefinitionId"></a>
+			<a get-method="getProcessDefinitionId">processDefinitionId</a>
 			<b>processDefinitionId</b>
 		</field>
 		<field>
-			<a>name</a>
-			<b>name</b>
-		</field>
-		<field>
-			<a>superProcessInstanceId</a>
-			<b>superProcessInstanceId</b>
-		</field>
-		<field>
-			<a>startActivityId</a>
-			<b>startActivityId</b>
-		</field>
-		<field>
-			<a>startUserId</a>
-			<b>startUserId</b>
-		</field>
-		<field>
-			<a>businessKey</a>
-			<b>businessKey</b>
-		</field>
-		<field>
-			<a>endActivityId</a>
-			<b>endActivityId</b>
-		</field>
-		<field>
-			<a get-method="getId"></a>
+			<a get-method="getId">id</a>
 			<b>id</b>
 		</field>
 	</mapping>
 	<mapping type="one-way" wildcard="false">
 		<class-a>org.activiti.engine.form.FormData</class-a>
-		<class-b>cz.muni.fi.cep.api.DTO.CepFormData</class-b>
+		<class-b>cz.muni.fi.cep.api.DTO.forms.CepFormData</class-b>
 		<field>
-			<a get-method="getDeploymentId"></a>
+			<a get-method="getDeploymentId">deploymentId</a>
 			<b>deploymentId</b>
 		</field>
 		<field>
-			<a get-method="getFormKey"></a>
+			<a get-method="getFormKey">formKey</a>
 			<b>formKey</b>
 		</field>
-
 		<field-exclude type="one-way">
-			<a get-method="getFormProperties"></a>
+			<a get-method="getFormProperties">formProperties</a>
 			<b set-method="setFormProperties">formProperties</b>
 		</field-exclude>
 	</mapping>
 	<mapping type="one-way">
 		<class-a>org.activiti.engine.form.FormProperty</class-a>
-		<class-b>cz.muni.fi.cep.api.DTO.CepFormProperty</class-b>
+		<class-b>cz.muni.fi.cep.api.DTO.forms.CepFormProperty</class-b>
 		<field>
-			<a get-method="getType"></a>
-			<b>type</b>
-		</field>
-		<field>
-			<a get-method="isRequired"></a>
+			<a get-method="isRequired">required</a>
 			<b>required</b>
 		</field>
 		<field>
-			<a get-method="isWritable"></a>
+			<a get-method="isWritable">writable</a>
 			<b>writable</b>
 		</field>
 		<field>
-			<a get-method="isReadable"></a>
+			<a get-method="isReadable">readable</a>
 			<b>readable</b>
 		</field>
 		<field>
-			<a get-method="getValue"></a>
+			<a get-method="getValue">value</a>
 			<b>value</b>
 		</field>
 		<field>
-			<a get-method="getName"></a>
+			<a get-method="getName">name</a>
 			<b>name</b>
 		</field>
 		<field>
-			<a get-method="getId"></a>
+			<a get-method="getId">id</a>
 			<b>id</b>
+		</field>
+		<field copy-by-reference="true">
+			<a>type</a>
+			<b>type</b>
 		</field>
 	</mapping>
 </mappings>
