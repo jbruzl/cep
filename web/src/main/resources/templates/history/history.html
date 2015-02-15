@@ -4,7 +4,7 @@
 <head th:include="index :: head">
 </head>
 <body>
-	<div class="sticky" th:include="index :: menu"></div>
+	<div class="sticky" th:include="snippets/menu :: menu">	</div>
 
 
 
@@ -24,7 +24,7 @@
 			<div class="panel" th:fragment="sub-menu">
 				<h4>Procesy</h4>
 				<ul >
-					<li th:each="process : ${processes}"><a th:href="@{/historie/proces(proces=${process})}" th:text="${process}">Proces</a></li>
+					<li th:each="process : ${processes}"><a th:href="@{/historie/proces(proces=${process.key})}" th:text="${process.name}">Proces</a></li>
 					<li><a th:href="@{/historie/proces}">Všechny</a></li>
 				</ul>
 				

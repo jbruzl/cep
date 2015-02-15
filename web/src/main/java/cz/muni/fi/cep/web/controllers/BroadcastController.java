@@ -77,12 +77,13 @@ public class BroadcastController {
 			return "redirect:/rozhlas?pid=error";
 		}
 		
-		ProcessInstance pi = broadcastMessageService.startTask(name);
+		ProcessInstance pi = null ;//= broadcastMessageService.startTask(name);
+		
 		if(pi==null) {
-			return "redirect:/rozhlas?pid=error";
+			//return "redirect:/rozhlas?pid=error";
 		}
 		
-		return "redirect:/rozhlas?pid="+pi.getId();
+		return "redirect:/rozhlas?pid=";//+pi.getId();
 	}
 	
 	@RequestMapping(value = { "/diagram" })
@@ -94,7 +95,7 @@ public class BroadcastController {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] imageInByte = null;
 		try {
-			ImageIO.write(broadcastMessageService.getProcessDiagram(), "png", baos);
+			ImageIO.write(broadcastMessageService.getDiagram(), "png", baos);
 			baos.flush();
 			imageInByte = baos.toByteArray();
 			baos.close();

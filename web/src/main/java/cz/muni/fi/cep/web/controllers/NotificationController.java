@@ -53,7 +53,7 @@ public class NotificationController {
 		HashMap<String, String> startParamMessage = new HashMap<>();
 		startParamMessage.put("message", message);
 		
-		notifyService.startTask("default", startParamMessage);
+		//notifyService.startTask("default", startParamMessage);
 		
 		return "redirect:/upozorneni";
 	}
@@ -67,7 +67,7 @@ public class NotificationController {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] imageInByte = null;
 		try {
-			ImageIO.write(notifyService.getProcessDiagram(), "png", baos);
+			ImageIO.write(notifyService.getDiagram(), "png", baos);
 			baos.flush();
 			imageInByte = baos.toByteArray();
 			baos.close();

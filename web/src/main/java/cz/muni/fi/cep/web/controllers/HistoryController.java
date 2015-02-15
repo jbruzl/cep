@@ -1,6 +1,5 @@
 package cz.muni.fi.cep.web.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,30 +9,24 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import cz.muni.fi.cep.activiti.notification.service.NotifyHistoryService;
-import cz.muni.fi.cep.activiti.radio.service.BroadcastMessageHistoryService;
 import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
 import cz.muni.fi.cep.api.services.CepHistoryService;
+import cz.muni.fi.cep.api.services.CepProcessService;
+import cz.muni.fi.cep.api.services.CepProcessServiceManager;
 import cz.muni.fi.cep.core.servicemanager.history.DefaultHistoryService;
 
 @Controller
 @RequestMapping(value = { "/historie" })
 public class HistoryController {
 	@Autowired
-	private BroadcastMessageHistoryService broadcastMessageHistoryService;
-
-	@Autowired
-	private NotifyHistoryService notifyHistoryService;
+	private CepProcessServiceManager processServiceManager;
 
 	@Autowired
 	private DefaultHistoryService defaultHistoryService;
 
 	@ModelAttribute("processes")
-	public List<String> getProcessList() {
-		List<String> processes = new ArrayList<>();
-		processes.add("Rozhlas");
-		processes.add("Oznámení");
-		return processes;
+	public List<CepProcessService> getProcessList() {
+		return processServiceManager.getServices();
 	}
 
 	@RequestMapping(value = { "", "/" })
@@ -47,16 +40,16 @@ public class HistoryController {
 			Model model) {
 		CepHistoryService historyService = null;
 
-		if (process.equals("Rozhlas"))
-			historyService = broadcastMessageHistoryService;
-		if (process.equals("Oznámení"))
-			historyService = notifyHistoryService;
+		CepProcessService service = processServiceManager
+				.getServiceByKey(process);
+		if (service != null)
+			historyService = service.getHistoryService();
 		else
 			historyService = defaultHistoryService;
 
 		model.addAttribute("processInstances", historyService.getAllInstances());
 		if (!process.equals("null"))
-			model.addAttribute("process", process);
+			model.addAttribute("process", service.getName());
 
 		return "history/process";
 	}
@@ -68,17 +61,17 @@ public class HistoryController {
 			Model model) {
 		CepHistoryService historyService = null;
 
-		if (process.equals("Rozhlas"))
-			historyService = broadcastMessageHistoryService;
-		if (process.equals("Oznámení"))
-			historyService = notifyHistoryService;
+		CepProcessService service = processServiceManager
+				.getServiceByKey(process);
+		if (service != null)
+			historyService = service.getHistoryService();
 		else
 			historyService = defaultHistoryService;
 
 		final CepHistoryProcessInstance hpi = historyService.getDetail(pid);
 		model.addAttribute("process", hpi);
 		if (!process.equals("null"))
-			model.addAttribute("processName", process);
+			model.addAttribute("processName", service.getName());
 
 		return "history/instance";
 	}

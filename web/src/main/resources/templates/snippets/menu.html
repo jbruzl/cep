@@ -1,0 +1,56 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div class="sticky" th:fragment="menu">
+		<nav class="top-bar" th:attr="data-topbar='a'">
+			<ul class="title-area">
+
+				<li class="name">
+					<h1>
+						<a href="#"> Městský krizový portál </a>
+					</h1>
+				</li>
+				<li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
+			</ul>
+
+
+			<section class="top-bar-section">
+				<ul class="right">
+					<li class="divider" sec:authorize="isAuthenticated()"></li>
+					<li class="has-dropdown" sec:authorize="isAuthenticated()"><a
+						href="#">Procesy</a>
+						<ul class="dropdown">
+							<li th:each="service : ${@processServiceManager.getAvaibleServices()}"><a th:href="@{${'/proces/start/' + service.key}}" th:text="${service.name}">Process name</a></li>
+						</ul></li>
+					<li class="divider" sec:authorize="isAuthenticated()"></li>
+					<li class="has-dropdown" sec:authorize="isAuthenticated()"><a
+						href="#">Nastavení</a>
+						<ul class="dropdown">
+							<li><a th:href="@{/odbery}">Odběry</a></li>
+							<li><a th:href="@{/uzivatele}">Uživatelé</a></li>
+							<li><a th:href="@{/skupiny}">Skupiny</a></li>
+						</ul></li>
+					<li class="divider" sec:authorize="isAuthenticated()"></li>
+					<li><a th:href="@{/odbery}" sec:authorize="isAuthenticated()">Odběry</a></li>
+					<li class="divider" sec:authorize="isAuthenticated()"></li>
+					<li><a th:href="@{/historie}" sec:authorize="isAuthenticated()">Historie</a></li>
+					<li class="divider" sec:authorize="isAuthenticated()"></li>
+					<li class="has-dropdown"><a href="#" sec:authentication="name"
+						sec:authorize="isAuthenticated()">Jan Bruzl</a>
+						<ul class="dropdown">
+							<li><a th:href="@{/profile(user=${#authentication.name})}">Účet</a></li>
+							<li><form name="logoutForm" th:action="@{/logout}"
+									method="post"></form> <a href="#"
+								onclick="document.logoutForm.submit();">Odhlásit se</a></li>
+						</ul></li>
+					<li><a href="#" data-reveal-id="loginModal"
+						sec:authorize="!isAuthenticated()">Přihlásit</a></li>
+				</ul>
+			</section>
+		</nav>
+	</div>
+</body>
+</html>

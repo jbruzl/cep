@@ -13,9 +13,9 @@
 		<module>activiti-archetype</module>
 		<module>activiti-notification</module>
 		<module>activiti-warning-chmi</module>
-		<module>tests</module>
 		<module>web</module>
 		<module>activiti-radio</module>
 		<module>radiobroadcaster</module>
+		<module>tests</module>
 	</modules>
 </project>
