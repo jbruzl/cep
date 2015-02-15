@@ -16,8 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import cz.muni.fi.cep.api.DTO.CepFormData;
-import cz.muni.fi.cep.api.DTO.CepFormProperty;
+import cz.muni.fi.cep.api.DTO.forms.CepFormData;
+import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
 import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
 import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
 import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
@@ -30,7 +30,7 @@ import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
  * @author Jan Bruzl
  */
 @Service
-@PropertySource("classpath:config/application.properties")
+@PropertySource("classpath:config/application-notify.properties")
 public class NotifyService extends AbstractCepProcessService {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -48,8 +48,9 @@ public class NotifyService extends AbstractCepProcessService {
 			@Value("${cep.notify.process.name}") String processName,
 			@Value("${cep.notify.key}") String key,
 			@Value("${cep.notify.name}") String name,
-			@Value("${cep.notify.description}") String description) {
-
+			@Value("${cep.notify.description}") String description,
+			NotifyHistoryService notifyHistoryService) {
+		cepHistoryService = notifyHistoryService;
 		this.processKey = processKey;
 		this.processName = processName;
 		this.key = key;
@@ -61,6 +62,8 @@ public class NotifyService extends AbstractCepProcessService {
 	public void init() {
 		logger.info("Initialising Notify service");
 
+		processServiceManager.registerService(this);
+		
 		subscriptionService.register(publisherCode);
 		logger.debug("Publisher {} registered", publisherCode);
 		
@@ -129,5 +132,4 @@ public class NotifyService extends AbstractCepProcessService {
 		// Is not needed in this process
 		logger.error("Called not needed method: complete() in {}", getClass());
 	}
-
 }

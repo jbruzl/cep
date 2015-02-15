@@ -14,7 +14,7 @@ import cz.muni.fi.cep.core.servicemanager.history.DefaultHistoryService;
  * @author Jan Bruzl
  */
 @Service("NotifyHistoryService")
-@PropertySource("classpath:config/application.properties")
+@PropertySource("classpath:config/application-notify.properties")
 public class NotifyHistoryService extends DefaultHistoryService {
 
 	@Autowired

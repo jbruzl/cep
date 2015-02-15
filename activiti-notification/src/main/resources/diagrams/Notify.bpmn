@@ -3,7 +3,7 @@
   <process id="notify" name="Notify" isExecutable="true">
     <startEvent id="startevent1" name="Start" activiti:initiator="initiator">
       <extensionElements>
-        <activiti:formProperty id="message" name="Message" required="true"></activiti:formProperty>
+        <activiti:formProperty id="message" name="Message" type="text" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="verifyenablednotification1"></sequenceFlow>
