@@ -14,7 +14,7 @@ import cz.muni.fi.cep.core.servicemanager.history.DefaultHistoryService;
  * @author Jan Bruzl
  */
 @Service
-@PropertySource("classpath:config/application.properties")
+@PropertySource("classpath:config/application-radio.properties")
 public class BroadcastMessageHistoryService extends DefaultHistoryService {
 
 	@Autowired

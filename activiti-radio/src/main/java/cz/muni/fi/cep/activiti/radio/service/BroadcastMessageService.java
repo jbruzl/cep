@@ -19,8 +19,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.activiti.radio.messages.FileRadioMessage;
-import cz.muni.fi.cep.api.DTO.CepFormData;
-import cz.muni.fi.cep.api.DTO.CepFormProperty;
+import cz.muni.fi.cep.api.DTO.forms.CepFormData;
+import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
 import cz.muni.fi.cep.api.services.CepProcessService;
 import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
 
@@ -32,7 +32,7 @@ import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
  * @author Jan Bruzl
  */
 @Service
-@PropertySource("classpath:config/application.properties")
+@PropertySource("classpath:config/application-radio.properties")
 public class BroadcastMessageService extends AbstractCepProcessService {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -46,8 +46,9 @@ public class BroadcastMessageService extends AbstractCepProcessService {
 			@Value("${cep.radio.process.name}") String processName,
 			@Value("${cep.radio.key}") String key,
 			@Value("${cep.radio.name}") String name,
-			@Value("${cep.radio.description}") String description) {
-		
+			@Value("${cep.radio.description}") String description,
+			BroadcastMessageHistoryService broadcastMessageHistoryService) {
+		cepHistoryService = broadcastMessageHistoryService;
 		this.processKey = processKey;
 		this.processName = processName;
 		this.key = key;
@@ -59,7 +60,7 @@ public class BroadcastMessageService extends AbstractCepProcessService {
 	public void init() {
 		logger.info("Initialising Broadcast Message service");
 
-		
+		processServiceManager.registerService(this);
 
 		configurationManager.setKey("cep.radio.broadcast.url", broadcastUrl);
 

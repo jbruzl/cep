@@ -3,7 +3,7 @@
   <process id="broadcastmessage" name="Broadcast Message" isExecutable="true">
     <startEvent id="startevent1" name="Start">
       <extensionElements>
-        <activiti:formProperty id="radioMessage" name="Radio Message" required="true"></activiti:formProperty>
+        <activiti:formProperty id="radioMessage" name="Radio Message" type="file" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <scriptTask id="scripttask1" name="Verify input" scriptFormat="groovy" activiti:autoStoreVariables="true">
@@ -45,11 +45,11 @@
       <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
         <omgdc:Bounds height="55.0" width="105.0" x="705.0" y="181.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="endok" id="BPMNShape_endok">
-        <omgdc:Bounds height="35.0" width="35.0" x="855.0" y="191.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="boundaryerror1" id="BPMNShape_boundaryerror1">
         <omgdc:Bounds height="30.0" width="30.0" x="795.0" y="220.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endok" id="BPMNShape_endok">
+        <omgdc:Bounds height="35.0" width="35.0" x="855.0" y="191.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="broadcasterror3" id="BPMNShape_broadcasterror3">
         <omgdc:Bounds height="35.0" width="35.0" x="792.0" y="300.0"></omgdc:Bounds>
