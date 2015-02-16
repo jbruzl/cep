@@ -35,8 +35,8 @@
 		<div class="large-9 columns">
 			<div class="panel">
 				<h4 th:text="${process}">Process name</h4>
-				<form action="#" th:action="@{${'/proces/' + key + '/submit'}}"
-					method="post" >
+				<form action="#" th:action="@{${'/proces/start/submit/' + key}}"
+					method="post" enctype="multipart/form-data">
 					<table>
 						<tbody>
 							<tr th:each="property : ${startForm.formProperties}">
