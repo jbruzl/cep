@@ -3,7 +3,7 @@
   <process id="broadcastmessage" name="Broadcast Message" isExecutable="true">
     <startEvent id="startevent1" name="Start">
       <extensionElements>
-        <activiti:formProperty id="radioMessage" name="Radio Message" type="file" required="true"></activiti:formProperty>
+        <activiti:formProperty id="radioMessage" name="Radio zpráva" type="file" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <scriptTask id="scripttask1" name="Verify input" scriptFormat="groovy" activiti:autoStoreVariables="true">
