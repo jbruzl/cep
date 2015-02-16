@@ -49,7 +49,7 @@ public class HistoryController {
 
 		model.addAttribute("processInstances", historyService.getAllInstances());
 		if (!process.equals("null"))
-			model.addAttribute("process", service.getName());
+			model.addAttribute("process", service.getKey());
 
 		return "history/process";
 	}
