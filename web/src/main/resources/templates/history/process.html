@@ -4,7 +4,7 @@
 <head th:include="index :: head">
 </head>
 <body>
-	<div class="sticky" th:include="snippets/menu :: menu">	</div>
+	<div class="sticky" th:include="snippets/menu :: menu"></div>
 
 
 
@@ -28,7 +28,17 @@
 
 		<div class="large-9 columns">
 			<div class="panel">
-				<h4 th:text="${process}">Procesy</h4>
+				<h4 th:text="${processName}">Procesy</h4>
+			</div>
+			<div class="panel">
+				<h5>Statistika koncových stavů</h5>
+				<div class="column medium-6" th:each="count : ${endStatistic}">
+					<div class="column medium-8" th:text="${count.key}">end event</div>
+					<div class="column medium-4" th:text="${count.value}">occurence</div>
+				</div>
+				<div class="medium-12">
+					Z celkem <span th:text="${endStatisticTotal}">count</span> spuštění.
+				</div>
 			</div>
 
 			<div class="panel">
@@ -46,7 +56,8 @@
 							<td th:text="${processInstance.startUserId}"></td>
 							<td
 								th:text="${(processInstance.endTime == 'null'?'Běží':'Dokončená')}"></td>
-							<td><a th:href="@{/historie/instance(proces=${process}, pid=${processInstance.processInstanceId})}">Detail...</a></td>
+							<td><a
+								th:href="@{${'/historie/instance/'+processKey+'/'+processInstance.processInstanceId}}">Detail...</a></td>
 						</tr>
 					</tbody>
 				</table>

@@ -1,13 +1,14 @@
 package cz.muni.fi.cep.web.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
 import cz.muni.fi.cep.api.services.CepHistoryService;
@@ -34,9 +35,9 @@ public class HistoryController {
 		return "history/history";
 	}
 
-	@RequestMapping(value = { "/proces" })
+	@RequestMapping(value = { "/proces/{process}" })
 	public String proces(
-			@RequestParam(value = "proces", defaultValue = "null") String process,
+			@PathVariable(value="process") String process,
 			Model model) {
 		CepHistoryService historyService = null;
 
@@ -46,18 +47,31 @@ public class HistoryController {
 			historyService = service.getHistoryService();
 		else
 			historyService = defaultHistoryService;
+		
+		Map<String, Integer> endStateStatistic = historyService.getEndStateStatistic();
+		Integer endStatisticTotal = 0;
+		for(Integer endStateCount : endStateStatistic.values()) {
+			endStatisticTotal += endStateCount;
+		}
+		model.addAttribute("endStatistic", endStateStatistic);
+		model.addAttribute("endStatisticTotal", endStatisticTotal);
 
 		model.addAttribute("processInstances", historyService.getAllInstances());
-		if (!process.equals("null"))
-			model.addAttribute("process", service.getKey());
+		if (!process.equals("null")) {
+			model.addAttribute("processName", service.getName());
+			model.addAttribute("processKey", service.getKey());
+		}else {
+			model.addAttribute("processName", "Všechny procesy");
+			model.addAttribute("processKey", service.getKey());
+		}
 
 		return "history/process";
 	}
 
-	@RequestMapping(value = { "/instance" })
+	@RequestMapping(value = { "/instance/{process}/{pid}" })
 	public String instance(
-			@RequestParam(value = "pid", required = true) String pid,
-			@RequestParam(value = "proces", defaultValue = "null") String process,
+			@PathVariable("pid")String pid,
+			@PathVariable("process") String process,
 			Model model) {
 		CepHistoryService historyService = null;
 
@@ -77,3 +91,4 @@ public class HistoryController {
 	}
 
 }
+

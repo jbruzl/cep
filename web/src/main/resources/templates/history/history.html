@@ -24,8 +24,8 @@
 			<div class="panel" th:fragment="sub-menu">
 				<h4>Procesy</h4>
 				<ul >
-					<li th:each="process : ${processes}"><a th:href="@{/historie/proces(proces=${process.key})}" th:text="${process.name}">Proces</a></li>
-					<li><a th:href="@{/historie/proces}">Všechny</a></li>
+					<li th:each="process : ${processes}"><a th:href="@{${'/historie/proces/'+process.key}}" th:text="${process.name}">Proces</a></li>
+					<li><a th:href="@{/historie/proces/null}">Všechny</a></li>
 				</ul>
 				
 			</div>
