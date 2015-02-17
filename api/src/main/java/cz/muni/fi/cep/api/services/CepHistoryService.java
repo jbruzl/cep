@@ -1,6 +1,7 @@
 package cz.muni.fi.cep.api.services;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.HistoryService;
 
@@ -41,4 +42,6 @@ public interface CepHistoryService {
 	 * @throws IllegalArgumentException if process with pid is not supported
 	 */
 	public CepHistoryProcessInstance getDetail(String pid) throws IllegalArgumentException ;
+
+	public abstract Map<String, Integer> getEndStateStatistic();
 }
