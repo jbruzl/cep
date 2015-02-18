@@ -93,7 +93,7 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 	}
 
 	@Override
-	public BufferedImage getDiagram(ProcessInstance pid)
+	public BufferedImage getDiagram(String pid)
 			throws IllegalArgumentException {
 		ProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();
 		logger.info("Generating PNG image of process {}", getProcessKey());
@@ -104,7 +104,7 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 
 		for (HistoricActivityInstance hai : historicService
 				.createHistoricActivityInstanceQuery()
-				.processInstanceId(pid.getId()).finished().list()) {
+				.processInstanceId(pid).finished().list()) {
 			activities.add(hai.getActivityId());
 		}
 
