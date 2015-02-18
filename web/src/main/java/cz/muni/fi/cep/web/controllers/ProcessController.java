@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -103,8 +105,40 @@ public class ProcessController {
 				cfp.setInput(parameter);
 			}
 		}
-		service.runProcess(startForm);
-		return "redirect:proces/start/" + key;
+		ProcessInstance pi = service.runProcess(startForm);
+		if (pi == null) {
+			return "redirect:/proces/error?proces=" + key + "&state=startfail";
+		}
+		return "redirect:/historie/instance/" + key + "/" + pi.getId();
+	}
+
+	@RequestMapping("/error")
+	public String error(
+			@RequestParam(value = "proces", required = true) String key,
+			@RequestParam(value = "state") String state, Model model) {
+		CepProcessService service = processServiceManager.getServiceByKey(key);
+		if (service == null) {
+			model.addAttribute("process", "Neznámý proces");
+		} else {
+			model.addAttribute("process", service.getName());
+		}
+
+		switch (state) {
+		case "uploaderror":
+			model.addAttribute("description", "Vyskytla se chyba během nahrání souboru. Zkuste to prosím znova.");
+			break;
+		case "startfail":
+			model.addAttribute("description", "Nepodařilo se spustit proces. Zkuste to prosím znova.");
+			break;
+		case "notfound":
+			model.addAttribute("description", "Spouštěný proces nenalezen. Zkuste to prosím znova.");
+			break;
+		default:
+			model.addAttribute("description", "Objevila se neznámá chyba. Zkuste prosím opakovat vaší akci.");
+			break;
+		}
+
+		return "process/error";
 	}
 
 }

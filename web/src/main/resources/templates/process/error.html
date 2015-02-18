@@ -4,7 +4,7 @@
 <head th:include="index :: head">
 </head>
 <body>
-	<div class="sticky" th:include="index :: menu"></div>
+	<div class="sticky" th:include="snippets/menu :: menu">	</div>
 
 
 
@@ -22,49 +22,21 @@
 
 		<div class="large-3 columns">
 			<div class="panel" th:fragment="sub-menu">
-				<h4>Oznámení</h4>
+				<h4>Chyba</h4>
 
-			</div>
-
-			<div class="panel" th:fragment="desc">
-				<h4>Notifikace</h4>
-				<p>Proces odešle upozornění uživatelům kteří se přihlásili k
-					odběru informací. Proces je upozorní způsobem, kterým se přihlásili
-					k odběru.</p>
 			</div>
 		</div>
 
 		<div class="large-9 columns">
 			<div class="panel">
-				<h4>Nové oznámení</h4>
-				<form action="#" th:action="@{/upozorneni/start-process}"
-					method="post" th:object="${message}">
-					<table>
-						<tbody>
-							<tr>
-								<td><label for="message">Zpráva</label></td>
-								<td><input type="text" name="message" id="message" /></td>
-							</tr>
-						</tbody>
-					</table>
-					<input class="small button" type="reset" name="submit"
-						value="Reset" /> <input class="small button" type="submit"
-						name="submit" value="Odeslat" />
-				</form>
+				<h4 th:text="${process}">Process</h4>
+				<div th:text="${description}">
+					Error message description.
+				</div>
 			</div>
 		</div>
 
 	</div>
-	<div class="row">
-		<div class="large-12 columns">
-			<div class="panel">
-				<h4>Diagram procesu</h4>
-				<img alt="process diagram" th:src="@{/upozorneni/diagram}"></img>
-			</div>
-		</div>
-	</div>
-
-
 
 	<footer class="row" th:include="index :: footer"></footer>
 
