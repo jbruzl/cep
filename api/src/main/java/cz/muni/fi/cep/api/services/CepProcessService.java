@@ -40,11 +40,11 @@ public interface CepProcessService {
 	/**
 	 * Return {@link BufferedImage} of process with highlighted state of given {@link ProcessInstance}.
 	 * 
-	 * @param pid {@link ProcessInstance}
+	 * @param pid {@link String} Process Instance ID
 	 * @return {@link BufferedImage}
 	 * @throws IllegalArgumentException if given pid is not of services process
 	 */
-	public BufferedImage getDiagram(ProcessInstance pid) throws IllegalArgumentException;
+	public BufferedImage getDiagram(String pid) throws IllegalArgumentException;
 	
 	/**
 	 * Returns name of process.
