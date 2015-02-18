@@ -113,8 +113,8 @@
 	<div class="row">
 		<div class="large-12 columns">
 			<div class="panel">
-				<h4></h4>
-				<img alt="process diagram" th:src="@{${'/historie/diagram/'+processKey+'/'+process.id}}"></img>
+				<h4>Diagram procesu instance</h4>
+				<a th:href="@{${'/historie/diagram/'+processKey+'/'+process.id}}"><img alt="process diagram" th:src="@{${'/historie/diagram/'+processKey+'/'+process.id}}"></img></a>
 			</div>
 		</div>
 	</div>

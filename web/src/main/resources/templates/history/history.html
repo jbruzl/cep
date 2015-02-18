@@ -25,7 +25,6 @@
 				<h4>Procesy</h4>
 				<ul >
 					<li th:each="process : ${processes}"><a th:href="@{${'/historie/proces/'+process.key}}" th:text="${process.name}">Proces</a></li>
-					<li><a th:href="@{/historie/proces/null}">Všechny</a></li>
 				</ul>
 				
 			</div>
