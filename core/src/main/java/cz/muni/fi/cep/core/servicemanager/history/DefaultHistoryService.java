@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
-import cz.muni.fi.cep.api.services.CepHistoryService;
+import cz.muni.fi.cep.api.services.servicemanager.CepHistoryService;
 
 /**
  * Default implementation of {@link CepHistoryService}.

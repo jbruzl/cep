@@ -27,10 +27,10 @@ public class CepUserEntity implements User {
 	private String firstName;
 	private String lastName;
 	private String password;
-	@Column(unique=true, nullable=false)
+	@Column(unique = true, nullable = false)
 	private String email;
-	
-	@ManyToMany(fetch=FetchType.LAZY)
+
+	@ManyToMany(fetch = FetchType.LAZY)
 	private List<CepGroupEntity> groups = new ArrayList<>();
 
 	public List<CepGroupEntity> getGroups() {
@@ -38,7 +38,7 @@ public class CepUserEntity implements User {
 	}
 
 	public void setGroups(List<CepGroupEntity> groups) {
-		this.groups = groups; 
+		this.groups = groups;
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class CepUserEntity implements User {
 
 	@Override
 	public String getId() {
-		if(id == null)
+		if (id == null)
 			return "0";
 		return Long.toString(id);
 	}

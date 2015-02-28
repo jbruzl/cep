@@ -1,4 +1,4 @@
-package cz.muni.fi.cep.core.configuration;
+package cz.muni.fi.cep.core.configurationmanager;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,6 +16,8 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 
 /**
  * Implementation of {@link ConfigurationManager}

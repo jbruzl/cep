@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import cz.muni.fi.cep.api.services.CepProcessService;
-import cz.muni.fi.cep.api.services.CepProcessServiceManager;
+import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
+import cz.muni.fi.cep.api.services.servicemanager.CepProcessServiceManager;
 
 /**
  * Implementation of {@link CepProcessServiceManager}

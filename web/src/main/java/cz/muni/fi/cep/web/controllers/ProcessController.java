@@ -27,8 +27,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import cz.muni.fi.cep.api.DTO.forms.CepFileFormType;
 import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
-import cz.muni.fi.cep.api.services.CepProcessService;
-import cz.muni.fi.cep.api.services.CepProcessServiceManager;
+import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
+import cz.muni.fi.cep.api.services.servicemanager.CepProcessServiceManager;
 
 /**
  * Controller responsible for processes

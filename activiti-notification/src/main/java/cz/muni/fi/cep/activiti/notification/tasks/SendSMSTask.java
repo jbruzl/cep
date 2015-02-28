@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
-import cz.muni.fi.cep.core.configuration.ConfigurationManager;
 
 /**
  * @author Jan Bruzl

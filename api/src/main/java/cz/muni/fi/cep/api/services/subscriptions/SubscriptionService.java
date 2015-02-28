@@ -1,26 +1,11 @@
-package cz.muni.fi.cep.core.subscriptions.api;
+package cz.muni.fi.cep.api.services.subscriptions;
 
 import java.util.List;
 
 import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.DTO.ContactType;
-import cz.muni.fi.cep.core.subscriptions.dao.PublisherDao;
-import cz.muni.fi.cep.core.subscriptions.dao.SubscriberDao;
-import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 public interface SubscriptionService {
-
-	/**
-	 * @param publisherDao
-	 *            the publisherDao to set
-	 */
-	public abstract void setPublisherDao(PublisherDao publisherDao);
-
-	/**
-	 * @param subscriberDao
-	 *            the subscriberDao to set
-	 */
-	public abstract void setSubscriberDao(SubscriberDao subscriberDao);
 
 	/**
 	 * Register event by code. If code is registered, no thing happens.
@@ -41,7 +26,7 @@ public interface SubscriptionService {
 	public void unregister(String code);
 
 	/**
-	 * Subscribe @{link CepUserEntity} to event defined by code with defined contact
+	 * Subscribe @{link CepUser} to event defined by code with defined contact
 	 * type.
 	 * 
 	 * @param user
@@ -50,7 +35,7 @@ public interface SubscriptionService {
 	 *            of event
 	 * @param contactType
 	 */
-	public void subscribeUser(CepUserEntity user, String code, ContactType contactType);
+	public void subscribeUser(CepUser user, String code, ContactType contactType);
 
 	/**
 	 * Subscribe contact to event defined by code with defined contact type.
@@ -65,7 +50,7 @@ public interface SubscriptionService {
 	public void subscribe(String contact, String code, ContactType contactType);
 
 	/**
-	 * Unsubscribe @{link CepUserEntity} from event defined by code with defined
+	 * Unsubscribe @{link CepUser} from event defined by code with defined
 	 * contact type.
 	 * 
 	 * @param user
@@ -75,7 +60,7 @@ public interface SubscriptionService {
 	 * @param contactType
 	 *            , if null user is unsubscribed from event with all contacts
 	 */
-	public void unsubscribeUser(CepUserEntity user, String code,
+	public void unsubscribeUser(CepUser user, String code,
 			ContactType contactType);
 
 	/**
@@ -91,7 +76,7 @@ public interface SubscriptionService {
 	public void unsubscribe(String contact, String code, ContactType contactType);
 
 	/**
-	 * Returns list of event codes subscribed by given {@link CepUserEntity} and type.
+	 * Returns list of event codes subscribed by given {@link CepUser} and type.
 	 * 
 	 * @param user
 	 *            subscribed by
@@ -99,7 +84,7 @@ public interface SubscriptionService {
 	 *            , if null all types are returned
 	 * @return list of event codes
 	 */
-	public List<String> getUserSubscriptions(CepUserEntity user,
+	public List<String> getUserSubscriptions(CepUser user,
 			ContactType contactType);
 
 	/**
@@ -137,7 +122,7 @@ public interface SubscriptionService {
 	 * @param contactType
 	 * @return list of {@link CepUser}
 	 */
-	public List<CepUserEntity> getUserSubscribers(String code, ContactType contactType);
+	public List<CepUser> getUserSubscribers(String code, ContactType contactType);
 
 	/**
 	 * Returns list of all contacts for given event code and contact type.

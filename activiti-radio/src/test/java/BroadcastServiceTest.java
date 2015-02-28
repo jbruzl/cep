@@ -28,7 +28,7 @@ import cz.muni.fi.cep.activiti.radio.tasks.BroadcastTask;
 import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
 import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
-import cz.muni.fi.cep.core.configuration.ConfigurationManager;
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 
 public class BroadcastServiceTest extends ActivitiBasicTest {
 	private String testAudioFile = "src/test/resources/test.wav";

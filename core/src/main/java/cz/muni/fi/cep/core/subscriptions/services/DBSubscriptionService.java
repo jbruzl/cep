@@ -3,14 +3,16 @@ package cz.muni.fi.cep.core.subscriptions.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dozer.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.DTO.ContactType;
-import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
+import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.core.subscriptions.dao.PublisherDao;
 import cz.muni.fi.cep.core.subscriptions.dao.SubscriberDao;
 import cz.muni.fi.cep.core.subscriptions.entities.OrphanSubscriber;
@@ -27,27 +29,16 @@ public class DBSubscriptionService implements SubscriptionService {
 
 	@Autowired
 	private SubscriberDao subscriberDao;
+	
+	@Autowired
+	private Mapper mapper;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#
-	 * setPublisherDao(cz.muni.fi.cep.core.subscriptions.dao.PublisherDao)
-	 */
-	@Override
 	public void setPublisherDao(PublisherDao publisherDao) {
 		this.publisherDao = publisherDao;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cz.muni.fi.cep.core.subscriptions.services.SubscriptionService#
-	 * setSubscriberDao(cz.muni.fi.cep.core.subscriptions.dao.SubscriberDao)
-	 */
-	@Override
 	public void setSubscriberDao(SubscriberDao subscriberDao) {
 		this.subscriberDao = subscriberDao;
 	}
@@ -82,7 +73,7 @@ public class DBSubscriptionService implements SubscriptionService {
 	}
 
 	@Override
-	public void subscribeUser(CepUserEntity user, String code,
+	public void subscribeUser(CepUser user, String code,
 			ContactType contactType) {
 		if (user == null)
 			throw new NullPointerException("User parameter is null.");
@@ -91,7 +82,8 @@ public class DBSubscriptionService implements SubscriptionService {
 		if (contactType == null)
 			throw new NullPointerException("Contact type parameter is null.");
 
-		Subscriber subscriber = new UserSubscriber(user);
+		CepUserEntity cepUserEntity = mapper.map(user, CepUserEntity.class);
+		Subscriber subscriber = new UserSubscriber(cepUserEntity);
 		subscriber.setContactType(contactType);
 
 		Publisher publisher = publisherDao.findByCode(code);
@@ -135,20 +127,21 @@ public class DBSubscriptionService implements SubscriptionService {
 	}
 
 	@Override
-	public void unsubscribeUser(CepUserEntity user, String code,
+	public void unsubscribeUser(CepUser user, String code,
 			ContactType contactType) {
 		if (user == null)
 			throw new NullPointerException("User parameter is null.");
 
 		Iterable<Subscriber> subscribers = null;
+		CepUserEntity cepUserEntity = mapper.map(user, CepUserEntity.class);
 		if (code == null)
-			subscribers = subscriberDao.findAllByUser(user);
+			subscribers = subscriberDao.findAllByUser(cepUserEntity);
 		else {
 			Publisher publisher = publisherDao.findByCode(code);
 			if (publisher == null)
 				throw new IllegalArgumentException("Event with code " + code
 						+ " does not exists.");
-			subscribers = subscriberDao.findAllByUserAndPublisher(user,
+			subscribers = subscriberDao.findAllByUserAndPublisher(cepUserEntity,
 					publisher);
 		}
 		for (Subscriber subscriber : subscribers) {
@@ -192,7 +185,7 @@ public class DBSubscriptionService implements SubscriptionService {
 	}
 
 	@Override
-	public List<String> getUserSubscriptions(CepUserEntity user,
+	public List<String> getUserSubscriptions(CepUser user,
 			ContactType contactType) {
 		if (user == null)
 			throw new NullPointerException("User is null.");
@@ -200,7 +193,8 @@ public class DBSubscriptionService implements SubscriptionService {
 		List<String> codes = new ArrayList<String>();
 		Iterable<Subscriber> subscribers = null;
 
-		subscribers = subscriberDao.findAllByUser(user);
+		CepUserEntity cepUserEntity = mapper.map(user, CepUserEntity.class);
+		subscribers = subscriberDao.findAllByUser(cepUserEntity);
 
 		for (Subscriber subscriber : subscribers) {
 			if (contactType == null
@@ -259,7 +253,7 @@ public class DBSubscriptionService implements SubscriptionService {
 	}
 
 	@Override
-	public List<CepUserEntity> getUserSubscribers(String code, ContactType contactType) {
+	public List<CepUser> getUserSubscribers(String code, ContactType contactType) {
 		if (code == null)
 			throw new NullPointerException("Code is null.");
 
@@ -269,14 +263,14 @@ public class DBSubscriptionService implements SubscriptionService {
 			throw new IllegalArgumentException("Event type with code " + code
 					+ " does not exists.");
 
-		List<CepUserEntity> users = new ArrayList<>();
+		List<CepUser> users = new ArrayList<>();
 		for (Subscriber subscriber : publisher.getSubscribers()) {
 			if (!(subscriber instanceof UserSubscriber))
 				continue;
 			if (contactType == null
 					|| subscriber.getContactType().equals(contactType)) {
 				try {
-					users.add(((UserSubscriber) subscriber).getCepUserEntity());
+					users.add(mapper.map(((UserSubscriber) subscriber).getCepUserEntity(), CepUser.class));
 				} catch (Exception e) {
 					logger.error("Tryied to obtain contact of type {} from {} but failed.", contactType, subscriber);
 				}

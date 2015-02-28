@@ -21,10 +21,10 @@ import org.subethamail.wiser.WiserMessage;
 
 import cz.muni.fi.cep.activiti.notification.tasks.SendSMSTask;
 import cz.muni.fi.cep.api.DTO.ContactType;
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
+import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
+import cz.muni.fi.cep.api.services.users.IdentityService;
 import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
-import cz.muni.fi.cep.core.configuration.ConfigurationManager;
-import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
-import cz.muni.fi.cep.core.users.api.IdentityService;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 /**

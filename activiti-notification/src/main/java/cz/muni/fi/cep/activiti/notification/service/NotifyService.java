@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
+import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
 import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
-import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
 
 /**
  * Service class for BPMN diagram Notify.

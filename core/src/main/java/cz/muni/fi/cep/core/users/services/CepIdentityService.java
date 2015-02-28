@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.impl.identity.Authentication;
+import org.dozer.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cz.muni.fi.cep.core.users.api.IdentityService;
+import cz.muni.fi.cep.api.DTO.CepGroup;
+import cz.muni.fi.cep.api.DTO.CepUser;
+import cz.muni.fi.cep.api.services.users.IdentityService;
 import cz.muni.fi.cep.core.users.dao.CepGroupDao;
 import cz.muni.fi.cep.core.users.dao.CepUserDao;
 import cz.muni.fi.cep.core.users.entities.CepGroupEntity;
@@ -25,175 +28,218 @@ public class CepIdentityService implements IdentityService {
 	@Autowired
 	private CepGroupDao cepGroupDao;
 
+	@Autowired
+	private Mapper mapper;
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Override
 	public void setCepUserDao(CepUserDao cepUserDao) {
 		this.cepUserDao = cepUserDao;
 	}
 
-	@Override
 	public void setCepGroupDao(CepGroupDao cepGroupDao) {
 		this.cepGroupDao = cepGroupDao;
 	}
 
 	@Override
-	public void createUser(CepUserEntity user) {
+	public void createUser(CepUser user) {
 		if (user == null)
 			throw new NullPointerException("User shouldn't be null.");
 
-		user.setId(cepUserDao.save(user).getId());
+		CepUserEntity userEntity = mapper.map(user, CepUserEntity.class);
+
+		String id = cepUserDao.save(userEntity).getId();
+		if (id == null) {
+			logger.warn("User {} not persisted.", user);
+		}
+		user.setId(Long.parseLong(id));
 		logger.info("User {} created", user);
 	}
 
 	@Override
-	public void deleteUser(CepUserEntity cepUser) {
-		if (cepUser == null)
+	public void deleteUser(CepUser user) {
+		if (user == null)
 			throw new NullPointerException("User shouldn't be null.");
 
-		CepUserEntity user = getCepUserById(Long.parseLong(cepUser.getId()));
+		CepUserEntity daoUser = cepUserDao.findOne(user.getId());
 		List<Long> groups = new ArrayList<>();
-		for(CepGroupEntity entity : user.getGroups()) {
+		for (CepGroupEntity entity : daoUser.getGroups()) {
 			groups.add(Long.parseLong(entity.getId()));
 		}
-		for(Long id : groups) {
+		for (Long id : groups) {
 			deleteMembership(user, getGroupById(id));
 		}
-		if(user.getGroups().size()!=0) {
-			logger.error("Could not delete {} because still contains users: {}", user, user.getGroups());
+		if (daoUser.getGroups().size() != 0) {
+			logger.error(
+					"Could not delete {} because still contains users: {}",
+					daoUser, daoUser.getGroups());
 		}
-		cepUserDao.delete(user);
-		
-		logger.info("User {} deleted", user);
+		cepUserDao.delete(daoUser);
+
+		logger.info("User {} deleted", daoUser);
 	}
 
 	@Override
-	public void updateUser(CepUserEntity user) {
-		createUser(user);
+	public void updateUser(CepUser user) {
+		if (user == null)
+			throw new NullPointerException("User shouldn't be null.");
+
+		CepUserEntity userEntity = cepUserDao.findOne(user.getId());
+
+		mapper.map(user, userEntity);
+
+		String id = cepUserDao.save(userEntity).getId();
+		if (id == null) {
+			logger.warn("User {} not persisted.", user);
+		}
+		user.setId(Long.parseLong(id));
 		logger.info("User {} updated", user);
 	}
 
 	@Override
-	public CepUserEntity getCepUserById(Long id) {
+	public CepUser getCepUserById(Long id) {
 		if (id == null)
 			throw new NullPointerException("Id shouldn't be null.");
 
 		CepUserEntity cepUserEntity = cepUserDao.findOne(id);
 		logger.info("Returning user {}", cepUserEntity);
-		return cepUserEntity;
+		return mapper.map(cepUserEntity, CepUser.class);
 	}
 
 	@Override
-	public List<CepUserEntity> getAllCepUsers() {
-		List<CepUserEntity> cepUserEntities = new ArrayList<CepUserEntity>();
+	public List<CepUser> getAllCepUsers() {
+		List<CepUser> cepUsers = new ArrayList<>();
 
 		for (CepUserEntity entity : cepUserDao.findAll()) {
-			cepUserEntities.add(entity);
+			cepUsers.add(mapper.map(entity, CepUser.class));
 		}
-		logger.info("Returning list of users. Size: {}", cepUserEntities.size());
-		return cepUserEntities;
+		logger.info("Returning list of users. Size: {}", cepUsers.size());
+		return cepUsers;
 	}
 
 	@Override
-	public void createGroup(CepGroupEntity cepGroupEntity) {
-		if (cepGroupEntity == null)
-			throw new NullPointerException(
-					"IdentityService: CepGroupEntity is null.");
+	public void createGroup(CepGroup cepGroup) {
+		if (cepGroup == null)
+			throw new NullPointerException("CepGroup is null.");
+
+		CepGroupEntity cepGroupEntity = mapper.map(cepGroup,
+				CepGroupEntity.class);
 		cepGroupEntity.setId(cepGroupDao.save(cepGroupEntity).getId());
 		logger.info("Group {} created", cepGroupEntity);
 	}
 
 	@Override
-	public void deleteGroup(CepGroupEntity cepGroupEntity) {
-		if (cepGroupEntity == null)
-			throw new NullPointerException(
-					"IdentityService: CepGroupEntity is null.");
-		CepGroupEntity group = getGroupById(Long.parseLong(cepGroupEntity.getId()));
+	public void deleteGroup(CepGroup cepGroup) {
+		if (cepGroup == null)
+			throw new NullPointerException("CepGroupEntity is null.");
+		CepGroupEntity group = cepGroupDao.findOne(cepGroup.getId());
+
 		List<Long> users = new ArrayList<>();
-		for(CepUserEntity entity : group.getUsers()) {
+		for (CepUserEntity entity : group.getUsers()) {
 			users.add(Long.parseLong(entity.getId()));
 		}
-		for(Long id : users) {
-			deleteMembership(getCepUserById(id), group);
+		for (Long id : users) {
+			deleteMembership(getCepUserById(id), cepGroup);
 		}
-		if(group.getUsers().size()!=0) {
-			logger.error("Could not delete {} because still contains users: {}", group, users);
+		if (group.getUsers().size() != 0) {
+			logger.error(
+					"Could not delete {} because still contains users: {}",
+					group, users);
 		}
 		cepGroupDao.delete(group);
-		logger.info("Group {} deleted", cepGroupEntity);
+		logger.info("Group {} deleted", cepGroup);
 	}
 
 	@Override
-	public void updateGroup(CepGroupEntity cepGroupEntity) {
-		if (cepGroupEntity == null)
-			throw new NullPointerException(
-					"IdentityService: CepGroupEntity is null.");
-		createGroup(cepGroupEntity);
+	public void updateGroup(CepGroup cepGroup) {
+		if (cepGroup == null)
+			throw new NullPointerException("CepGroupEntity is null.");
+
+		CepGroupEntity cepGroupEntity = cepGroupDao.findOne(cepGroup.getId());
+		mapper.map(cepGroup, cepGroupEntity);
+		
+		String id = cepGroupDao.save(cepGroupEntity).getId();
+		cepGroup.setId(Long.parseLong(id));
+	
 		logger.info("Group {} updated", cepGroupEntity);
 	}
 
 	@Override
-	public CepGroupEntity getGroupById(Long id) {
+	public CepGroup getGroupById(Long id) {
 		if (id == null)
 			throw new NullPointerException("Id shouldn't be null.");
 
 		CepGroupEntity group = cepGroupDao.findOne(id);
 		logger.info("Returning group {}", group);
-		return group;
+		return mapper.map(group, CepGroup.class);
 	}
 
 	@Override
-	public List<CepGroupEntity> getAllGroups() {
-		List<CepGroupEntity> cepGroupEntities = new ArrayList<CepGroupEntity>();
+	public List<CepGroup> getAllGroups() {
+		List<CepGroup> cepGroup = new ArrayList<>();
 
 		for (CepGroupEntity entity : cepGroupDao.findAll()) {
-			cepGroupEntities.add(entity);
+			cepGroup.add(mapper.map(entity, CepGroup.class));
 		}
 		logger.info("Returning list of groups. Size: {}",
-				cepGroupEntities.size());
-		return cepGroupEntities;
+				cepGroup.size());
+		return cepGroup;
 	}
 
 	@Override
-	public void createMembership(CepUserEntity cepUserEntity,
-			CepGroupEntity cepGroupEntity) {
-		if (cepGroupEntity == null)
+	public void createMembership(CepUser cepUser, CepGroup cepGroup) {
+		if (cepGroup == null)
 			throw new NullPointerException(
-					"IdentityService: CepGroupEntity is null.");
-		if (cepUserEntity == null)
+					"CepGroup is null.");
+		if (cepUser == null)
 			throw new NullPointerException("User shouldn't be null.");
 
-		if (cepUserDao.findOne(Long.parseLong(cepUserEntity.getId())) == null) {
-			throw new IllegalArgumentException("Given " + cepUserEntity
+		CepUserEntity cepUserEntity = cepUserDao.findOne(cepUser.getId());
+		if (cepUserEntity == null) {
+			throw new IllegalArgumentException("Given " + cepUser
 					+ " does not exists.");
 		}
 
-		if (cepGroupDao.findOne(Long.parseLong(cepGroupEntity.getId())) == null) {
-			throw new IllegalArgumentException("Given " + cepGroupEntity
+		CepGroupEntity cepGroupEntity = cepGroupDao.findOne(cepGroup.getId());
+		if (cepGroupEntity == null) {
+			throw new IllegalArgumentException("Given " + cepGroup
 					+ " does not exists.");
 		}
 
 		List<CepGroupEntity> groups = cepUserEntity.getGroups();
 		if (!groups.contains(cepGroupEntity))
 			groups.add(cepGroupEntity);
+		
 		List<CepUserEntity> users = cepGroupEntity.getUsers();
 		if (!users.contains(cepUserEntity))
 			users.add(cepUserEntity);
 
-		updateGroup(cepGroupEntity);
-		updateUser(cepUserEntity);
-		logger.info("Created membership of {} in {}", cepUserEntity,
-				cepGroupEntity);
+		cepUserDao.save(cepUserEntity);
+		cepGroupDao.save(cepGroupEntity);
+		
+		logger.info("Created membership of {} in {}", cepUser,
+				cepGroup);
 	}
 
 	@Override
-	public void deleteMembership(CepUserEntity cepUserEntity,
-			CepGroupEntity cepGroupEntity) {
-		if (cepGroupEntity == null)
+	public void deleteMembership(CepUser cepUser, CepGroup cepGroup) {
+		if (cepGroup == null)
 			throw new NullPointerException(
-					"IdentityService: CepGroupEntity is null.");
-		if (cepUserEntity == null)
+					"CepGroup is null.");
+		if (cepUser == null)
 			throw new NullPointerException("User shouldn't be null.");
+
+		CepUserEntity cepUserEntity = cepUserDao.findOne(cepUser.getId());
+		if (cepUserEntity == null) {
+			throw new IllegalArgumentException("Given " + cepUser
+					+ " does not exists.");
+		}
+
+		CepGroupEntity cepGroupEntity = cepGroupDao.findOne(cepGroup.getId());
+		if (cepGroupEntity == null) {
+			throw new IllegalArgumentException("Given " + cepGroup
+					+ " does not exists.");
+		}
 
 		List<CepGroupEntity> groups = cepUserEntity.getGroups();
 		if (groups.contains(cepGroupEntity))
@@ -202,10 +248,49 @@ public class CepIdentityService implements IdentityService {
 		if (users.contains(cepUserEntity))
 			users.remove(cepUserEntity);
 
-		updateGroup(cepGroupEntity);
-		updateUser(cepUserEntity);
+		cepUserDao.save(cepUserEntity);
+		cepGroupDao.save(cepGroupEntity);
+		
 		logger.info("Membership of {} in {} deleted", cepUserEntity,
 				cepGroupEntity);
+	}
+	
+	@Override
+	public List<CepUser> getMembers(CepGroup cepGroup){
+		if(cepGroup == null) {
+			logger.error("CepGroup is null");
+			return null;
+		}
+			
+		List<CepUser> users = new ArrayList<>();
+		CepGroupEntity cepGroupEntity = cepGroupDao.findOne(cepGroup.getId());
+		if(cepGroupEntity==null) {
+			logger.error("CepUser {} not found", cepGroup);
+			return null;
+		}
+		for(CepUserEntity cue : cepGroupEntity.getUsers()) {
+			users.add(mapper.map(cue, CepUser.class));			
+		}
+		return users;
+	}
+	
+	@Override
+	public List<CepGroup> getMemberships(CepUser cepUser){
+		if(cepUser == null) {
+			logger.error("CepUser is null");
+			return null;
+		}
+			
+		List<CepGroup> groups = new ArrayList<>();
+		CepUserEntity cepUserEntity = cepUserDao.findOne(cepUser.getId());
+		if(cepUserEntity==null) {
+			logger.error("CepUser {} not found", cepUser);
+			return null;
+		}
+		for(CepGroupEntity cge : cepUserEntity.getGroups()) {
+			groups.add(mapper.map(cge, CepGroup.class));			
+		}
+		return groups;
 	}
 
 	@Override

@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import cz.muni.fi.cep.activiti.radio.messages.FileRadioMessage;
 import cz.muni.fi.cep.activiti.radio.tasks.BroadcastTask;
-import cz.muni.fi.cep.core.configuration.ConfigurationManager;
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 
 /**
  * 

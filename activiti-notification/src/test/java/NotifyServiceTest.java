@@ -32,9 +32,9 @@ import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
 import cz.muni.fi.cep.api.DTO.ContactType;
 import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
-import cz.muni.fi.cep.core.configuration.ConfigurationManager;
-import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
-import cz.muni.fi.cep.core.users.api.IdentityService;
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
+import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
+import cz.muni.fi.cep.api.services.users.IdentityService;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 public class NotifyServiceTest extends ActivitiBasicTest  {

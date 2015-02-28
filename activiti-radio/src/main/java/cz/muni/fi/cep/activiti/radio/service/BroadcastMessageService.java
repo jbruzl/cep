@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 import cz.muni.fi.cep.activiti.radio.messages.FileRadioMessage;
 import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
-import cz.muni.fi.cep.api.services.CepProcessService;
+import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
 import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
 
 /**

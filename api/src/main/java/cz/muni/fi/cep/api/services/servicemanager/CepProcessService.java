@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cz.muni.fi.cep.api.services;
+package cz.muni.fi.cep.api.services.servicemanager;
 
 import java.awt.image.BufferedImage;
 import java.util.List;

@@ -1,4 +1,4 @@
-package cz.muni.fi.cep.api.services;
+package cz.muni.fi.cep.api.services.servicemanager;
 
 import java.util.List;
 import java.util.Map;

@@ -31,11 +31,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
-import cz.muni.fi.cep.api.services.CepHistoryService;
-import cz.muni.fi.cep.api.services.CepProcessService;
-import cz.muni.fi.cep.api.services.CepProcessServiceManager;
-import cz.muni.fi.cep.core.configuration.ConfigurationManager;
-import cz.muni.fi.cep.core.users.api.IdentityService;
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
+import cz.muni.fi.cep.api.services.servicemanager.CepHistoryService;
+import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
+import cz.muni.fi.cep.api.services.servicemanager.CepProcessServiceManager;
+import cz.muni.fi.cep.api.services.users.IdentityService;
 
 /**
  * Abstract super class of all {@link CepProcessService} implementations.

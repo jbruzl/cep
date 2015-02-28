@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import cz.muni.fi.cep.api.DTO.ContactType;
-import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
+import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
+import cz.muni.fi.cep.api.services.users.IdentityService;
 import cz.muni.fi.cep.core.subscriptions.entities.Subscriber;
-import cz.muni.fi.cep.core.users.api.IdentityService;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 

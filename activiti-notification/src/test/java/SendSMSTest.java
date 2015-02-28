@@ -18,8 +18,8 @@ import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestTemplate;
 
 import cz.muni.fi.cep.activiti.notification.tasks.SendSMSTask;
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
-import cz.muni.fi.cep.core.configuration.ConfigurationManager;
 
 public class SendSMSTest extends ActivitiBasicTest {
 	@Autowired

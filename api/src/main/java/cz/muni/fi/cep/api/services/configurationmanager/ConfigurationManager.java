@@ -1,4 +1,4 @@
-package cz.muni.fi.cep.core.configuration;
+package cz.muni.fi.cep.api.services.configurationmanager;
 
 import java.io.Serializable;
 import java.util.Set;
