@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.DTO.ContactType;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.api.services.users.IdentityService;
 import cz.muni.fi.cep.core.subscriptions.entities.Subscriber;
-import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 
 @Controller
@@ -66,7 +66,7 @@ public class SubscriptionController {
 			@RequestParam(required=true, value="publisher") String publisherCode,
 			@RequestParam(required=true, value="contactType") ContactType contactType
 			) {
-		CepUserEntity cepUser = identityService.getCepUserById(Long.parseLong(userId));
+		CepUser cepUser = identityService.getCepUserById(Long.parseLong(userId));
 		if(cepUser==null) {
 			//TODO error message
 			return "redirect:/odbery";
@@ -92,7 +92,7 @@ public class SubscriptionController {
 	public String selectPublisher(Model model, @RequestParam(value="publisher", required=false) String publisher) {
 		model.addAttribute("publishers", subscriptionService.getAllPublishers());
 		if(publisher!= null) {
-			Map<String, List<CepUserEntity>> userSubscribers = new HashMap<>();
+			Map<String, List<CepUser>> userSubscribers = new HashMap<>();
 			userSubscribers.put(ContactType.EMAIL.toString(), subscriptionService.getUserSubscribers(publisher, ContactType.EMAIL));
 			userSubscribers.put(ContactType.SMS.toString(), subscriptionService.getUserSubscribers(publisher, ContactType.SMS));
 			model.addAttribute("userSubscribers", userSubscribers);

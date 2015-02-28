@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import cz.muni.fi.cep.api.DTO.CepGroup;
+import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.services.users.IdentityService;
-import cz.muni.fi.cep.core.users.entities.CepGroupEntity;
-import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 @Controller
 @RequestMapping(value = { "/skupiny" })
@@ -25,19 +25,19 @@ public class GroupController {
 	
 	@RequestMapping(value= {"/pridat"})
 	public String addGroup(Model model) {
-		model.addAttribute("group", new CepGroupEntity());
+		model.addAttribute("group", new CepGroup());
 		return "/groups/add";
 	}
 	
 	@RequestMapping(value= {"/pridat-submit"}, method=RequestMethod.POST)
-	public String createGroup(Model model, final CepGroupEntity group) {
+	public String createGroup(Model model, final CepGroup group) {
 		identityService.createGroup(group);
 		return "redirect:/skupiny";
 	}
 	
 	@RequestMapping(value= {"/clenove"})
 	public String memebers(Model model, @RequestParam(value="id", required=true)Long id) {
-		CepGroupEntity cepGroup = identityService.getGroupById(id);
+		CepGroup cepGroup = identityService.getGroupById(id);
 		if(cepGroup == null) {
 			//TODO error message
 			return "redirect:/skupiny";
@@ -49,8 +49,8 @@ public class GroupController {
 	
 	@RequestMapping(value= {"/pridat-clena-submit"}, method=RequestMethod.POST)
 	public String addMember(Model model, @RequestParam(value="group", required=true) Long groupId, @RequestParam(value="id", required=true) Long userId) {
-		CepGroupEntity group = identityService.getGroupById(groupId);
-		CepUserEntity user = identityService.getCepUserById(userId);
+		CepGroup group = identityService.getGroupById(groupId);
+		CepUser user = identityService.getCepUserById(userId);
 		if(group== null || user == null) {
 			//TODO error message
 			return "redirect:/skupiny";
@@ -61,8 +61,8 @@ public class GroupController {
 	
 	@RequestMapping(value= {"/odebrat-clena"})
 	public String deleteMember( @RequestParam(value="id", required=true) Long groupId, @RequestParam(value="user", required=true) Long userId) {
-		CepGroupEntity group = identityService.getGroupById(groupId);
-		CepUserEntity user = identityService.getCepUserById(userId);
+		CepGroup group = identityService.getGroupById(groupId);
+		CepUser user = identityService.getCepUserById(userId);
 		if(group== null || user == null) {
 			//TODO error message
 			return "redirect:/skupiny";
@@ -73,7 +73,7 @@ public class GroupController {
 	
 	@RequestMapping(value= {"/odebrat"})
 	public String deleteGroup( @RequestParam(value="id", required=true) Long groupId) {
-		CepGroupEntity group = identityService.getGroupById(groupId);
+		CepGroup group = identityService.getGroupById(groupId);
 		if(group== null) {
 			//TODO error message
 			return "redirect:/skupiny";

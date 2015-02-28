@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import cz.muni.fi.cep.api.DTO.CepGroup;
+import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.services.users.IdentityService;
-import cz.muni.fi.cep.core.users.entities.CepGroupEntity;
-import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 @Controller
 @RequestMapping(value = { "/uzivatele" })
@@ -41,53 +41,53 @@ public class UserController {
 			@RequestParam(value = "phone") String phone,
 			@RequestParam(value = "groups") List<String> groups) {
 
-		CepUserEntity user = new CepUserEntity();
+		CepUser user = new CepUser();
 		user.setFirstName(name);
 		user.setLastName(surname);
-		user.setEmail(mail);
+		user.setMail(mail);
 		user.setPassword(password);
 		user.setPhoneNumber(phone);
 		
 		identityService.createUser(user);
 		for(String group : groups) {
-			CepGroupEntity groupEntity = identityService.getGroupById(Long.parseLong(group));
-			if(groupEntity == null)
+			CepGroup cepGroup = identityService.getGroupById(Long.parseLong(group));
+			if(cepGroup == null)
 				continue;
-			identityService.createMembership(user, groupEntity);
+			identityService.createMembership(user, cepGroup);
 		}
 		return "redirect:/uzivatele";
 	}
 	
 	@RequestMapping(value= {"/detail"})
 	public String detail(Model model, @RequestParam(value="id", required=true) Long id) {
-		CepUserEntity cepUserEntity = identityService.getCepUserById(id);
-		if(cepUserEntity==null) {
+		CepUser cepUser = identityService.getCepUserById(id);
+		if(cepUser==null) {
 			//TODO error message
 			return "users";
 		}
-		model.addAttribute("user", cepUserEntity);
+		model.addAttribute("user", cepUser);
 		return "users/detail";
 	}
 	
 	@RequestMapping(value= {"/delete"})
 	public String delete(Model model, @RequestParam(value="id", required=true) Long id) {
-		CepUserEntity cepUserEntity = identityService.getCepUserById(id);
-		if(cepUserEntity==null) {
+		CepUser cepUser = identityService.getCepUserById(id);
+		if(cepUser==null) {
 			//TODO error message
 			return "redirect:/uzivatele";
 		}
-		identityService.deleteUser(cepUserEntity);
+		identityService.deleteUser(cepUser);
 		return "redirect:/uzivatele";
 	}
 	
 	@RequestMapping(value= {"/edit"})
 	public String edit(Model model, @RequestParam(value="id", required=true) Long id) {
-		CepUserEntity cepUserEntity = identityService.getCepUserById(id);
-		if(cepUserEntity==null) {
+		CepUser cepUser = identityService.getCepUserById(id);
+		if(cepUser==null) {
 			//TODO error message
 			return "users";
 		}
-		model.addAttribute("user", cepUserEntity);
+		model.addAttribute("user", cepUser);
 		return "users/edit";
 	}
 	
@@ -101,14 +101,14 @@ public class UserController {
 			@RequestParam(value = "phone") String phone,
 			@RequestParam(value = "id") String id) {
 
-		CepUserEntity user = identityService.getCepUserById(Long.parseLong(id));
+		CepUser user = identityService.getCepUserById(Long.parseLong(id));
 		if(user==null) {
 			//TODO error message
 			return "redirect:/uzivatele";
 		}
 		user.setFirstName(name);
 		user.setLastName(surname);
-		user.setEmail(mail);
+		user.setMail(mail);
 		user.setPassword(password);
 		user.setPhoneNumber(phone);
 		

@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.services.users.IdentityService;
-import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 @Controller
 public class LoginController {
@@ -32,10 +32,10 @@ public class LoginController {
 			@RequestParam(value = "email", required=true) String mail,
 			@RequestParam(value = "phone") String phone) {
 
-		CepUserEntity user = new CepUserEntity();
+		CepUser user = new CepUser();
 		user.setFirstName(name);
 		user.setLastName(surname);
-		user.setEmail(mail);
+		user.setMail(mail);
 		user.setPassword(passwordEncoder.encode(password));
 		user.setPhoneNumber(phone);
 		
