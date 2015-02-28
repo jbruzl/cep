@@ -1,5 +1,6 @@
 package cz.muni.fi.cep.activiti.notification.service;
 
+
 import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
@@ -16,10 +17,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import cz.muni.fi.cep.api.DTO.MessageType;
 import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
-import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
 import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
 
 /**

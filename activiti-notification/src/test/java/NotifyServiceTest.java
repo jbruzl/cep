@@ -29,13 +29,13 @@ import cz.muni.fi.cep.activiti.notification.service.NotifyHistoryService;
 import cz.muni.fi.cep.activiti.notification.service.NotifyService;
 import cz.muni.fi.cep.activiti.notification.tasks.SendSMSTask;
 import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
+import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.DTO.ContactType;
 import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.api.services.users.IdentityService;
-import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 public class NotifyServiceTest extends ActivitiBasicTest  {
 	@Autowired
@@ -111,17 +111,17 @@ public class NotifyServiceTest extends ActivitiBasicTest  {
 	    
 	    publisherCode = service.getPublisherCode();
 
-		CepUserEntity userEntity = new CepUserEntity();
+		CepUser userEntity = new CepUser();
 		userEntity.setFirstName("Jan");
 		userEntity.setLastName("Bruzl");
-		userEntity.setEmail("notify@gmail.com");
+		userEntity.setMail("notify@gmail.com");
 		userEntity.setPhoneNumber(receiver);
 		userEntity.setPassword("01234");
 
-		CepUserEntity userEntity2 = new CepUserEntity();
+		CepUser userEntity2 = new CepUser();
 		userEntity2.setFirstName("Karel");
 		userEntity2.setLastName("Novak");
-		userEntity2.setEmail("novak@novak.cz");
+		userEntity2.setMail("novak@novak.cz");
 		userEntity2.setPhoneNumber("+420728484615");
 		userEntity2.setPassword("01234");
 
@@ -129,7 +129,7 @@ public class NotifyServiceTest extends ActivitiBasicTest  {
 			identityService.createUser(userEntity);
 			identityService.createUser(userEntity2);
 
-			identityService.setAuthenticatedUserId(userEntity.getEmail());
+			identityService.setAuthenticatedUserId(userEntity.getMail());
 		}
 
 		subscriptionService.register(publisherCode);
