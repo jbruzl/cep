@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
-import cz.muni.fi.cep.api.DTO.MessageType;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 
 
@@ -53,27 +52,21 @@ public class SendSMSTask implements JavaDelegate {
 			return;
 		}
 
-		MessageType messageType = (MessageType) execution
-				.getVariable("messageType");
-		if (messageType == null) {
-			logger.error(
-					"Supplied unsupported variable: messageType. Quitting SendSMSTask with params: {}",
-					message);
-			return;
-		}
+	
+		
 
 		List<String> receivers = null;
 		if (execution.getVariable("receivers") instanceof List) {
 			receivers = (List<String>) execution.getVariable("receivers");
 		} else {
 			logger.error(
-					"Supplied unsupported variable: receivers. Quitting SendSMSTask with params: {}, {}",
-					message, messageType);
+					"Supplied unsupported variable: receivers. Quitting SendSMSTask with param: {}",
+					message);
 			return;
 		}
 
-		logger.info("Executing SendSMS task with params: {}, {}, {}", message,
-				messageType, receivers);
+		logger.info("Executing SendSMS task with params: {}, {}", message,
+				receivers);
 
 		try {
 			logger.info("Starting to send sms");

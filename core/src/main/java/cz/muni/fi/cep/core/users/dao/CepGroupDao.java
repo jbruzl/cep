@@ -11,4 +11,5 @@ import cz.muni.fi.cep.core.users.entities.CepGroupEntity;
  */
 public interface CepGroupDao extends CrudRepository<CepGroupEntity, Long> {
 
+	public CepGroupEntity findByCode(String code);
 }

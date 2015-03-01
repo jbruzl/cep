@@ -54,7 +54,10 @@ public class CepGroupEntity implements Group {
 
 	@Override
 	public void setId(String id) {
-		this.id = Long.parseLong(id);
+		if (id == null)
+			this.id = null;
+		else
+			this.id = Long.parseLong(id);
 	}
 
 	@Override

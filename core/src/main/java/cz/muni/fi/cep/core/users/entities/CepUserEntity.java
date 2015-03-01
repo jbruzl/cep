@@ -112,7 +112,10 @@ public class CepUserEntity implements User {
 
 	@Override
 	public void setId(String id) {
-		this.id = Long.parseLong(id);
+		if (id == null)
+			this.id = null;
+		else
+			this.id = Long.parseLong(id);
 	}
 
 	@Override

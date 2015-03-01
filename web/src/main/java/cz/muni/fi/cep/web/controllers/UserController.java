@@ -3,6 +3,8 @@ package cz.muni.fi.cep.web.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -115,4 +117,20 @@ public class UserController {
 		identityService.updateUser(user);
 		return "redirect:/uzivatele";
 	}
+	
+	@RequestMapping(value= {"/mujucet"})
+	public String myProfile(Model model) {
+		String email = ((User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal()).getUsername();
+		
+		CepUser cepUser = identityService.getCepUserByEmail(email);
+		if(cepUser==null) {
+			//TODO error message
+			return "users";
+		}
+		model.addAttribute("user", cepUser);
+		model.addAttribute("groups", identityService.getMemberships(cepUser));
+		return "users/detail";
+	}
+	
 }

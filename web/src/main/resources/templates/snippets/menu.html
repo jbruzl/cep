@@ -38,10 +38,10 @@
 					<li class="divider" sec:authorize="isAuthenticated()"></li>
 					<li><a th:href="@{/historie}" sec:authorize="isAuthenticated()">Historie</a></li>
 					<li class="divider" sec:authorize="isAuthenticated()"></li>
-					<li class="has-dropdown"><a href="#" sec:authentication="name"
+					<li class="has-dropdown"><a th:href="@{/uzivatele/mujucet}" sec:authentication="name"
 						sec:authorize="isAuthenticated()">Jan Bruzl</a>
 						<ul class="dropdown">
-							<li><a th:href="@{/profile(user=${#authentication.name})}">Účet</a></li>
+							<li><a th:href="@{/uzivatele/mujucet}">Účet</a></li>
 							<li><form name="logoutForm" th:action="@{/logout}"
 									method="post"></form> <a href="#"
 								onclick="document.logoutForm.submit();">Odhlásit se</a></li>

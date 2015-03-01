@@ -23,17 +23,6 @@ public class GroupController {
 		return "/groups/groups";
 	}
 	
-	@RequestMapping(value= {"/pridat"})
-	public String addGroup(Model model) {
-		model.addAttribute("group", new CepGroup());
-		return "/groups/add";
-	}
-	
-	@RequestMapping(value= {"/pridat-submit"}, method=RequestMethod.POST)
-	public String createGroup(Model model, final CepGroup group) {
-		identityService.createGroup(group);
-		return "redirect:/skupiny";
-	}
 	
 	@RequestMapping(value= {"/clenove"})
 	public String memebers(Model model, @RequestParam(value="id", required=true)Long id) {
@@ -43,6 +32,7 @@ public class GroupController {
 			return "redirect:/skupiny";
 		}
 		model.addAttribute("group", cepGroup);
+		model.addAttribute("groupUsers", identityService.getMembers(cepGroup));
 		model.addAttribute("users", identityService.getAllCepUsers());
 		return "/groups/members";
 	}

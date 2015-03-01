@@ -105,6 +105,19 @@ public class CepIdentityService implements IdentityService {
 		logger.info("Returning user {}", cepUserEntity);
 		return mapper.map(cepUserEntity, CepUser.class);
 	}
+	
+	@Override
+	public CepUser getCepUserByEmail(String email) {
+		if (email == null)
+			throw new NullPointerException("Email shouldn't be null.");
+		
+		if (email.length() == 0)
+			throw new NullPointerException("Email shouldn't be empty.");
+
+		CepUserEntity cepUserEntity = cepUserDao.findByEmail(email);
+		logger.info("Returning user {}", cepUserEntity);
+		return mapper.map(cepUserEntity, CepUser.class);
+	}
 
 	@Override
 	public List<CepUser> getAllCepUsers() {
@@ -170,6 +183,19 @@ public class CepIdentityService implements IdentityService {
 			throw new NullPointerException("Id shouldn't be null.");
 
 		CepGroupEntity group = cepGroupDao.findOne(id);
+		logger.info("Returning group {}", group);
+		return mapper.map(group, CepGroup.class);
+	}
+	
+
+	@Override
+	public CepGroup getGroupByCode(String code) {
+		if (code == null)
+			throw new NullPointerException("Id shouldn't be null.");
+
+		CepGroupEntity group = cepGroupDao.findByCode(code);
+		if(group == null)
+			return null;
 		logger.info("Returning group {}", group);
 		return mapper.map(group, CepGroup.class);
 	}

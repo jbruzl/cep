@@ -4,7 +4,7 @@
 <head th:include="index :: head">
 </head>
 <body>
-	<div class="sticky" th:include="index :: menu"></div>
+	<div class="sticky" th:include="snippets/menu :: menu">	</div>
 
 
 
@@ -25,7 +25,6 @@
 				<h4>Skupiny</h4>
 				<ul>
 					<li><a th:href="@{/skupiny}">Přehled skupin</a></li>
-					<li><a th:href="@{/skupiny/pridat}">Přidat skupinu</a></li>
 				</ul>
 			</div>
 
@@ -46,7 +45,6 @@
 							<th>Skupina</th>
 							<th>Kód</th>
 							<th>Typ</th>
-							<th>Počet uživatelů</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -54,7 +52,6 @@
 							<td th:text="${group.name}">Name</td>
 							<td th:text="${group.code}">Code</td>
 							<td th:text="${group.type}">Type</td>
-							<td th:text="${group.users.size()}">Members</td>
 							<td><a th:href="@{/skupiny/clenove(id=${group.id})}">Členové</a> <a th:href="@{/skupiny/odebrat(id=${group.id})}">Odstranit</a>
 							</td>
 						</tr>

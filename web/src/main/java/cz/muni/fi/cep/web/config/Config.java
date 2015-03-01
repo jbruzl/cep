@@ -7,6 +7,8 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -14,6 +16,13 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.servlet.ViewResolver;
+import org.thymeleaf.extras.springsecurity3.dialect.SpringSecurityDialect;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.spring4.view.ThymeleafViewResolver;
+import org.thymeleaf.templateresolver.TemplateResolver;
 
 @Configuration
 public class Config {
@@ -62,5 +71,48 @@ public class Config {
 		properties.setProperty("hibernate.dialect",
 				"org.hibernate.dialect.MySQL5Dialect");
 		return properties;
+	}
+	
+	@Bean
+	public TemplateResolver templateResolver() {
+		TemplateResolver tempRes = new SpringResourceTemplateResolver();
+
+		tempRes.setCharacterEncoding("UTF-8");
+		tempRes.setTemplateMode("HTML5");
+		tempRes.setSuffix(".html");
+		tempRes.setPrefix("classpath:/templates/");
+		tempRes.setCacheable(false);
+		return tempRes;
+	}
+
+	@Bean
+    public SpringSecurityDialect thymeleafSecurityDialect(){
+        return new SpringSecurityDialect();
+    } 
+    @Bean
+    public SpringTemplateEngine templateEngine() {
+        SpringTemplateEngine ste = new SpringTemplateEngine();
+        ste.setTemplateResolver(templateResolver());
+        ste.addDialect(thymeleafSecurityDialect());
+        return ste;
+    }
+
+	@Bean
+	public ViewResolver viewResolver() {
+		ThymeleafViewResolver tvr = new ThymeleafViewResolver();
+
+		tvr.setCharacterEncoding("UTF-8");
+		tvr.setTemplateEngine(templateEngine());
+
+		return tvr;
+	}
+
+	@Bean
+	@Order(Ordered.HIGHEST_PRECEDENCE)
+	CharacterEncodingFilter characterEncodingFilter() {
+		CharacterEncodingFilter filter = new CharacterEncodingFilter();
+		filter.setEncoding("UTF-8");
+		filter.setForceEncoding(true);
+		return filter;
 	}
 }

@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.activiti.radio.messages.FileRadioMessage;
+import cz.muni.fi.cep.api.DTO.CepGroup;
 import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
 import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
@@ -60,6 +61,13 @@ public class BroadcastMessageService extends AbstractCepProcessService {
 	public void init() {
 		logger.info("Initialising Broadcast Message service");
 
+		CepGroup cepGroup = new CepGroup();
+		cepGroup.setCode("radio");
+		cepGroup.setName("Rozhlas");
+		cepGroup.setType("Proces");
+		if(identityService.getGroupByCode(cepGroup.getCode())==null)
+			identityService.createGroup(cepGroup);
+		
 		processServiceManager.registerService(this);
 
 		configurationManager.setKey("cep.radio.broadcast.url", broadcastUrl);

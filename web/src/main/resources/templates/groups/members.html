@@ -4,7 +4,7 @@
 <head th:include="index :: head">
 </head>
 <body>
-	<div class="sticky" th:include="index :: menu"></div>
+	<div class="sticky" th:include="snippets/menu :: menu">	</div>
 
 
 
@@ -21,12 +21,7 @@
 	<div class="row">
 
 		<div class="large-3 columns">
-			<div class="panel" th:fragment="sub-menu">
-				<h4>Skupiny</h4>
-				<ul>
-					<li><a th:href="@{/skupiny}">Přehled skupin</a></li>
-					<li><a th:href="@{/skupiny/pridat}">Přidat skupinu</a></li>
-				</ul>
+			<div class="panel" th:include="groups/groups :: sub-menu">				
 			</div>
 
 			<div class="panel" th:fragment="desc">
@@ -40,17 +35,31 @@
 		<div class="large-9 columns">
 			<div class="panel">
 				<h4>Detail skupiny</h4>
-				<div>
-					<label for="name">Název</label><span name="name"
-						th:text="${group.name}">Name</span>
+
+				<div class="row">
+					<div class="column medium-2">
+						<label for="name">Název</label>
+					</div>
+					<div class="column medium-10">
+						<span name="name" th:text="${group.name}">Name</span>
+					</div>
 				</div>
-				<div>
-					<label for="code">Kód</label><span name="code"
-						th:text="${group.code}">Code</span>
+				<div class="row">
+					<div class="column medium-2">
+						<label for="code">Kód</label>
+					</div>
+					<div class="column medium-10">
+						<span name="code" th:text="${group.code}">Code</span>
+					</div>
 				</div>
-				<div>
-					<label for="type">Typ</label><span name="type"
-						th:text="${group.type}">Type</span>
+
+				<div class="row">
+					<div class="column medium-2">
+						<label for="type">Typ</label>
+					</div>
+					<div class="column medium-10">
+						<span name="type" th:text="${group.type}">Type</span>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -60,11 +69,11 @@
 				<h5>Členové</h5>
 				<form action="#" th:action="@{/skupiny/pridat-clena-submit}"
 					method="post">
-					<input type="hidden" name="group" th:value="${group.id}" />
-					<label for="id">Nový člen</label><select name="id"><option
+					<input type="hidden" name="group" th:value="${group.id}" /> <label
+						for="id">Nový člen</label><select name="id"><option
 							th:each="user : ${users}" th:value="${user.id}"
-							th:text="${user.firstName+' ' + user.lastName}">User</option></select>
-							 <input name="submit" type="submit" value="Přidat" class="button small" />
+							th:text="${user.firstName+' ' + user.lastName}">User</option></select> <input
+						name="submit" type="submit" value="Přidat" class="button small" />
 				</form>
 				<table>
 					<thead>
@@ -75,10 +84,11 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="user : ${group.users}">
+						<tr th:each="user : ${groupUsers}">
 							<td th:text="${user.firstName + ' ' + user.lastName}"></td>
-							<td th:text="${user.email}"></td>
-							<td><a th:href="@{/skupiny/odebrat-clena(id=${group.id},user=${user.id})}">Odstranit</a></td>
+							<td th:text="${user.mail}"></td>
+							<td><a
+								th:href="@{/skupiny/odebrat-clena(id=${group.id},user=${user.id})}">Odstranit</a></td>
 						</tr>
 					</tbody>
 				</table>

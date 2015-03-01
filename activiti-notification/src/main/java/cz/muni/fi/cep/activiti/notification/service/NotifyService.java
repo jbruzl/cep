@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import cz.muni.fi.cep.api.DTO.CepGroup;
 import cz.muni.fi.cep.api.DTO.MessageType;
 import cz.muni.fi.cep.api.DTO.forms.CepFormData;
 import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
@@ -63,6 +64,13 @@ public class NotifyService extends AbstractCepProcessService {
 	public void init() {
 		logger.info("Initialising Notify service");
 
+		CepGroup cepGroup = new CepGroup();
+		cepGroup.setCode("notify");
+		cepGroup.setName("Notifikace");
+		cepGroup.setType("Proces");
+		if(identityService.getGroupByCode(cepGroup.getCode())==null)
+			identityService.createGroup(cepGroup);
+		
 		processServiceManager.registerService(this);
 		
 		subscriptionService.register(publisherCode);

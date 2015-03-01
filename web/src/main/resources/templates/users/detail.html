@@ -34,12 +34,38 @@
 				<div class="large-6 columns">
 					<div class="panel">
 						<h5>Základní informace</h5>
-						<label for="name">Jméno</label> <span th:text="${user.firstName}"
-							name="name">Name</span> <label for="surname">Příjmení</label><span
-							th:text="${user.lastName}" name="surname">Surname</span> <label
-							for="email">Email</label><span th:text="${user.email}"
-							name="email">Email</span> <label for="phone">Telefon</label><span
-							th:text="${user.phoneNumber}" name="phone">Phone</span>
+						<div class="row">
+							<div class="column medium-3">
+								<label for="name">Jméno</label>
+							</div>
+							<div class="column medium-9">
+								<span th:text="${user.firstName}" name="name">Name</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="column medium-3">
+								<label for="surname">Příjmení</label>
+							</div>
+							<div class="column medium-9">
+								<span th:text="${user.lastName}" name="surname">Surname</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="column medium-3">
+								<label for="email">Email</label>
+							</div>
+							<div class="column medium-9">
+								<span th:text="${user.mail}" name="email">Email</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="column medium-3">
+								<label for="phone">Telefon</label>
+							</div>
+							<div class="column medium-9">
+								<span th:text="${user.phoneNumber}" name="phone">Phone</span>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -54,7 +80,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="group : ${user.groups}">
+								<tr th:each="group : ${groups}">
 									<td th:text="${group.name}">Name</td>
 								</tr>
 							</tbody>

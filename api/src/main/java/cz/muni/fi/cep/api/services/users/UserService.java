@@ -38,9 +38,16 @@ public interface UserService {
 	public abstract CepUser getCepUserById(Long id);
 
 	/**
-	 * 
+	 * Returns all {@link CepUser}
 	 * @return {@link List<CepUser>}
 	 */
 	public abstract List<CepUser> getAllCepUsers();
+
+	/**
+	 * Returns {@link CepUser} with given email
+	 * @param email
+	 * @return {@link CepUser}
+	 */
+	public abstract CepUser getCepUserByEmail(String email);
 
 }

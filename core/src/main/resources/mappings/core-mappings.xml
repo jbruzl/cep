@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
-	<mapping type="one-way">
+	<mapping><class-a>cz.muni.fi.cep.api.DTO.CepGroup</class-a><class-b>cz.muni.fi.cep.core.users.entities.CepGroupEntity</class-b><field><a>id</a><b>id</b></field><field><a>code</a><b>code</b></field><field><a>name</a><b>name</b></field><field><a>type</a><b>type</b></field></mapping><mapping><class-a>cz.muni.fi.cep.api.DTO.CepUser</class-a><class-b>cz.muni.fi.cep.core.users.entities.CepUserEntity</class-b><field><a>mail</a><b>email</b></field><field type="one-way"><a>password</a><b>password</b></field><field><a>lastName</a><b>lastName</b></field><field><a>firstName</a><b>firstName</b></field><field><a>phoneNumber</a><b>phoneNumber</b></field><field><a>id</a><b>id</b></field></mapping><mapping type="one-way">
 		<class-a>org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity</class-a>
 		<class-b>cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance</class-b>
 		<field>

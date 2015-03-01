@@ -41,5 +41,13 @@ public interface GroupService {
 	 * @return {@link List<CepGroup>}
 	 */
 	public List<CepGroup> getAllGroups();
+
+	/**
+	 * Gets group with given code.
+	 * 
+	 * @param code
+	 * @return {@link CepGroup}
+	 */
+	public abstract CepGroup getGroupByCode(String code);
 	
 }

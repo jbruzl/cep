@@ -19,6 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import cz.muni.fi.cep.api.DTO.CepGroup;
+import cz.muni.fi.cep.api.services.users.IdentityService;
+
 /**
  *
  * @author Jan Bruzl <bruzl@progenium.cz>
@@ -31,10 +34,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     @Qualifier("userDetailsService")
     UserDetailsService userDetailsService;
+    
+    @Autowired
+    private IdentityService identityService;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        
+        //verify and set up user roles
+        CepGroup admin = new CepGroup();
+        admin.setCode("administrator");
+        admin.setName("Administrátor");
+        admin.setType("Aplikace");
+        
+        if(identityService.getGroupByCode(admin.getCode())==null)
+        	identityService.createGroup(admin);
+        
     }
 
     @Override
