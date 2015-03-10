@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
+import cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance;
 import cz.muni.fi.cep.core.servicemanager.history.DefaultHistoryService;
 
 /**

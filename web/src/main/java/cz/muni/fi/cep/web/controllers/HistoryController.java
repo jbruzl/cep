@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
+import cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance;
 import cz.muni.fi.cep.api.services.servicemanager.CepHistoryService;
 import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
 import cz.muni.fi.cep.api.services.servicemanager.CepProcessServiceManager;

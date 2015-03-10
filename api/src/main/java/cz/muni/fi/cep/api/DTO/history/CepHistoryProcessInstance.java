@@ -1,7 +1,9 @@
-package cz.muni.fi.cep.api.DTO;
+package cz.muni.fi.cep.api.DTO.history;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -26,6 +28,17 @@ public class CepHistoryProcessInstance implements Serializable,
 	private String startActivityId;
 	private String superProcessInstanceId;
 	private String name;
+	
+	private List<CepHistoricActivitiInstance> activitiInstances = new ArrayList<>();
+	
+	public List<CepHistoricActivitiInstance> getActivitiInstances() {
+		return activitiInstances;
+	}
+
+	public void addActivitiInstances(
+			CepHistoricActivitiInstance activitiInstances) {
+		this.activitiInstances.add(activitiInstances);
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -125,7 +138,7 @@ public class CepHistoryProcessInstance implements Serializable,
 
 	@Override
 	public String toString() {
-		return "CepHistoryProcessInstance [processDefinitionId="
+		return "CepHistoryProcessInstance [id=" + id + ", processDefinitionId="
 				+ processDefinitionId + ", processInstanceId="
 				+ processInstanceId + ", startTime=" + startTime + ", endTime="
 				+ endTime + ", durationInMillis=" + durationInMillis
@@ -133,7 +146,8 @@ public class CepHistoryProcessInstance implements Serializable,
 				+ businessKey + ", startUserId=" + startUserId
 				+ ", startActivityId=" + startActivityId
 				+ ", superProcessInstanceId=" + superProcessInstanceId
-				+ ", name=" + name + "]";
+				+ ", name=" + name + ", activitiInstances=" + activitiInstances
+				+ "]";
 	}
 
 	@Override

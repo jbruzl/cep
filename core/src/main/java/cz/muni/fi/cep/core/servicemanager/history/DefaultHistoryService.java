@@ -16,7 +16,8 @@ import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
+import cz.muni.fi.cep.api.DTO.history.CepHistoricActivitiInstance;
+import cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance;
 import cz.muni.fi.cep.api.services.servicemanager.CepHistoryService;
 
 /**
@@ -94,7 +95,16 @@ public class DefaultHistoryService implements CepHistoryService {
 				.processInstanceId(pid).singleResult();
 		if (hpi == null)
 			return null;
-		return mapper.map(hpi, CepHistoryProcessInstance.class);
+		CepHistoryProcessInstance chpi = mapper.map(hpi, CepHistoryProcessInstance.class);
+		
+		
+		List<HistoricActivityInstance> haiList = historyService.createHistoricActivityInstanceQuery().processInstanceId(pid).orderByHistoricActivityInstanceStartTime().asc().list();
+		
+		for (HistoricActivityInstance hai : haiList) {
+			chpi.addActivitiInstances(mapper.map(hai, CepHistoricActivitiInstance.class));
+		}
+		
+		return chpi;
 	}
 
 	/**
@@ -141,7 +151,7 @@ public class DefaultHistoryService implements CepHistoryService {
 				endStateStatistic.put(hai.getActivityName(),1);
 			}
 		}
-		
+
 		return endStateStatistic;
 	}
 }

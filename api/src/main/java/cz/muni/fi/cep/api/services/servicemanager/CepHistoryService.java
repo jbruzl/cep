@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.activiti.engine.HistoryService;
 
-import cz.muni.fi.cep.api.DTO.CepHistoryProcessInstance;
+import cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance;
 
 /**
  * Interface for local facade of {@link HistoryService}.

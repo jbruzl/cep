@@ -4,7 +4,7 @@
 <head th:include="index :: head">
 </head>
 <body>
-	<div class="sticky" th:include="snippets/menu :: menu">	</div>
+	<div class="sticky" th:include="snippets/menu :: menu"></div>
 
 
 
@@ -94,13 +94,22 @@
 						</div>
 						<div class="small-4 column" th:text="${process.processInstanceId}"></div>
 					</div>
-					
-					<h5>Proměnné</h5>
-					
-					
-					
+
 					<h5>Historie</h5>
-					
+					<div>
+						<div class="row" th:each="instance : ${process.activitiInstances}">
+							<div class="column medium-1" th:text="${instance.id}"></div>
+							<div class="column medium-2"
+								th:text="${#dates.format(instance.startTime, 'dd.MM.yyyy HH:mm:ss')}"></div>
+							<div class="column medium-2"
+								th:text="${#dates.format(instance.endTime, 'dd.MM.yyyy HH:mm:ss')}"></div>
+							<div class="column medium-7" th:text="${instance.activityName}"></div>
+						</div>
+					</div>
+
+
+
+
 				</div>
 
 			</div>
@@ -114,7 +123,9 @@
 		<div class="large-12 columns">
 			<div class="panel">
 				<h4>Diagram procesu instance</h4>
-				<a th:href="@{${'/historie/diagram/'+processKey+'/'+process.id}}"><img alt="process diagram" th:src="@{${'/historie/diagram/'+processKey+'/'+process.id}}"></img></a>
+				<a th:href="@{${'/historie/diagram/'+processKey+'/'+process.id}}"><img
+					alt="process diagram"
+					th:src="@{${'/historie/diagram/'+processKey+'/'+process.id}}"></img></a>
 			</div>
 		</div>
 	</div>
