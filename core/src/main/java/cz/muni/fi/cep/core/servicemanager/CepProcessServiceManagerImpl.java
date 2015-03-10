@@ -2,9 +2,19 @@ package cz.muni.fi.cep.core.servicemanager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
@@ -26,6 +36,9 @@ public class CepProcessServiceManagerImpl implements CepProcessServiceManager {
 	 * Maps start point names to start point id.
 	 */
 	private Map<String, String> serviceNames = new HashMap<>();
+	
+	@Autowired
+	private RepositoryService repositoryService;
 	
 	@Override
 	public void registerService(CepProcessService service) {
@@ -74,8 +87,28 @@ public class CepProcessServiceManagerImpl implements CepProcessServiceManager {
 
 	@Override
 	public List<CepProcessService> getAvaibleServices() {
-		//TODO implement when access namagement is implemented 
-		return getServices();
+		final User user = ((User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal());
+				
+		Set<String> groups = new HashSet<>();
+		for(GrantedAuthority ga : user.getAuthorities()) {
+			groups.add(ga.getAuthority());
+		}
+		
+		List<CepProcessService> services = new ArrayList<>();
+		
+		for(ProcessDefinition pd : repositoryService.createProcessDefinitionQuery().list()) {
+			ProcessDefinitionEntity pde  = (ProcessDefinitionEntity)repositoryService.getProcessDefinition(pd.getId());
+			for(Expression ex : pde.getCandidateStarterGroupIdExpressions()) {
+				if(groups.contains(ex.getExpressionText())) {
+					if(this.services.containsKey(pde.getKey()))
+						services.add(this.services.get(pde.getKey()));
+					break;
+				}
+			}
+		}
+		
+		return services;
 	}
 
 }
