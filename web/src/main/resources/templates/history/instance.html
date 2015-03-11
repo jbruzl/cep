@@ -94,6 +94,15 @@
 						</div>
 						<div class="small-4 column" th:text="${process.processInstanceId}"></div>
 					</div>
+					
+					<h5>Proměnné</h5>
+					<div>
+						<div class="row" th:each="variable : ${process.variableInstances}">
+							<div class="column medium-1" th:text="${variable.id}"></div>
+							<div class="column medium-3" th:text="${variable.variableName}"></div>
+							<div class="column medium-8" th:text="${variable.value}"></div>
+						</div>
+					</div>
 
 					<h5>Historie</h5>
 					<div>

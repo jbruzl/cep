@@ -30,7 +30,27 @@ public class CepHistoryProcessInstance implements Serializable,
 	private String name;
 	
 	private List<CepHistoricActivitiInstance> activitiInstances = new ArrayList<>();
+	private List<CepHistoricVariableInstance> variableInstances = new ArrayList<>();
+
 	
+	public List<CepHistoricVariableInstance> getVariableInstances() {
+		return variableInstances;
+	}
+
+	public void setVariableInstances(
+			List<CepHistoricVariableInstance> variableInstances) {
+		this.variableInstances = variableInstances;
+	}
+	public void addVariableInstances(
+			CepHistoricVariableInstance variableInstance) {
+		this.variableInstances.add(variableInstance);
+	}
+
+	public void setActivitiInstances(
+			List<CepHistoricActivitiInstance> activitiInstances) {
+		this.activitiInstances = activitiInstances;
+	}
+
 	public List<CepHistoricActivitiInstance> getActivitiInstances() {
 		return activitiInstances;
 	}

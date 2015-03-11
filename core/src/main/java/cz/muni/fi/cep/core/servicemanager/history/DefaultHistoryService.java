@@ -11,12 +11,14 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.api.DTO.history.CepHistoricActivitiInstance;
+import cz.muni.fi.cep.api.DTO.history.CepHistoricVariableInstance;
 import cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance;
 import cz.muni.fi.cep.api.services.servicemanager.CepHistoryService;
 
@@ -102,6 +104,12 @@ public class DefaultHistoryService implements CepHistoryService {
 		
 		for (HistoricActivityInstance hai : haiList) {
 			chpi.addActivitiInstances(mapper.map(hai, CepHistoricActivitiInstance.class));
+		}
+		
+		
+		List<HistoricVariableInstance> hviList = historyService.createHistoricVariableInstanceQuery().processInstanceId(pid).list();
+		for(HistoricVariableInstance hvi : hviList) {
+			chpi.addVariableInstances(mapper.map(hvi, CepHistoricVariableInstance.class));
 		}
 		
 		return chpi;
