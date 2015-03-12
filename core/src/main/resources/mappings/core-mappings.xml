@@ -52,7 +52,8 @@
 	<mapping type="one-way">
 		<class-a>org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 		</class-a>
-		<class-b>cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance</class-b>
+		<class-b>cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance
+		</class-b>
 		<field>
 			<a get-method="getProcessInstanceId">processInstanceId</a>
 			<b>processInstanceId</b>
@@ -188,4 +189,46 @@
 			<b>time</b>
 		</field>
 	</mapping>
-<mapping type="one-way"><class-a>org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity</class-a><class-b>cz.muni.fi.cep.api.DTO.history.CepHistoricVariableInstance</class-b><field><a>id</a><b>id</b></field><field><a get-method="getTime">time</a><b>time</b></field><field><a get-method="getVariableName">variableName</a><b>variableName</b></field><field><a get-method="getVariableTypeName">variableTypeName</a><b>variableTypeName</b></field><field><a get-method="getValue">value</a><b>value</b></field><field><a>processInstanceId</a><b>processInstanceId</b></field><field><a>taskId</a><b>taskId</b></field><field><a get-method="getCreateTime">createTime</a><b>createTime</b></field><field><a>lastUpdatedTime</a><b>lastUpdatedTime</b></field></mapping></mappings>
+	<mapping type="one-way">
+		<class-a>org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity
+		</class-a>
+		<class-b>cz.muni.fi.cep.api.DTO.history.CepHistoricVariableInstance
+		</class-b>
+		<field>
+			<a>id</a>
+			<b>id</b>
+		</field>
+		<field>
+			<a get-method="getTime">time</a>
+			<b>time</b>
+		</field>
+		<field>
+			<a get-method="getVariableName">variableName</a>
+			<b>variableName</b>
+		</field>
+		<field>
+			<a get-method="getVariableTypeName">variableTypeName</a>
+			<b>variableTypeName</b>
+		</field>
+		<field copy-by-reference="true">
+			<a get-method="getValue">value</a>
+			<b set-method="setValue">value</b>
+		</field>
+		<field>
+			<a>processInstanceId</a>
+			<b>processInstanceId</b>
+		</field>
+		<field>
+			<a>taskId</a>
+			<b>taskId</b>
+		</field>
+		<field>
+			<a get-method="getCreateTime">createTime</a>
+			<b>createTime</b>
+		</field>
+		<field>
+			<a>lastUpdatedTime</a>
+			<b>lastUpdatedTime</b>
+		</field>
+	</mapping>
+</mappings>
