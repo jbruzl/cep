@@ -98,6 +98,10 @@
 					<artifactId>logback-classic</artifactId>
 					<groupId>ch.qos.logback</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>log4j-over-slf4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
 			</exclusions>
 			<scope>test</scope>
 		</dependency>

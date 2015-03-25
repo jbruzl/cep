@@ -82,7 +82,17 @@ public class DBSubscriptionService implements SubscriptionService {
 		if (contactType == null)
 			throw new NullPointerException("Contact type parameter is null.");
 
+		if(getUserSubscriptions(user, contactType).contains(code)){
+			logger.info("User {} already subscribed to {} with {}", user, code, contactType.toString());
+			return;
+		}
+			
+		
 		CepUserEntity cepUserEntity = mapper.map(user, CepUserEntity.class);
+		
+		
+		
+		
 		Subscriber subscriber = new UserSubscriber(cepUserEntity);
 		subscriber.setContactType(contactType);
 

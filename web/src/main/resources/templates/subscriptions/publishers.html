@@ -4,7 +4,7 @@
 <head th:include="index :: head">
 </head>
 <body>
-	<div class="sticky" th:include="index :: menu"></div>
+	<div class="sticky" th:include="snippets/menu :: menu"></div>
 
 
 
@@ -30,16 +30,14 @@
 		<div class="large-9 columns">
 			<div class="panel">
 				<h4>Seznam událostí</h4>
-				<table>
+				<table class="large-12">
 					<thead>
 						<tr>
-							<th>Událost</th>
 							<th>Kód</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="publisher : ${publishers}">
-							<td></td>
 							<td th:text="${publisher}">Publisher</td>
 						</tr>
 					</tbody>

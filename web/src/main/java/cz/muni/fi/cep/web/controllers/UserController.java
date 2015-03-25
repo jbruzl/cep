@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,9 @@ import cz.muni.fi.cep.api.services.users.IdentityService;
 public class UserController {
 	@Autowired
 	private IdentityService identityService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@RequestMapping(value = { "", "/" })
 	public String index(Model model) {
@@ -68,6 +72,7 @@ public class UserController {
 			return "users";
 		}
 		model.addAttribute("user", cepUser);
+		model.addAttribute("groups", identityService.getMemberships(cepUser));
 		return "users/detail";
 	}
 	
@@ -90,6 +95,7 @@ public class UserController {
 			return "users";
 		}
 		model.addAttribute("user", cepUser);
+		model.addAttribute("groups", identityService.getMemberships(cepUser));
 		return "users/edit";
 	}
 	
@@ -111,7 +117,8 @@ public class UserController {
 		user.setFirstName(name);
 		user.setLastName(surname);
 		user.setMail(mail);
-		user.setPassword(password);
+		if(password.equals(password2) && !password.isEmpty())
+			user.setPassword(passwordEncoder.encode(password));
 		user.setPhoneNumber(phone);
 		
 		identityService.updateUser(user);
@@ -130,7 +137,19 @@ public class UserController {
 		}
 		model.addAttribute("user", cepUser);
 		model.addAttribute("groups", identityService.getMemberships(cepUser));
-		return "users/detail";
+		return "users/edit";
+	}
+	
+	@RequestMapping(value= {"/odebrat-skupinu"})
+	public String deleteMember( @RequestParam(value="id", required=true) Long groupId, @RequestParam(value="user", required=true) Long userId) {
+		CepGroup group = identityService.getGroupById(groupId);
+		CepUser user = identityService.getCepUserById(userId);
+		if(group== null || user == null) {
+			//TODO error message
+			return "redirect:/skupiny";
+		}
+		identityService.deleteMembership(user, group);
+		return "redirect:/uzivatele/edit?id="+userId;
 	}
 	
 }

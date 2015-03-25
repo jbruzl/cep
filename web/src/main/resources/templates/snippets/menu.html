@@ -34,7 +34,7 @@
 							<li><a th:href="@{/skupiny}">Skupiny</a></li>
 						</ul></li>
 					<li class="divider" sec:authorize="isAuthenticated()"></li>
-					<li><a th:href="@{/odbery}" sec:authorize="isAuthenticated()">Odběry</a></li>
+					<li><a th:href="@{/odbery/moje-odbery}" sec:authorize="isAuthenticated()">Moje odběry</a></li>
 					<li class="divider" sec:authorize="isAuthenticated()"></li>
 					<li><a th:href="@{/historie}" sec:authorize="isAuthenticated()">Historie</a></li>
 					<li class="divider" sec:authorize="isAuthenticated()"></li>

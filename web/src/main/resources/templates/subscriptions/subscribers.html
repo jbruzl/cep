@@ -4,7 +4,7 @@
 <head th:include="index :: head">
 </head>
 <body>
-	<div class="sticky" th:include="index :: menu"></div>
+	<div class="sticky" th:include="snippets/menu :: menu"></div>
 
 
 
@@ -30,14 +30,12 @@
 		<div class="large-9 columns">
 			<div class="panel">
 				<h4>Odběratelé</h4>
-				<form action="#" method="get"
-					th:action="@{/odbery/prehled}">
+				<form action="#" method="get" th:action="@{/odbery/prehled}">
 					<label for="publisher">Událost</label> <select name="publisher">
 						<option th:each="publisher : ${publishers}"
 							th:value="${publisher}" th:text="${publisher}">Publisher</option>
-					</select>
-					<input class="small button" type="submit"
-							name="submit" value="Odeslat" />
+					</select> <input class="small button" type="submit" name="submit"
+						value="Odeslat" />
 				</form>
 			</div>
 		</div>
@@ -45,34 +43,42 @@
 		<div th:if="userSubscribers!=null" class="large-9 columns">
 			<div class="panel">
 				<h5>Uživatelé</h5>
-				<table>
+				<table class="large-12">
 					<thead>
 						<tr>
-							<th>Uživatel</th><th>Způsob</th>
+							<th>Uživatel</th>
+							<th>Způsob</th>
 						</tr>
 					</thead>
 					<tbody th:each="users : ${userSubscribers}">
-						<tr  th:each="user : ${users.value}">
-							<td  th:text="${user.firstName+' ' + user.lastName}">user</td><td th:text="${users.key}">type</td>
+						<tr th:each="user : ${users.value}">
+							<td th:text="${user.firstName+' ' + user.lastName}">user</td>
+							<td th:text="${users.key}">type</td>
+							<td><a
+								th:href="@{/odbery/odhlasit-uzivatele(subscription=${selectedPublisher}, user=${user.id}, type=${users.key})}">Odhlásit
+									se</a></td>
 						</tr>
 					</tbody>
 				</table>
-				
+
 			</div>
 		</div>
-		
+
 		<div th:if="contactSubscribers!=null" class="large-9 columns">
 			<div class="panel">
 				<h5>Kontakty</h5>
-				<table>
+				<table class="large-12">
 					<thead>
 						<tr>
-							<th>Kontakt</th><th>Způsob</th>
+							<th>Kontakt</th>
+							<th>Způsob</th>
 						</tr>
 					</thead>
 					<tbody th:each="contacts : ${contactSubscribers}">
-						<tr  th:each="contact : ${contacts.value}">
-							<td  th:text="${contact}">user</td><td th:text="${contacts.key}">type</td>
+						<tr th:each="contact : ${contacts.value}">
+							<td th:text="${contact}">user</td>
+							<td th:text="${contacts.key}">type</td>
+							<td><a th:href="@{/odbery/odhlasit-kontakt(subscription=${selectedPublisher}, kontakt=${contact},type=${contacts.key})}">Odhlásit	se</a></td>
 						</tr>
 					</tbody>
 				</table>

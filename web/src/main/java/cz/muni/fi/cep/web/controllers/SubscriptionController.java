@@ -5,7 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -59,22 +63,101 @@ public class SubscriptionController {
 		model.addAttribute("users", identityService.getAllCepUsers());
 		return "subscriptions/subscribe";
 	}
+	@RequestMapping(value= {"/moje-odbery"})
+	public String mySubscriptions(Model model) {
+		String email = ((User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal()).getUsername();
+		
+		CepUser cepUser = identityService.getCepUserByEmail(email);
+		List<String> eventsSMS = subscriptionService.getUserSubscriptions(cepUser, ContactType.SMS);
+		model.addAttribute("eventsSMS", eventsSMS);
+		List<String> eventsMail = subscriptionService.getUserSubscriptions(cepUser, ContactType.EMAIL);
+		model.addAttribute("eventsEmail", eventsMail);
+		
+		model.addAttribute("publishers", subscriptionService.getAllPublishers());
+		return "subscriptions/mysubscriptions";
+	}
+	
+	@RequestMapping(value= {"/prihlasit-se-submit"}, method=RequestMethod.POST)
+	public String subscribeLoggedUser(
+			@RequestParam(required=true, value="publisher") String publisherCode,
+			@RequestParam(required=true, value="contactType") ContactType contactType
+			) {
+		String email = ((User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal()).getUsername();
+		
+		CepUser cepUser = identityService.getCepUserByEmail(email);
+		if(cepUser==null) {
+			return "redirect:/odbery/moje-odbery";
+		}
+		
+		subscriptionService.subscribeUser(cepUser, publisherCode, contactType);
+		
+		return "redirect:/odbery/moje-odbery";
+	}
+	
+	@RequestMapping(value= {"/odhlasit-se"}, method=RequestMethod.GET)
+	public String unsubscribeMe(@RequestParam(required=true, value="subscription") String id,
+			@RequestParam(value="type") String type){
+		
+		String email = ((User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal()).getUsername();
+		
+		CepUser cepUser = identityService.getCepUserByEmail(email);
+		if(cepUser==null) {
+			return "redirect:/odbery/moje-odbery";
+		}
+		ContactType ct = ContactType.fromValue(type);
+		subscriptionService.unsubscribeUser(cepUser, id, ct);
+		
+		return "redirect:/odbery/moje-odbery";
+	}
+	
+	
+	@RequestMapping(value= {"/odhlasit-uzivatele"}, method=RequestMethod.GET)
+	public String unsubscribe(@RequestParam(required=true, value="subscription") String id,
+			@RequestParam(required=true, value="user") String userId,
+			final HttpServletRequest request,
+			@RequestParam(value="type") String type){
+		CepUser cepUser = identityService.getCepUserById(Long.parseLong(userId));
+		String referer = request.getHeader("referer");
+		if(cepUser==null) {
+			return "redirect:" + referer;
+		}
+		ContactType ct = ContactType.fromValue(type);
+		subscriptionService.unsubscribeUser(cepUser, id, ct);
+
+		return "redirect:" + referer;
+	}
+	
+	@RequestMapping(value= {"/odhlasit-kontakt"}, method=RequestMethod.GET)
+	public String unsubscribeContact(@RequestParam(required=true, value="subscription") String id,
+			@RequestParam(required=true, value="kontakt") String contact,
+			final HttpServletRequest request,
+			@RequestParam(value="type") String type){
+		ContactType ct = ContactType.fromValue(type);
+		subscriptionService.unsubscribe(contact, id, ct);
+		String referer = request.getHeader("referer");
+		return "redirect:" + referer;
+	}
 	
 	@RequestMapping(value= {"/prihlasit-uzivatele-submit"}, method=RequestMethod.POST)
 	public String subscribeUser(
 			@RequestParam(required=true, value="user") String userId,
 			@RequestParam(required=true, value="publisher") String publisherCode,
-			@RequestParam(required=true, value="contactType") ContactType contactType
+			@RequestParam(required=true, value="contactType") ContactType contactType,
+			final HttpServletRequest request
 			) {
 		CepUser cepUser = identityService.getCepUserById(Long.parseLong(userId));
+		String referer = request.getHeader("referer");
 		if(cepUser==null) {
 			//TODO error message
-			return "redirect:/odbery";
+			return "redirect:" + referer;
 		}
 		
 		subscriptionService.subscribeUser(cepUser, publisherCode, contactType);
 		
-		return "redirect:/odbery";
+		return "redirect:" + referer;
 	}
 	
 	@RequestMapping(value= {"/prihlasit-kontakt-submit"}, method=RequestMethod.POST)
@@ -101,6 +184,8 @@ public class SubscriptionController {
 			contactSubscribers.put(ContactType.EMAIL, subscriptionService.getSubscribers(publisher, ContactType.EMAIL));
 			contactSubscribers.put(ContactType.SMS, subscriptionService.getSubscribers(publisher, ContactType.SMS));
 			model.addAttribute("contactSubscribers", contactSubscribers);
+			
+			model.addAttribute("selectedPublisher", publisher);
 		}
 		return "subscriptions/subscribers";
 	}

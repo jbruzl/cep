@@ -92,7 +92,7 @@ public class CepIdentityService implements IdentityService {
 		if (id == null) {
 			logger.warn("User {} not persisted.", user);
 		}
-		user.setId(Long.parseLong(id));
+		user.setId(Long.parseLong(id)); 
 		logger.info("User {} updated", user);
 	}
 

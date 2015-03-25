@@ -1,0 +1,94 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="index :: head">
+</head>
+<body>
+	<div class="sticky" th:include="snippets/menu :: menu"></div>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<img th:src="@{/img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+			<div class="panel">
+				<h4>Moje odběry</h4>
+			</div>
+
+			<div class="panel" th:include="/subscriptions/subscriptions :: desc"></div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h4>Přehled odběrů</h4>
+				<div>
+					<table class="large-12">
+						<thead>
+							<tr>
+								<th>Událost</th>
+								<th>Typ</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="subscription : ${eventsSMS}">
+								<td th:text="${subscription}">Name</td>
+								<td>SMS</td>
+								<td><a
+									th:href="@{/odbery/odhlasit-se(subscription=${subscription}, type=SMS)}">Odhlásit
+										se</a></td>
+							</tr><tr th:each="subscription : ${eventsEmail}">
+								<td th:text="${subscription}">Name</td>
+								<td>EMAIL</td>
+								<td><a
+									th:href="@{/odbery/odhlasit-se(subscription=${subscription}, type=EMAIL)}">Odhlásit
+										se</a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h5>Přihlásit se</h5>
+				<div>
+					<form action="#" th:action="@{/odbery/prihlasit-se-submit}"
+						method="post">
+						<label for="publisher">Událost</label> <select name="publisher">
+							<option th:each="publisher : ${publishers}"
+								th:value="${publisher}" th:text="${publisher}">Publisher</option>
+						</select> <label for="contactType">Typ kontaktu</label> <select
+							name="contactType">
+							<option th:each="contactType : ${contactTypes}"
+								th:value="${contactType}" th:text="${contactType}">Contact
+								Type</option>
+						</select> <input class="small button" type="reset" name="submit"
+							value="Reset" /> <input class="small button" type="submit"
+							name="submit" value="Odeslat" />
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+
+	</div>
+
+
+
+	<footer class="row" th:include="index :: footer"> </footer>
+
+	<div th:include="index :: foot-scripts"></div>
+</body>
+</html>

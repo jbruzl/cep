@@ -24,17 +24,14 @@
 			<div class="panel" th:fragment="sub-menu">
 				<h4>Uživatelé</h4>
 				<ul>
+				<li><a th:href="@{/uzivatele/mujucet}">Můj účet</a></li>
 				<li><a th:href="@{/uzivatele}">Přehled uživatelů</a></li>
-				<li><a th:href="@{/uzivatele/pridat}">Přidat uživatele</a></li>
+				<li sec:authorize="hasRole('administrator')"><a th:href="@{/uzivatele/pridat}">Přidat uživatele</a></li>
 				</ul>
 			</div>
 
 			<div class="panel" th:fragment="desc">
-				<h4>Header</h4>
-				<p>Fusce ullamcorper mauris in eros dignissim molestie posuere
-					felis blandit. Aliquam erat volutpat. Mauris ultricies posuere
-					vehicula. Sed sit amet posuere erat. Quisque in ipsum non augue
-					euismod dapibus non et eros.</p>
+
 			</div>
 		</div>
 
@@ -58,8 +55,8 @@
 							<td th:text="${user.mail}">Email</td>
 							<td>
 								<a th:href="@{/uzivatele/detail(id=${user.id})}">Profil</a> 
-								<a th:href="@{/uzivatele/edit(id=${user.id})}">Editace</a> 
-								<a th:href="@{/uzivatele/delete(id=${user.id})}">Smazat</a></td>
+								<a sec:authorize="hasRole('administrator')" th:href="@{/uzivatele/edit(id=${user.id})}">Editace</a> 
+								<a sec:authorize="hasRole('administrator')" th:href="@{/uzivatele/delete(id=${user.id})}">Smazat</a></td>
 						</tr>
 					</tbody>
 				</table>

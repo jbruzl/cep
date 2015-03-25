@@ -31,22 +31,61 @@
 				<h4>Editovat uživatele</h4>
 			</div>
 			<form action="#" th:action="@{/uzivatele/edit-submit}" method="post">
+			<input type="hidden" name="id" th:value="${user.id}" />
 				<div class="row">
 					<div class="large-6 columns">
 						<div class="panel">
 							<h5>Základní informace</h5>
-							<label for="name">Jméno</label> <input type="text"
-								th:value="${user.firstName}" name="name" /> <label
-								for="surname">Příjmení</label><input type="text"
-								th:value="${user.lastName}" name="surname" /> <label
-								for="email">Email</label><input type="text"
-								th:value="${user.email}" name="email" /> <label for="password">Heslo</label><input
-								type="password" th:value="${user.password}" name="password" />
-							<label for="password2">Kontrola hesla</label><input
-								type="password" th:value="${password2}" name="password2" /> <label
-								for="phone">Telefon</label><input type="text"
-								th:value="${user.phoneNumber}" name="phone" /> <input
-								type="hidden" name="id" th:value="${user.id}" />
+							<div class="row">
+								<div class="column medium-3">
+									<label for="name">Jméno</label>
+								</div>
+								<div class="column medium-9">
+									<input type="text" th:value="${user.firstName}" name="name" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="column medium-3">
+									<label for="surname">Příjmení</label>
+								</div>
+								<div class="column medium-9">
+									<input type="text" th:value="${user.lastName}" name="surname" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="column medium-3">
+									<label for="email">Email</label>
+								</div>
+								<div class="column medium-9">
+									<input type="text" th:value="${user.mail}" name="email" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="column medium-3">
+									<label for="phone">Telefon</label>
+								</div>
+								<div class="column medium-9">
+									<input type="text" th:value="${user.phoneNumber}" name="phone" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="column medium-3">
+									<label for="phone">Heslo</label>
+								</div>
+								<div class="column medium-9">
+									<input type="password"
+								th:value="${user.password}" name="password" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="column medium-3">
+									<label for="phone">Kontrola hesla</label>
+								</div>
+								<div class="column medium-9">
+									<input type="password"
+								th:value="${password2}" name="password2" />
+								</div>
+							</div>
 						</div>
 					</div>
 
@@ -61,8 +100,9 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="group : ${user.groups}">
-										<td th:text="${group.name}">Name</td>
+									<tr th:each="group : ${groups}">
+										<td th:text="${group.name}">Name</td><td><a
+								th:href="@{/uzivatele/odebrat-skupinu(id=${group.id},user=${user.id})}">Odstranit</a></td>
 									</tr>
 								</tbody>
 							</table>

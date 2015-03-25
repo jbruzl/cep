@@ -21,7 +21,7 @@
 			<b>type</b>
 		</field>
 	</mapping>
-	<mapping>
+	<mapping map-null="false" map-empty-string="false">
 		<class-a>cz.muni.fi.cep.api.DTO.CepUser</class-a>
 		<class-b>cz.muni.fi.cep.core.users.entities.CepUserEntity</class-b>
 		<field>

@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //verify and set up user roles
         CepGroup admin = new CepGroup();
         admin.setCode("administrator");
-        admin.setName("Administr√°tor");
+        admin.setName("Administr·tor");
         admin.setType("Aplikace");
         
         if(identityService.getGroupByCode(admin.getCode())==null)
