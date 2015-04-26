@@ -9,10 +9,14 @@
 	http://www.springframework.org/schema/util
 	http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-	<bean id="textFormType" class="cz.muni.fi.cep.api.DTO.forms.CepTextFormType" />
+	<bean id="textFormType" class="cz.muni.fi.cep.api.form.CepTextFormType" />
+	<bean id="fileFormType" class="cz.muni.fi.cep.api.form.CepFileFormType" />
+	<bean id="checkboxFormType" class="cz.muni.fi.cep.api.form.CepCheckboxFormType" />
 
 	<util:list id="customFormType" value-type="org.activiti.engine.form.AbstractFormType">
 		<ref bean="textFormType"/>
+		<ref bean="fileFormType"/>
+		<ref bean="checkboxFormType"/>
 	</util:list>
 
 	<bean id="processEngineConfiguration"

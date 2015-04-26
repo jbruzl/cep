@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import cz.muni.fi.cep.api.DTO.forms.CepFileFormType;
-import cz.muni.fi.cep.api.DTO.forms.CepFormData;
-import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
+import cz.muni.fi.cep.api.form.CepFileFormType;
+import cz.muni.fi.cep.api.form.CepFormData;
+import cz.muni.fi.cep.api.form.CepFormProperty;
 import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
 import cz.muni.fi.cep.api.services.servicemanager.CepProcessServiceManager;
 
@@ -125,20 +125,95 @@ public class ProcessController {
 
 		switch (state) {
 		case "uploaderror":
-			model.addAttribute("description", "Vyskytla se chyba během nahrání souboru. Zkuste to prosím znova.");
+			model.addAttribute("description",
+					"Vyskytla se chyba během nahrání souboru. Zkuste to prosím znova.");
 			break;
 		case "startfail":
-			model.addAttribute("description", "Nepodařilo se spustit proces. Zkuste to prosím znova.");
+			model.addAttribute("description",
+					"Nepodařilo se spustit proces. Zkuste to prosím znova.");
 			break;
 		case "notfound":
-			model.addAttribute("description", "Spouštěný proces nenalezen. Zkuste to prosím znova.");
+			model.addAttribute("description",
+					"Spouštěný proces nenalezen. Zkuste to prosím znova.");
 			break;
 		default:
-			model.addAttribute("description", "Objevila se neznámá chyba. Zkuste prosím opakovat vaší akci.");
+			model.addAttribute("description",
+					"Objevila se neznámá chyba. Zkuste prosím opakovat vaší akci.");
 			break;
 		}
 
 		return "process/error";
+	}
+
+	@RequestMapping("/task/{processkey}/{id}")
+	public String task(@PathVariable("processkey") String processkey,
+			@PathVariable("id") String id, Model model) {
+		CepProcessService service = processServiceManager.getServiceByKey(processkey);
+		if(service == null){
+			return "process/error?proces=" + processkey + "&state=notfound";
+		}
+		
+		CepFormData taskForm = service.getTaskForm(id);
+		model.addAttribute("startForm", taskForm);
+
+		model.addAttribute("process", service.getName());
+		model.addAttribute("key", processkey);
+		model.addAttribute("taskId", id);
+		model.addAttribute("description", service.getDescription());
+		
+		return "process/continue";
+	}
+	
+	@RequestMapping("/task/submit/{processkey}/{id}")
+	public String taskSubmit(@PathVariable("processkey") String key,
+			@PathVariable("id") String id, Model model,
+			HttpServletRequest httpServletRequest) {
+		
+		CepProcessService service = processServiceManager.getServiceByKey(key);
+		if (service == null) {
+			return "process/error?proces=" + key + "&state=notfound";
+		}
+
+		CepFormData form = service.getStartForm();
+
+		for (FormProperty fp : form.getFormProperties()) {
+			if (!(fp instanceof CepFormProperty))
+				continue;
+			CepFormProperty cfp = (CepFormProperty) fp;
+
+			if (cfp.getType() instanceof CepFileFormType) {
+				// process file upload
+				MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) httpServletRequest;
+				MultipartFile mf = multipartHttpServletRequest.getFile(cfp
+						.getId());
+
+				File f = new File(uploadFolder + mf.getOriginalFilename());
+				try {
+					InputStream is = mf.getInputStream();
+					OutputStream os = new FileOutputStream(f);
+					byte[] buffer = new byte[8 * 1024];
+					int bytesRead;
+					while ((bytesRead = is.read(buffer)) != -1) {
+						os.write(buffer, 0, bytesRead);
+					}
+					System.out.println(is.available());
+					is.close();
+					os.close();
+
+				} catch (IllegalStateException | IOException e) {
+					e.printStackTrace();
+					return "process/error?proces=" + key + "&state=uploaderror";
+				}
+				cfp.setInput(f.getAbsolutePath());
+			} else {
+				String parameter = httpServletRequest.getParameter(cfp.getId());
+				cfp.setInput(parameter);
+			}
+		}
+		
+		service.complete(id, form);
+		
+		return "process/continue";
 	}
 
 }

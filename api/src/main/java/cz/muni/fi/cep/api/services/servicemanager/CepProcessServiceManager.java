@@ -5,6 +5,8 @@ package cz.muni.fi.cep.api.services.servicemanager;
 
 import java.util.List;
 
+import org.activiti.engine.task.Task;
+
 /**
  * Interface for manager of process services.
  * 
@@ -55,5 +57,12 @@ public interface CepProcessServiceManager {
 	 * 
 	 * @return {@link List} of {@link CepProcessService}
 	 */
-	public List<CepProcessService> getAvaibleServices();
+	public List<CepProcessService> getAvailableServices();
+
+	/**
+	 * Returns list of all {@link Task}s available for logged user.
+	 * 
+	 * @return {@link List} of {@link Task}
+	 */
+	public abstract List<Task> getAvailableTasks();
 }

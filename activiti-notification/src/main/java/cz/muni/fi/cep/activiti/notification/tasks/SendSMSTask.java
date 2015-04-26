@@ -3,7 +3,7 @@
  */
 package cz.muni.fi.cep.activiti.notification.tasks;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.delegate.BpmnError;
@@ -17,7 +17,6 @@ import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
-
 
 /**
  * @author Jan Bruzl
@@ -46,25 +45,27 @@ public class SendSMSTask implements JavaDelegate {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
-		String message = (String) execution.getVariable("message");
-		if (message == null) {
-			logger.error("Supplied unsupported variable: message. Quitting SendSMSTask.");
-			return;
-		}
+		ArrayList<String> receivers = null;
 
-	
-		
-
-		List<String> receivers = null;
-		if (execution.getVariable("receivers") instanceof List) {
-			receivers = (List<String>) execution.getVariable("receivers");
+		if (execution.getVariable("smsReceivers") instanceof List) {
+			receivers = (ArrayList<String>) execution
+					.getVariable("smsReceivers");
 		} else {
 			logger.error(
-					"Supplied unsupported variable: receivers. Quitting SendSMSTask with param: {}",
-					message);
+					"Supplied unsupported variable: receivers.");
 			return;
 		}
+		
+		ArrayList<String> unsendSMStrings = (ArrayList<String>) receivers
+				.clone();
 
+		String message = (String) execution.getVariable("smsMessage");
+		if (message == null) {
+			logger.error("Supplied unsupported variable: message. Quitting SendSMSTask.");
+			execution.setVariable("unsucessfullSMS", unsendSMStrings);
+			throw new BpmnError("smsSendError");
+		}
+		
 		logger.info("Executing SendSMS task with params: {}, {}", message,
 				receivers);
 
@@ -75,20 +76,20 @@ public class SendSMSTask implements JavaDelegate {
 				String response = restTemplate
 						.getForObject(
 								"http://api.smsbrana.cz/smsconnect/http.php?login={login}&password={heslo}&action=send_sms&number={number}&message={message}",
-								String.class, configurationManager
-										.getKey("cep.notify.sms.login"),
-								configurationManager
-										.getKey("cep.notify.sms.password"),
+								String.class,
+								configurationManager.getKey("cep.sms.login"),
+								configurationManager.getKey("cep.sms.password"),
 								smsReceiver, message);
 				logger.info(response);
-
+				unsendSMStrings.remove(smsReceiver);
 			}
 
 			logger.info("Sms sending ends");
 		} catch (Exception ex) {
 			logger.error("Exception occured while sending SMS: {}",
 					ex.toString());
-			throw new BpmnError("SMSExceptionOccurred");
+			execution.setVariable("unsucessfullSMS", unsendSMStrings);
+			throw new BpmnError("smsSendError");
 		}
 
 	}

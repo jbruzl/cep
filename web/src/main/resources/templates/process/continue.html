@@ -1,0 +1,63 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="index :: head">
+</head>
+<body>
+	<div class="sticky" th:include="snippets/menu :: menu">	</div>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<img th:src="@{/img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+			<div class="panel" th:fragment="sub-menu">
+				<h4>Dokončit úkol</h4>
+
+			</div>
+
+			<div class="panel" th:fragment="desc">
+				<h5>Popis</h5>
+				<p th:text="${description}"></p>
+			</div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h4 th:text="${process}">Process name</h4>
+				<form action="#" th:action="@{${'/proces/task/submit/' + key + '/' + taskId}}"
+					method="post" enctype="multipart/form-data">
+					<table>
+						<tbody>
+							<tr th:each="property : ${startForm.formProperties}">
+								<td><label th:for="${property.id}" th:text="${property.name}">Name</label></td>
+								<td><input th:type="${property.type.name}" th:name="${property.id}" th:id="${property.id}" /></td>
+							</tr>
+						</tbody>
+					</table>
+					<input class="small button" type="reset" name="submit"
+						value="Reset" /> <input class="small button" type="submit"
+						name="submit" value="Odeslat" />
+				</form>
+			</div>
+		</div>
+
+	</div>
+
+
+
+	<footer class="row" th:include="index :: footer"></footer>
+
+	<div th:include="index :: foot-scripts"></div>
+</body>
+</html>

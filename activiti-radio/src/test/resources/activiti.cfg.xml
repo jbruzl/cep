@@ -9,7 +9,7 @@
 	http://www.springframework.org/schema/util
 	http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-	<bean id="fileFormType" class="cz.muni.fi.cep.api.DTO.forms.CepFileFormType" />
+	<bean id="fileFormType" class="cz.muni.fi.cep.api.form.CepFileFormType" />
 
 	<util:list id="customFormType" value-type="org.activiti.engine.form.AbstractFormType">
 		<ref bean="fileFormType"/>

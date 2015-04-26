@@ -1,4 +1,4 @@
-package cz.muni.fi.cep.api.DTO.forms;
+package cz.muni.fi.cep.api.form;
 
 import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.form.FormType;
@@ -8,10 +8,10 @@ import org.activiti.engine.form.FormType;
  * 
  * @author Jan Bruzl
  */
-public class CepTextFormType extends AbstractFormType {
+public class CepCheckboxFormType extends AbstractFormType {
 
 	public String getName() {
-	    return "text";
+	    return "checkbox";
 	  }
 
 	  public String getMimeType() {

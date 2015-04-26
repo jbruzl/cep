@@ -9,7 +9,7 @@ import java.util.List;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
-import cz.muni.fi.cep.api.DTO.forms.CepFormData;
+import cz.muni.fi.cep.api.form.CepFormData;
 
 /**
  * Interface of service for process.
@@ -92,15 +92,28 @@ public interface CepProcessService {
 	public List<Task> getTasks(ProcessInstance pid);
 	
 	/**
-	 * Given {@link Task} is completed with given {@link CepFormData}
-	 * @param task {@link Task}
+	 * Given task is is completed with given {@link CepFormData}
+	 * @param taskId {@link String}
 	 * @param data {@link CepFormData}
 	 */
-	public void complete(Task task, CepFormData data);
+	public void complete(String taskId, CepFormData data);
 	
 	/**
 	 * Returns {@link CepHistoryService} associated with service.
 	 * @return {@link CepHistoryService}
 	 */
 	public CepHistoryService getHistoryService();
+
+	/**
+	 * Returns {@link CepFormData} needed for given task id. 
+	 * @param taskId
+	 * @return {@link CepFormData} or null if taskId is not valid
+	 */
+	public abstract CepFormData getTaskForm(String taskId);
+
+	/**
+	 * Returns list of unfinished {@link Task}s of services process.
+	 * @return {@link List} of {@link Task}
+	 */
+	public abstract List<Task> getAvailableTasks();
 }

@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.api.DTO.CepGroup;
 import cz.muni.fi.cep.api.DTO.MessageType;
-import cz.muni.fi.cep.api.DTO.forms.CepFormData;
-import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
+import cz.muni.fi.cep.api.form.CepFormData;
+import cz.muni.fi.cep.api.form.CepFormProperty;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
 
@@ -137,7 +137,7 @@ public class NotifyService extends AbstractCepProcessService {
 	}
 
 	@Override
-	public void complete(Task task, CepFormData data) {
+	public void complete(String task, CepFormData data) {
 		// Is not needed in this process
 		logger.error("Called not needed method: complete() in {}", getClass());
 	}

@@ -81,7 +81,7 @@
 	</mapping>
 	<mapping type="one-way" wildcard="false">
 		<class-a>org.activiti.engine.form.FormData</class-a>
-		<class-b>cz.muni.fi.cep.api.DTO.forms.CepFormData</class-b>
+		<class-b>cz.muni.fi.cep.api.form.CepFormData</class-b>
 		<field>
 			<a get-method="getDeploymentId">deploymentId</a>
 			<b>deploymentId</b>
@@ -97,7 +97,7 @@
 	</mapping>
 	<mapping type="one-way">
 		<class-a>org.activiti.engine.form.FormProperty</class-a>
-		<class-b>cz.muni.fi.cep.api.DTO.forms.CepFormProperty</class-b>
+		<class-b>cz.muni.fi.cep.api.form.CepFormProperty</class-b>
 		<field>
 			<a get-method="isRequired">required</a>
 			<b>required</b>

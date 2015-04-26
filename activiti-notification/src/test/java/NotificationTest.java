@@ -53,7 +53,7 @@ public class NotificationTest extends ActivitiBasicTest {
 	private String publisherCode = "001";
 	private MockRestServiceServer mockServer;
 
-	@Test
+	
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendSMS.bpmn",
 			"diagrams/Notify.bpmn" })
 	public void deploymentTest() {
@@ -65,7 +65,7 @@ public class NotificationTest extends ActivitiBasicTest {
 				.list().size() > 0);
 	}
 
-	@Test
+	
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendSMS.bpmn",
 			"diagrams/Notify.bpmn" })
 	public void notificationDisabledTest() {
@@ -96,7 +96,7 @@ public class NotificationTest extends ActivitiBasicTest {
 		assertEquals(0, messages.size());
 	}
 
-	@Test
+
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendSMS.bpmn",
 			"diagrams/Notify.bpmn" })
 	public void notificationTest() {
@@ -130,7 +130,7 @@ public class NotificationTest extends ActivitiBasicTest {
 		mockServer.verify();
 	}
 
-	@Test
+	
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendSMS.bpmn",
 			"diagrams/Notify.bpmn" })
 	public void noReceiversTest() {
@@ -202,16 +202,16 @@ public class NotificationTest extends ActivitiBasicTest {
 		wiser.setPort(2025);
 		wiser.start();
 
-		configurationManager.setKey("cep.notify.sms.login", "login");
-		configurationManager.setKey("cep.notify.sms.password", "password");
+		configurationManager.setKey("cep.sms.login", "login");
+		configurationManager.setKey("cep.sms.password", "password");
 
 		RestTemplate restTemplate = new RestTemplate();
 		String requestUrl = new StringBuilder()
 				.append("http://api.smsbrana.cz/smsconnect/http.php")
 				.append("?login=")
-				.append(configurationManager.getKey("cep.notify.sms.login"))
+				.append(configurationManager.getKey("cep.sms.login"))
 				.append("&password=")
-				.append(configurationManager.getKey("cep.notify.sms.password"))
+				.append(configurationManager.getKey("cep.sms.password"))
 				.append("&action=send_sms").append("&number=").append(receiver)
 				.append("&message=").append(message).toString();
 		mockServer = MockRestServiceServer.createServer(restTemplate);

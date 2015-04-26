@@ -6,7 +6,9 @@ package cz.muni.fi.cep.core.servicemanager;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -16,9 +18,11 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -28,9 +32,12 @@ import org.dozer.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
-import cz.muni.fi.cep.api.DTO.forms.CepFormData;
-import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
+import cz.muni.fi.cep.api.form.CepFormData;
+import cz.muni.fi.cep.api.form.CepFormProperty;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 import cz.muni.fi.cep.api.services.servicemanager.CepHistoryService;
 import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
@@ -47,7 +54,7 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 
 	@Autowired
 	protected CepProcessServiceManager processServiceManager;
-	
+
 	@Autowired
 	protected RepositoryService repositoryService;
 	@Autowired
@@ -62,11 +69,11 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 	protected ConfigurationManager configurationManager;
 	@Autowired
 	protected IdentityService identityService;
-	@Autowired(required=true)
+	@Autowired(required = true)
 	protected Mapper mapper;
-	
+
 	protected CepHistoryService cepHistoryService;
-	
+
 	protected ProcessDefinition processDefinition;
 	protected String processKey;
 	protected String processName;
@@ -74,8 +81,6 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 	protected String name;
 	protected String description;
 
-	
-	
 	@Override
 	public CepHistoryService getHistoryService() {
 		return cepHistoryService;
@@ -93,8 +98,7 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 	}
 
 	@Override
-	public BufferedImage getDiagram(String pid)
-			throws IllegalArgumentException {
+	public BufferedImage getDiagram(String pid) throws IllegalArgumentException {
 		ProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();
 		logger.info("Generating PNG image of process {}", getProcessKey());
 		BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition
@@ -103,8 +107,8 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 		List<String> activities = new ArrayList<>();
 
 		for (HistoricActivityInstance hai : historicService
-				.createHistoricActivityInstanceQuery()
-				.processInstanceId(pid).finished().list()) {
+				.createHistoricActivityInstanceQuery().processInstanceId(pid)
+				.finished().list()) {
 			activities.add(hai.getActivityId());
 		}
 
@@ -141,22 +145,78 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 
 	@Override
 	public CepFormData getStartForm() {
-		FormData startData = formService.getStartFormData(processDefinition.getId());
+		FormData startData = formService.getStartFormData(processDefinition
+				.getId());
 
 		CepFormData cepStartForm = mapper.map(startData, CepFormData.class);
-		for(FormProperty fp: startData.getFormProperties()) {
+		for (FormProperty fp : startData.getFormProperties()) {
 			CepFormProperty cfp = mapper.map(fp, CepFormProperty.class);
 			cepStartForm.getFormProperties().add(cfp);
 		}
 
-
 		return cepStartForm;
+	}
+
+	@Override
+	public CepFormData getTaskForm(String taskId) {
+		FormData taskData = formService.getTaskFormData(taskId);
+		if (taskData == null)
+			return null;
+
+		CepFormData cepTaskForm = mapper.map(taskData, CepFormData.class);
+		for (FormProperty fp : taskData.getFormProperties()) {
+			CepFormProperty cfp = mapper.map(fp, CepFormProperty.class);
+			cepTaskForm.getFormProperties().add(cfp);
+		}
+
+		return cepTaskForm;
 	}
 
 	@Override
 	public List<Task> getTasks(ProcessInstance pid) {
 		return taskService.createTaskQuery().processInstanceId(pid.getId())
 				.list();
+	}
+
+	@Override
+	public List<Task> getAvailableTasks() {
+		final User user = ((User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal());
+
+		Set<String> groups = new HashSet<>();
+		for (GrantedAuthority ga : user.getAuthorities()) {
+			groups.add(ga.getAuthority());
+		}
+		List<String> groupList = new ArrayList<>(groups);
+
+		List<Task> list = taskService.createTaskQuery()
+				.taskCandidateGroupIn(groupList).or()
+				.taskCandidateOrAssigned(user.getUsername())
+				.processDefinitionKey(processKey).list();
+
+		return list;
+	}
+
+	/**
+	 * Checks if given {@link User} can start process.
+	 * @param user
+	 * @return boolean
+	 */
+	protected boolean canStart(User user) {
+		
+		ProcessDefinitionEntity pde  = (ProcessDefinitionEntity)(ProcessDefinitionEntity)repositoryService.getProcessDefinition(processDefinition.getId());
+		Set<String> groups = new HashSet<>();
+		
+		for(Expression ex : pde.getCandidateStarterGroupIdExpressions()) {
+			groups.add(ex.getExpressionText());
+		}
+		
+		for(GrantedAuthority ga : user.getAuthorities()) {
+			if(groups.contains(ga.getAuthority()))
+					return true;
+		}
+		
+		return false;
 	}
 
 }

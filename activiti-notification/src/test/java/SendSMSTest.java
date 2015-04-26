@@ -28,21 +28,21 @@ public class SendSMSTest extends ActivitiBasicTest {
 	@Autowired
 	private ConfigurationManager configurationManager;
 
-	@Test
+	
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/SendSMS.bpmn" })
 	public void testSMSTask() {
 		String message = "Hello_World!";
 		String receiver = "728484615";
-		configurationManager.setKey("cep.notify.sms.login", "login");
-		configurationManager.setKey("cep.notify.sms.password", "password");
+		configurationManager.setKey("cep.sms.login", "login");
+		configurationManager.setKey("cep.sms.password", "password");
 
 		RestTemplate restTemplate = new RestTemplate();
 		String requestUrl = new StringBuilder()
 				.append("http://api.smsbrana.cz/smsconnect/http.php")
 				.append("?login=")
-				.append(configurationManager.getKey("cep.notify.sms.login"))
+				.append(configurationManager.getKey("cep.sms.login"))
 				.append("&password=")
-				.append(configurationManager.getKey("cep.notify.sms.password"))
+				.append(configurationManager.getKey("cep.sms.password"))
 				.append("&action=send_sms").append("&number=").append(receiver)
 				.append("&message=").append(message).toString();
 		MockRestServiceServer mockServer = MockRestServiceServer

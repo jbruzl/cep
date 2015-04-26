@@ -11,6 +11,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -86,7 +87,7 @@ public class CepProcessServiceManagerImpl implements CepProcessServiceManager {
 	}
 
 	@Override
-	public List<CepProcessService> getAvaibleServices() {
+	public List<CepProcessService> getAvailableServices() {
 		final User user = ((User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal());
 				
@@ -109,6 +110,17 @@ public class CepProcessServiceManagerImpl implements CepProcessServiceManager {
 		}
 		
 		return services;
+	}
+	
+	@Override
+	public List<Task> getAvailableTasks(){	
+		List<Task> tasks = new ArrayList<>();
+		
+		for(CepProcessService cps : services.values()){
+			tasks.addAll(cps.getAvailableTasks());
+		}
+		
+		return tasks;
 	}
 
 }

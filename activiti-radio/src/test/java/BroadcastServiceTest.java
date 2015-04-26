@@ -25,9 +25,9 @@ import org.springframework.web.client.RestTemplate;
 import cz.muni.fi.cep.activiti.radio.service.BroadcastMessageHistoryService;
 import cz.muni.fi.cep.activiti.radio.service.BroadcastMessageService;
 import cz.muni.fi.cep.activiti.radio.tasks.BroadcastTask;
-import cz.muni.fi.cep.api.DTO.forms.CepFormData;
-import cz.muni.fi.cep.api.DTO.forms.CepFormProperty;
 import cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance;
+import cz.muni.fi.cep.api.form.CepFormData;
+import cz.muni.fi.cep.api.form.CepFormProperty;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 
 public class BroadcastServiceTest extends ActivitiBasicTest {

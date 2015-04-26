@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="informCitizens" name="Informování obyvatel" isExecutable="true" activiti:candidateStarterGroups="mayor">
+    <startEvent id="startevent" name="Start">
+      <extensionElements>
+        <activiti:formProperty id="sendRadio" name="Rozhlas?" type="checkbox" required="true"></activiti:formProperty>
+        <activiti:formProperty id="sendSMS" name="SMS?" type="checkbox" required="true"></activiti:formProperty>
+        <activiti:formProperty id="sendEmail" name="Email?" type="checkbox" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <parallelGateway id="parallelgateway1" name="Exclusive Gateway"></parallelGateway>
+    <exclusiveGateway id="radioExGateway" name="Rozhlas?"></exclusiveGateway>
+    <sequenceFlow id="flow3" sourceRef="parallelgateway1" targetRef="radioExGateway"></sequenceFlow>
+    <exclusiveGateway id="emailExGateway" name="Email?"></exclusiveGateway>
+    <sequenceFlow id="flow4" sourceRef="parallelgateway1" targetRef="emailExGateway"></sequenceFlow>
+    <exclusiveGateway id="smsExGateway" name="SMS?"></exclusiveGateway>
+    <sequenceFlow id="flow5" sourceRef="parallelgateway1" targetRef="smsExGateway"></sequenceFlow>
+    <parallelGateway id="parallelgateway2" name="Parallel Gateway"></parallelGateway>
+    <endEvent id="citizensInformed" name="Obyvatelstvo informováno"></endEvent>
+    <sequenceFlow id="flow6" sourceRef="parallelgateway2" targetRef="citizensInformed"></sequenceFlow>
+    <userTask id="createSMSMessage" name="Vytvoření SMS zprávy" activiti:candidateGroups="mayor">
+      <extensionElements>
+        <activiti:formProperty id="smsMessage" name="SMS Zpráva" type="text" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow10" name="Ano" sourceRef="smsExGateway" targetRef="createSMSMessage">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendSMS == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow11" sourceRef="createSMSMessage" targetRef="obtainPhoneNumbers"></sequenceFlow>
+    <serviceTask id="obtainPhoneNumbers" name="Získání telefonních čísel" activiti:expression="${subscriptionService.getContacts(publisherCode, smsContactType)}" activiti:resultVariableName="smsReceivers"></serviceTask>
+    <sequenceFlow id="flow12" sourceRef="obtainPhoneNumbers" targetRef="sendSMS"></sequenceFlow>
+    <serviceTask id="sendSMS" name="Odeslání SMS" activiti:delegateExpression="${sendSMSTask}"></serviceTask>
+    <boundaryEvent id="smsSendError" name="Chyba při odesílání" attachedToRef="sendSMS">
+      <errorEventDefinition errorRef="smsSendError"></errorEventDefinition>
+    </boundaryEvent>
+    <userTask id="manualSMSSend" name="Ruční informování přes SMS" activiti:candidateGroups="mayor">
+      <extensionElements>
+        <activiti:formProperty id="unsucessfullSMS" name="Neodeslané SMS" writable="false"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow13" sourceRef="smsSendError" targetRef="manualSMSSend"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow14" sourceRef="sendSMS" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="manualSMSSend" targetRef="exclusivegateway1"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow16" sourceRef="exclusivegateway1" targetRef="exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="flow17" name="Ne" sourceRef="smsExGateway" targetRef="exclusivegateway2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendSMS == false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow18" sourceRef="exclusivegateway2" targetRef="parallelgateway2"></sequenceFlow>
+    <userTask id="uploadRadioMessage" name="Nahrání rozhlasové zprávy" activiti:candidateGroups="mayor">
+      <extensionElements>
+        <activiti:formProperty id="radioMessage" name="Zpráva" type="file" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow19" name="Ano" sourceRef="radioExGateway" targetRef="uploadRadioMessage">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendRadio == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow20" sourceRef="uploadRadioMessage" targetRef="sendRadioMessage"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow21" sourceRef="sendRadioMessage" targetRef="exclusivegateway3"></sequenceFlow>
+    <serviceTask id="sendRadioMessage" name="Odeslání zprávy do rozhlasu" activiti:delegateExpression="${broadcastTask}"></serviceTask>
+    <userTask id="manualRadioBroadcast" name="Ruční rozhlášení zprávy rozhlasem" activiti:candidateGroups="mayor">
+      <extensionElements>
+        <activiti:formProperty id="errorMessage" name="Chybová zpráva" type="text" writable="false"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow24" sourceRef="manualRadioBroadcast" targetRef="exclusivegateway3"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow25" sourceRef="exclusivegateway3" targetRef="exclusivegateway4"></sequenceFlow>
+    <sequenceFlow id="flow26" sourceRef="exclusivegateway4" targetRef="parallelgateway2"></sequenceFlow>
+    <sequenceFlow id="flow27" name="Ne" sourceRef="radioExGateway" targetRef="exclusivegateway4">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendRadio == false}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="createMailMessage" name="Vytvoření emailu" activiti:candidateGroups="mayor">
+      <extensionElements>
+        <activiti:formProperty id="emailMessage" name="Email" type="text" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow28" name="Ano" sourceRef="emailExGateway" targetRef="createMailMessage">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendEmail == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow29" sourceRef="createMailMessage" targetRef="obtainEmailAdress"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway5" name="Exclusive Gateway"></exclusiveGateway>
+    <exclusiveGateway id="exclusivegateway6" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow32" sourceRef="exclusivegateway5" targetRef="exclusivegateway6"></sequenceFlow>
+    <serviceTask id="sendEmail" name="Odeslání emailu" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression>${mailList}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Info]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="charset">
+          <activiti:string><![CDATA[utf-8]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression>${emailMessage}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="ignoreException">
+          <activiti:string><![CDATA[true]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="exceptionVariableName">
+          <activiti:string><![CDATA[sendEmailError]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="obtainEmailAdress" name="Získání emailových adres" activiti:expression="${subscriptionService.getContacts(publisherCode,emailContactType)}" activiti:resultVariableName="emailReceivers"></serviceTask>
+    <sequenceFlow id="flow34" sourceRef="obtainEmailAdress" targetRef="prepareMail"></sequenceFlow>
+    <scriptTask id="prepareMail" name="Připrava emailů" scriptFormat="groovy" activiti:autoStoreVariables="true">
+      <script>mailList = ""
+      		for(	mail in emailReceivers){
+				mailList = mailList + mail + ","
+			}</script>
+    </scriptTask>
+    <sequenceFlow id="flow36" sourceRef="exclusivegateway6" targetRef="parallelgateway2"></sequenceFlow>
+    <sequenceFlow id="flow37" name="Ne" sourceRef="emailExGateway" targetRef="exclusivegateway6">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendEmail == false}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="manualSendEmail" name="Ruční rozeslání emailu" activiti:candidateGroups="mayor"></userTask>
+    <sequenceFlow id="flow39" sourceRef="manualSendEmail" targetRef="exclusivegateway5"></sequenceFlow>
+    <boundaryEvent id="sendRadioMessageError" name="Chyba při odesílání zprávy do rozhlasu" attachedToRef="sendRadioMessage">
+      <errorEventDefinition errorRef="sendRadioMessageError"></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow40" sourceRef="sendRadioMessageError" targetRef="manualRadioBroadcast"></sequenceFlow>
+    <sequenceFlow id="flow43" sourceRef="startevent" targetRef="prepare"></sequenceFlow>
+    <scriptTask id="prepare" name="Připrava" scriptFormat="groovy" activiti:autoStoreVariables="true">
+      <script>
+      smsContactType = cz.muni.fi.cep.api.DTO.ContactType.SMS
+      emailContactType = cz.muni.fi.cep.api.DTO.ContactType.EMAIL
+      sendEmailError = null
+      
+      </script>
+    </scriptTask>
+    <sequenceFlow id="flow44" sourceRef="prepare" targetRef="parallelgateway1"></sequenceFlow>
+    <exclusiveGateway id="sendEmailOk" name="Odeslání emailů ok?"></exclusiveGateway>
+    <sequenceFlow id="flow45" sourceRef="sendEmail" targetRef="sendEmailOk"></sequenceFlow>
+    <sequenceFlow id="flow46" name="Ok" sourceRef="sendEmailOk" targetRef="exclusivegateway5">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendEmailError == null}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow47" name="Chyba" sourceRef="sendEmailOk" targetRef="manualSendEmail">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendEmailError != null}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="nonzeroEmailReceivers" name="Nenulový počet příjemců?"></exclusiveGateway>
+    <sequenceFlow id="flow48" sourceRef="prepareMail" targetRef="nonzeroEmailReceivers"></sequenceFlow>
+    <sequenceFlow id="flow49" name="Ano" sourceRef="nonzeroEmailReceivers" targetRef="sendEmail">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${emailReceivers.size() != 0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow50" name="Ne" sourceRef="nonzeroEmailReceivers" targetRef="exclusivegateway5">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${emailReceivers.size() == 0}]]></conditionExpression>
+    </sequenceFlow>
+    <textAnnotation id="textannotation1">
+      <text>Rozhlas?</text>
+    </textAnnotation>
+    <association id="association1" sourceRef="textannotation1" targetRef="radioExGateway"></association>
+    <textAnnotation id="textannotation2">
+      <text>SMS?</text>
+    </textAnnotation>
+    <association id="association2" sourceRef="textannotation2" targetRef="smsExGateway"></association>
+    <textAnnotation id="textannotation3">
+      <text>Email?</text>
+    </textAnnotation>
+    <association id="association3" sourceRef="textannotation3" targetRef="emailExGateway"></association>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_informCitizens">
+    <bpmndi:BPMNPlane bpmnElement="informCitizens" id="BPMNPlane_informCitizens">
+      <bpmndi:BPMNShape bpmnElement="startevent" id="BPMNShape_startevent">
+        <omgdc:Bounds height="35.0" width="35.0" x="70.0" y="263.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="294.0" y="260.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="radioExGateway" id="BPMNShape_radioExGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="400.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="emailExGateway" id="BPMNShape_emailExGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="294.0" y="601.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="smsExGateway" id="BPMNShape_smsExGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="400.0" y="260.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway2" id="BPMNShape_parallelgateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="1210.0" y="260.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="citizensInformed" id="BPMNShape_citizensInformed">
+        <omgdc:Bounds height="35.0" width="35.0" x="1300.0" y="263.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="createSMSMessage" id="BPMNShape_createSMSMessage">
+        <omgdc:Bounds height="71.0" width="111.0" x="480.0" y="370.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="obtainPhoneNumbers" id="BPMNShape_obtainPhoneNumbers">
+        <omgdc:Bounds height="63.0" width="105.0" x="640.0" y="374.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendSMS" id="BPMNShape_sendSMS">
+        <omgdc:Bounds height="55.0" width="105.0" x="786.0" y="378.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="smsSendError" id="BPMNShape_smsSendError">
+        <omgdc:Bounds height="30.0" width="30.0" x="876.0" y="428.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="manualSMSSend" id="BPMNShape_manualSMSSend">
+        <omgdc:Bounds height="65.0" width="105.0" x="940.0" y="480.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="972.0" y="385.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="972.0" y="260.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="uploadRadioMessage" id="BPMNShape_uploadRadioMessage">
+        <omgdc:Bounds height="68.0" width="105.0" x="483.0" y="37.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway3" id="BPMNShape_exclusivegateway3">
+        <omgdc:Bounds height="40.0" width="40.0" x="920.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendRadioMessage" id="BPMNShape_sendRadioMessage">
+        <omgdc:Bounds height="78.0" width="105.0" x="640.0" y="32.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendRadioMessageError" id="BPMNShape_sendRadioMessageError">
+        <omgdc:Bounds height="30.0" width="30.0" x="710.0" y="102.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="manualRadioBroadcast" id="BPMNShape_manualRadioBroadcast">
+        <omgdc:Bounds height="73.0" width="105.0" x="767.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="BPMNShape_exclusivegateway4">
+        <omgdc:Bounds height="40.0" width="40.0" x="1023.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="createMailMessage" id="BPMNShape_createMailMessage">
+        <omgdc:Bounds height="55.0" width="105.0" x="387.0" y="593.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway5" id="BPMNShape_exclusivegateway5">
+        <omgdc:Bounds height="40.0" width="40.0" x="1150.0" y="600.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway6" id="BPMNShape_exclusivegateway6">
+        <omgdc:Bounds height="40.0" width="40.0" x="1210.0" y="600.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendEmail" id="BPMNShape_sendEmail">
+        <omgdc:Bounds height="55.0" width="105.0" x="911.0" y="593.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="obtainEmailAdress" id="BPMNShape_obtainEmailAdress">
+        <omgdc:Bounds height="68.0" width="105.0" x="520.0" y="587.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="prepareMail" id="BPMNShape_prepareMail">
+        <omgdc:Bounds height="55.0" width="105.0" x="663.0" y="594.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="manualSendEmail" id="BPMNShape_manualSendEmail">
+        <omgdc:Bounds height="71.0" width="105.0" x="1029.0" y="692.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="prepare" id="BPMNShape_prepare">
+        <omgdc:Bounds height="55.0" width="105.0" x="140.0" y="253.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendEmailOk" id="BPMNShape_sendEmailOk">
+        <omgdc:Bounds height="40.0" width="40.0" x="1061.0" y="601.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="nonzeroEmailReceivers" id="BPMNShape_nonzeroEmailReceivers">
+        <omgdc:Bounds height="40.0" width="40.0" x="813.0" y="602.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation1" id="BPMNShape_textannotation1">
+        <omgdc:Bounds height="51.0" width="100.0" x="451.0" y="118.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation2" id="BPMNShape_textannotation2">
+        <omgdc:Bounds height="50.0" width="100.0" x="451.0" y="195.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation3" id="BPMNShape_textannotation3">
+        <omgdc:Bounds height="50.0" width="100.0" x="364.0" y="510.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="314.0" y="260.0"></omgdi:waypoint>
+        <omgdi:waypoint x="314.0" y="70.0"></omgdi:waypoint>
+        <omgdi:waypoint x="400.0" y="70.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="314.0" y="300.0"></omgdi:waypoint>
+        <omgdi:waypoint x="314.0" y="601.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="334.0" y="280.0"></omgdi:waypoint>
+        <omgdi:waypoint x="400.0" y="280.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="1250.0" y="280.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1300.0" y="280.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="420.0" y="300.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="405.0"></omgdi:waypoint>
+        <omgdi:waypoint x="480.0" y="405.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="20.0" x="430.0" y="300.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="591.0" y="405.0"></omgdi:waypoint>
+        <omgdi:waypoint x="640.0" y="405.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="745.0" y="405.0"></omgdi:waypoint>
+        <omgdi:waypoint x="786.0" y="405.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="891.0" y="458.0"></omgdi:waypoint>
+        <omgdi:waypoint x="890.0" y="513.0"></omgdi:waypoint>
+        <omgdi:waypoint x="940.0" y="512.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="891.0" y="405.0"></omgdi:waypoint>
+        <omgdi:waypoint x="972.0" y="405.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="992.0" y="480.0"></omgdi:waypoint>
+        <omgdi:waypoint x="992.0" y="425.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="992.0" y="385.0"></omgdi:waypoint>
+        <omgdi:waypoint x="992.0" y="300.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="440.0" y="280.0"></omgdi:waypoint>
+        <omgdi:waypoint x="972.0" y="280.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="13.0" x="450.0" y="280.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="1012.0" y="280.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1210.0" y="280.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+        <omgdi:waypoint x="440.0" y="70.0"></omgdi:waypoint>
+        <omgdi:waypoint x="483.0" y="71.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="20.0" x="450.0" y="70.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="588.0" y="71.0"></omgdi:waypoint>
+        <omgdi:waypoint x="640.0" y="71.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+        <omgdi:waypoint x="745.0" y="71.0"></omgdi:waypoint>
+        <omgdi:waypoint x="920.0" y="70.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+        <omgdi:waypoint x="872.0" y="196.0"></omgdi:waypoint>
+        <omgdi:waypoint x="939.0" y="196.0"></omgdi:waypoint>
+        <omgdi:waypoint x="940.0" y="90.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+        <omgdi:waypoint x="960.0" y="70.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1023.0" y="70.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+        <omgdi:waypoint x="1063.0" y="70.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1229.0" y="70.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1230.0" y="260.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
+        <omgdi:waypoint x="420.0" y="50.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="6.0"></omgdi:waypoint>
+        <omgdi:waypoint x="668.0" y="6.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1042.0" y="6.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1043.0" y="50.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="13.0" x="430.0" y="50.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
+        <omgdi:waypoint x="334.0" y="621.0"></omgdi:waypoint>
+        <omgdi:waypoint x="387.0" y="620.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="20.0" x="344.0" y="621.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+        <omgdi:waypoint x="492.0" y="620.0"></omgdi:waypoint>
+        <omgdi:waypoint x="520.0" y="621.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
+        <omgdi:waypoint x="1190.0" y="620.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1210.0" y="620.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow34" id="BPMNEdge_flow34">
+        <omgdi:waypoint x="625.0" y="621.0"></omgdi:waypoint>
+        <omgdi:waypoint x="663.0" y="621.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow36" id="BPMNEdge_flow36">
+        <omgdi:waypoint x="1230.0" y="600.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1230.0" y="300.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow37" id="BPMNEdge_flow37">
+        <omgdi:waypoint x="314.0" y="641.0"></omgdi:waypoint>
+        <omgdi:waypoint x="314.0" y="771.0"></omgdi:waypoint>
+        <omgdi:waypoint x="768.0" y="771.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1229.0" y="771.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1230.0" y="640.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="13.0" x="324.0" y="641.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow39" id="BPMNEdge_flow39">
+        <omgdi:waypoint x="1134.0" y="727.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1170.0" y="727.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1170.0" y="640.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow40" id="BPMNEdge_flow40">
+        <omgdi:waypoint x="725.0" y="132.0"></omgdi:waypoint>
+        <omgdi:waypoint x="724.0" y="195.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="196.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow43" id="BPMNEdge_flow43">
+        <omgdi:waypoint x="105.0" y="280.0"></omgdi:waypoint>
+        <omgdi:waypoint x="140.0" y="280.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow44" id="BPMNEdge_flow44">
+        <omgdi:waypoint x="245.0" y="280.0"></omgdi:waypoint>
+        <omgdi:waypoint x="294.0" y="280.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow45" id="BPMNEdge_flow45">
+        <omgdi:waypoint x="1016.0" y="620.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1061.0" y="621.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow46" id="BPMNEdge_flow46">
+        <omgdi:waypoint x="1101.0" y="621.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1150.0" y="620.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="13.0" x="1111.0" y="621.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow47" id="BPMNEdge_flow47">
+        <omgdi:waypoint x="1081.0" y="641.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1081.0" y="692.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="31.0" x="1091.0" y="641.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow48" id="BPMNEdge_flow48">
+        <omgdi:waypoint x="768.0" y="621.0"></omgdi:waypoint>
+        <omgdi:waypoint x="813.0" y="622.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow49" id="BPMNEdge_flow49">
+        <omgdi:waypoint x="853.0" y="622.0"></omgdi:waypoint>
+        <omgdi:waypoint x="911.0" y="620.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="863.0" y="622.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow50" id="BPMNEdge_flow50">
+        <omgdi:waypoint x="833.0" y="602.0"></omgdi:waypoint>
+        <omgdi:waypoint x="832.0" y="568.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1169.0" y="568.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1170.0" y="600.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="843.0" y="602.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association1" id="BPMNEdge_association1">
+        <omgdi:waypoint x="451.0" y="143.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="142.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="90.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association2" id="BPMNEdge_association2">
+        <omgdi:waypoint x="451.0" y="220.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="219.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="260.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association3" id="BPMNEdge_association3">
+        <omgdi:waypoint x="364.0" y="535.0"></omgdi:waypoint>
+        <omgdi:waypoint x="333.0" y="535.0"></omgdi:waypoint>
+        <omgdi:waypoint x="314.0" y="601.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

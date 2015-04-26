@@ -20,8 +20,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import cz.muni.fi.cep.api.DTO.forms.CepFileFormType;
-import cz.muni.fi.cep.api.DTO.forms.CepTextFormType;
+import cz.muni.fi.cep.api.form.CepFileFormType;
+import cz.muni.fi.cep.api.form.CepTextFormType;
 
 @Configuration
 public class ActivitiConfig {
