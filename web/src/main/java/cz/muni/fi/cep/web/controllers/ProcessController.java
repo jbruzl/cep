@@ -8,11 +8,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -24,9 +26,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import cz.muni.fi.cep.api.form.CepCheckboxFormType;
 import cz.muni.fi.cep.api.form.CepFileFormType;
 import cz.muni.fi.cep.api.form.CepFormData;
 import cz.muni.fi.cep.api.form.CepFormProperty;
+import cz.muni.fi.cep.api.form.CepTextFormType;
 import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
 import cz.muni.fi.cep.api.services.servicemanager.CepProcessServiceManager;
 
@@ -100,16 +104,27 @@ public class ProcessController {
 					return "process/error?proces=" + key + "&state=uploaderror";
 				}
 				cfp.setInput(f.getAbsolutePath());
-			} else {
+			}
+			if (cfp.getType() instanceof CepTextFormType) {
 				String parameter = httpServletRequest.getParameter(cfp.getId());
 				cfp.setInput(parameter);
+			}
+			if (cfp.getType() instanceof CepCheckboxFormType) {
+				if (httpServletRequest.getParameter(cfp.getId()) == null)
+					cfp.setInput(false);
+				else
+					cfp.setInput(true);
 			}
 		}
 		ProcessInstance pi = service.runProcess(startForm);
 		if (pi == null) {
 			return "redirect:/proces/error?proces=" + key + "&state=startfail";
 		}
-		return "redirect:/historie/instance/" + key + "/" + pi.getId();
+		List<Task> availableTasks = service.getAvailableTasks(pi.getId());
+		if(availableTasks.size()>0)
+			return "redirect:/proces/task/"+service.getProcessKey()+"/"+availableTasks.get(0).getId();
+		else
+			return "redirect:/historie/instance/" + key + "/" + pi.getId();
 	}
 
 	@RequestMapping("/error")
@@ -148,11 +163,12 @@ public class ProcessController {
 	@RequestMapping("/task/{processkey}/{id}")
 	public String task(@PathVariable("processkey") String processkey,
 			@PathVariable("id") String id, Model model) {
-		CepProcessService service = processServiceManager.getServiceByKey(processkey);
-		if(service == null){
+		CepProcessService service = processServiceManager
+				.getServiceByKey(processkey);
+		if (service == null) {
 			return "process/error?proces=" + processkey + "&state=notfound";
 		}
-		
+
 		CepFormData taskForm = service.getTaskForm(id);
 		model.addAttribute("startForm", taskForm);
 
@@ -160,21 +176,21 @@ public class ProcessController {
 		model.addAttribute("key", processkey);
 		model.addAttribute("taskId", id);
 		model.addAttribute("description", service.getDescription());
-		
+
 		return "process/continue";
 	}
-	
+
 	@RequestMapping("/task/submit/{processkey}/{id}")
 	public String taskSubmit(@PathVariable("processkey") String key,
 			@PathVariable("id") String id, Model model,
 			HttpServletRequest httpServletRequest) {
-		
+
 		CepProcessService service = processServiceManager.getServiceByKey(key);
 		if (service == null) {
 			return "process/error?proces=" + key + "&state=notfound";
 		}
 
-		CepFormData form = service.getStartForm();
+		CepFormData form = service.getTaskForm(id);
 
 		for (FormProperty fp : form.getFormProperties()) {
 			if (!(fp instanceof CepFormProperty))
@@ -196,7 +212,7 @@ public class ProcessController {
 					while ((bytesRead = is.read(buffer)) != -1) {
 						os.write(buffer, 0, bytesRead);
 					}
-					System.out.println(is.available());
+					
 					is.close();
 					os.close();
 
@@ -210,10 +226,23 @@ public class ProcessController {
 				cfp.setInput(parameter);
 			}
 		}
+
+		String processInstanceId = service.complete(id, form);
 		
-		service.complete(id, form);
+		List<Task> availableTasks = service.getAvailableTasks(processInstanceId);
+		if(availableTasks.size()>0)
+			return "redirect:/proces/task/"+service.getProcessKey()+"/"+availableTasks.get(0).getId();
+		else
+			return "redirect:/historie/instance/" + key + "/" + processInstanceId;
+	}
+	
+	@RequestMapping("/tasks")
+	public String availableTasks(Model model){
+		List<Task> availableTasks = processServiceManager.getAvailableTasks();
 		
-		return "process/continue";
+		model.addAttribute("tasks", availableTasks);
+		
+		return "process/tasks";
 	}
 
 }

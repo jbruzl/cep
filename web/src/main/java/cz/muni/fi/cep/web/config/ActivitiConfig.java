@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import cz.muni.fi.cep.api.form.CepCheckboxFormType;
 import cz.muni.fi.cep.api.form.CepFileFormType;
 import cz.muni.fi.cep.api.form.CepTextFormType;
 
@@ -46,6 +47,7 @@ public class ActivitiConfig {
         pec.setJobExecutorActivate(true);
         pec.setHistory("full");
         
+        pec.setXmlEncoding("UTF-8");
         pec.setDatabaseType("mysql");
         
         //Mail settings
@@ -63,6 +65,7 @@ public class ActivitiConfig {
         List<AbstractFormType> customFormTypes = new ArrayList<>();
         customFormTypes.add(new CepTextFormType());
         customFormTypes.add(new CepFileFormType());
+        customFormTypes.add(new CepCheckboxFormType());
         pec.setCustomFormTypes(customFormTypes);
 
         return pec;

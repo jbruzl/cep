@@ -199,24 +199,49 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 
 	/**
 	 * Checks if given {@link User} can start process.
+	 * 
 	 * @param user
 	 * @return boolean
 	 */
 	protected boolean canStart(User user) {
-		
-		ProcessDefinitionEntity pde  = (ProcessDefinitionEntity)(ProcessDefinitionEntity)repositoryService.getProcessDefinition(processDefinition.getId());
+
+		ProcessDefinitionEntity pde = (ProcessDefinitionEntity) (ProcessDefinitionEntity) repositoryService
+				.getProcessDefinition(processDefinition.getId());
 		Set<String> groups = new HashSet<>();
-		
-		for(Expression ex : pde.getCandidateStarterGroupIdExpressions()) {
+
+		for (Expression ex : pde.getCandidateStarterGroupIdExpressions()) {
 			groups.add(ex.getExpressionText());
 		}
-		
-		for(GrantedAuthority ga : user.getAuthorities()) {
-			if(groups.contains(ga.getAuthority()))
-					return true;
+
+		for (GrantedAuthority ga : user.getAuthorities()) {
+			if (groups.contains(ga.getAuthority()))
+				return true;
 		}
-		
+
 		return false;
+	}
+
+	@Override
+	public List<Task> getAvailableTasks(String processInstanceId) {
+		if(processInstanceId == null)
+			return new ArrayList<>();
+		
+		final User user = ((User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal());
+
+		Set<String> groups = new HashSet<>();
+		for (GrantedAuthority ga : user.getAuthorities()) {
+			groups.add(ga.getAuthority());
+		}
+		List<String> groupList = new ArrayList<>(groups);
+
+		List<Task> list = taskService.createTaskQuery()
+				.taskCandidateGroupIn(groupList).or()
+				.taskCandidateOrAssigned(user.getUsername())
+				.processDefinitionKey(processKey).processInstanceId(processInstanceId)
+				.list();
+
+		return list;
 	}
 
 }

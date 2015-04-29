@@ -24,7 +24,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
+		<!--  <dependency>
 			<groupId>cz.muni.fi.cep</groupId>
 			<artifactId>activiti-radio</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
@@ -34,7 +34,7 @@
 					<artifactId>spring-core</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>cz.muni.fi.cep</groupId>
 			<artifactId>activiti-notification</artifactId>

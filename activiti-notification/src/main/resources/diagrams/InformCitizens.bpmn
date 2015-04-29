@@ -104,6 +104,9 @@
         <activiti:field name="exceptionVariableName">
           <activiti:string><![CDATA[sendEmailError]]></activiti:string>
         </activiti:field>
+        <activiti:field name="text">
+          <activiti:expression>${emailMessage}</activiti:expression>
+        </activiti:field>
       </extensionElements>
     </serviceTask>
     <serviceTask id="obtainEmailAdress" name="Získání emailových adres" activiti:expression="${subscriptionService.getContacts(publisherCode,emailContactType)}" activiti:resultVariableName="emailReceivers"></serviceTask>
@@ -441,7 +444,7 @@
         <omgdi:waypoint x="853.0" y="622.0"></omgdi:waypoint>
         <omgdi:waypoint x="911.0" y="620.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="863.0" y="622.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="20.0" x="863.0" y="622.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow50" id="BPMNEdge_flow50">
@@ -450,7 +453,7 @@
         <omgdi:waypoint x="1169.0" y="568.0"></omgdi:waypoint>
         <omgdi:waypoint x="1170.0" y="600.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="843.0" y="602.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="13.0" x="843.0" y="602.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="association1" id="BPMNEdge_association1">

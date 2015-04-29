@@ -41,6 +41,11 @@ public class InformCitizensService extends AbstractCepProcessService {
 
 	@Value("${cep.informcitizens.publishercode}")
 	private String publisherCode;
+	
+	@Value("${cep.radio.broadcast.url}")
+	private String broadcastUrl;
+	
+	private final String broadcastUrlKey = "cep.radio.broadcast.url";
 
 	@Autowired
 	public InformCitizensService(
@@ -49,8 +54,8 @@ public class InformCitizensService extends AbstractCepProcessService {
 			@Value("${cep.informcitizens.key}") String key,
 			@Value("${cep.informcitizens.name}") String name,
 			@Value("${cep.informcitizens.description}") String description,
-			NotifyHistoryService notifyHistoryService) {
-		cepHistoryService = notifyHistoryService;
+			InformCitizensHistoryService historyService) {
+		cepHistoryService = historyService;
 		this.processKey = processKey;
 		this.processName = processName;
 		this.key = key;
@@ -70,6 +75,8 @@ public class InformCitizensService extends AbstractCepProcessService {
 			identityService.createGroup(cepGroup);
 
 		processServiceManager.registerService(this);
+		
+		configurationManager.setKey(broadcastUrlKey, broadcastUrl);
 
 		subscriptionService.register(publisherCode);
 		logger.debug("Publisher {} registered", publisherCode);
@@ -142,7 +149,7 @@ public class InformCitizensService extends AbstractCepProcessService {
 	}
 
 	@Override
-	public void complete(String taskId, CepFormData data) {
+	public String complete(String taskId, CepFormData data) {
 		// ověřit, taskId patří této servise
 		User user = (User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
@@ -177,8 +184,9 @@ public class InformCitizensService extends AbstractCepProcessService {
 				}
 			}
 		}
-
+		String processInstanceId = taskService.createTaskQuery().taskId(taskId).singleResult().getProcessInstanceId();
 		taskService.complete(taskId, variables);
-
+		
+		return processInstanceId;
 	}
 }

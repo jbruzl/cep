@@ -55,7 +55,7 @@
 							<td th:text="${processInstance.startTime}"></td>
 							<td th:text="${processInstance.startUserId}"></td>
 							<td
-								th:text="${(processInstance.endTime == 'null'?'Běží':'Dokončená')}"></td>
+								th:text="${processInstance.endTime}?${'Dokončená'}:${'Běží'}"></td>
 							<td><a
 								th:href="@{${'/historie/instance/'+processKey+'/'+processInstance.processInstanceId}}">Detail...</a></td>
 						</tr>

@@ -137,8 +137,9 @@ public class NotifyService extends AbstractCepProcessService {
 	}
 
 	@Override
-	public void complete(String task, CepFormData data) {
+	public String complete(String task, CepFormData data) {
 		// Is not needed in this process
 		logger.error("Called not needed method: complete() in {}", getClass());
+		return "";
 	}
 }

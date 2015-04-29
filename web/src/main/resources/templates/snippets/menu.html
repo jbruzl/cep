@@ -19,11 +19,12 @@
 
 			<section class="top-bar-section">
 				<ul class="right">
+					<li><a th:href="@{/proces/tasks}" sec:authorize="isAuthenticated()">Moje úkoly</a></li>
 					<li class="divider" sec:authorize="isAuthenticated()"></li>
 					<li class="has-dropdown" sec:authorize="isAuthenticated()"><a
 						href="#">Procesy</a>
 						<ul class="dropdown">
-							<li th:each="service : ${@processServiceManager.getAvaibleServices()}"><a th:href="@{${'/proces/start/' + service.key}}" th:text="${service.name}">Process name</a></li>
+							<li th:each="service : ${@processServiceManager.getAvailableServices()}"><a th:href="@{${'/proces/start/' + service.key}}" th:text="${service.name}">Process name</a></li>
 						</ul></li>
 					<li class="divider" sec:authorize="isAuthenticated()"></li>
 					<li class="has-dropdown" sec:authorize="isAuthenticated()"><a

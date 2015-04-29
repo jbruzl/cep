@@ -95,8 +95,9 @@ public interface CepProcessService {
 	 * Given task is is completed with given {@link CepFormData}
 	 * @param taskId {@link String}
 	 * @param data {@link CepFormData}
+	 * @return processInstanceId
 	 */
-	public void complete(String taskId, CepFormData data);
+	public String complete(String taskId, CepFormData data);
 	
 	/**
 	 * Returns {@link CepHistoryService} associated with service.
@@ -116,4 +117,11 @@ public interface CepProcessService {
 	 * @return {@link List} of {@link Task}
 	 */
 	public abstract List<Task> getAvailableTasks();
+	
+	/**
+	 * Returns list of unfinished {@link Task}s of given process instance.
+	 * @param processInstanceId
+	 * @return {@link List} of {@link Task}
+	 */
+	public abstract List<Task> getAvailableTasks(String processInstanceId);
 }
