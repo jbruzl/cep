@@ -106,6 +106,13 @@ public class WarningService extends AbstractCepProcessService {
 	}
 
 	@Override
+	public CepFormData getStartForm() {
+		CepFormData startForm = super.getStartForm();
+		startForm.getFormProperties().clear();
+		return startForm;
+	}
+	
+	@Override
 	public ProcessInstance runProcess(CepFormData data) {
 		User user = (User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
