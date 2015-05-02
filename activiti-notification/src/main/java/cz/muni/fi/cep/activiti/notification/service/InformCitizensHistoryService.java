@@ -27,6 +27,7 @@ public class InformCitizensHistoryService extends DefaultHistoryService {
 		processDefinitionKey = key;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public CepHistoryProcessInstance getDetail(String pid)
 			throws IllegalArgumentException {

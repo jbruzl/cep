@@ -20,6 +20,7 @@ import cz.muni.fi.cep.api.form.CepFormData;
 import cz.muni.fi.cep.api.form.CepFormProperty;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
+import cz.muni.fi.cep.warning.chmi.tasks.EvaluateWarningReport;
 
 /**
  * Service class for BPMN diagram Warning.
@@ -42,6 +43,12 @@ public class WarningService extends AbstractCepProcessService {
 
 	@Value("${cep.radio.broadcast.url}")
 	private String broadcastUrl;
+	
+	@Value("${cep.warning.countryCode}")
+	private String countryCode;
+	
+	@Value("${cep.warning.regionCode}")
+	private String regionCode;
 
 	@Autowired
 	public WarningService(
@@ -71,6 +78,9 @@ public class WarningService extends AbstractCepProcessService {
 			identityService.createGroup(cepGroup);
 
 		processServiceManager.registerService(this);
+		
+		configurationManager.setKey(EvaluateWarningReport.countryCodeKey, countryCode);
+		configurationManager.setKey(EvaluateWarningReport.regionCodeKey, regionCode);
 
 		subscriptionService.register(publisherCode);
 		logger.debug("Publisher {} registered", publisherCode);
@@ -129,6 +139,20 @@ public class WarningService extends AbstractCepProcessService {
 				case "decideInformCitizens":
 					Boolean decision = (boolean) cepFormProperty.getInput();
 					variables.put("decideInformCitizens", decision);
+					break;
+				case "sendRadio":
+					Boolean radio = (boolean) ((CepFormProperty) fp).getInput();
+					variables.put("sendRadio", radio);
+					break;
+
+				case "sendSMS":
+					Boolean sms = (boolean) ((CepFormProperty) fp).getInput();
+					variables.put("sendSMS", sms);
+					break;
+
+				case "sendEmail":
+					Boolean email = (boolean) ((CepFormProperty) fp).getInput();
+					variables.put("sendEmail", email);
 					break;
 				}
 			}

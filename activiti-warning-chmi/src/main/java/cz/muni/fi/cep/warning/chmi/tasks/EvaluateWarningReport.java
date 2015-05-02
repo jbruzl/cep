@@ -12,7 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 import cz.muni.fi.cep.warning.chmi.WeatherReportRegister;
+import cz.muni.fi.cep.warning.chmi.report.Country;
+import cz.muni.fi.cep.warning.chmi.report.Region;
 import cz.muni.fi.cep.warning.chmi.report.Report;
 
 /**
@@ -28,14 +31,19 @@ import cz.muni.fi.cep.warning.chmi.report.Report;
 public class EvaluateWarningReport implements JavaDelegate {
 	@Autowired
 	private WeatherReportRegister weatherReportRegistr;
-	
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public void setWeatherReportRegistr(WeatherReportRegister weatherReportRegistr) {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private ConfigurationManager configurationManager;
+	
+	final static public String countryCodeKey = "cep.warning.countryCode";
+	final static public String regionCodeKey = "cep.warning.regionCode";
+
+	public void setWeatherReportRegistr(
+			WeatherReportRegister weatherReportRegistr) {
 		this.weatherReportRegistr = weatherReportRegistr;
 	}
-
-
 
 	/**
 	 * 
@@ -49,48 +57,92 @@ public class EvaluateWarningReport implements JavaDelegate {
 			logger.error("Report is null. It souldn't be null, errors within obtaining report should be catched earlier.");
 			execution.setVariable("weatherChanged", false);
 			execution.setVariable("warningLevelRisen", false);
-			
+
 			return;
 		}
-		
+
 		LinkedList<Report> reports = weatherReportRegistr.getReports();
-		if(reports.isEmpty()) {
+		if (reports.isEmpty()) {
 			execution.setVariable("weatherChanged", true);
 			execution.setVariable("warningLevelRisen", true);
-			
+
+			return;
+		}
+
+		Report prevReport = reports.getLast();
+		reports.add(report);
+
+		
+		String countryCode = configurationManager.getKey(countryCodeKey);
+		String regionCode = configurationManager.getKey(regionCodeKey);
+
+		Country prevCountry = null, currentCountry = null;
+
+		for (Country c : prevReport.getCountries()) {
+			if (countryCode.equals(c.getCode()))
+				prevCountry = c;
+		}
+
+		for (Country c : report.getCountries()) {
+			if (countryCode.equals(c.getCode()))
+				currentCountry = c;
+		}
+
+		// given country not found
+		if (currentCountry == null) {
+			execution.setVariable("weatherChanged", false);
+			execution.setVariable("warningLevelRisen", false);
+
+			return;
+		}
+
+		// current awareness level code not equal to previous, obtain regions
+		Region prevRegion = null, currentRegion = null;
+
+		if (prevCountry != null)
+			for (Region r : prevCountry.getRegions()) {
+				if (regionCode.equals(r.getCode())) {
+					prevRegion = r;
+				}
+			}
+
+		for (Region r : currentCountry.getRegions()) {
+			if (regionCode.equals(r.getCode())) {
+				currentRegion = r;
+			}
+		}
+
+		// region not found
+		if (currentRegion == null) {
+			execution.setVariable("weatherChanged", false);
+			execution.setVariable("warningLevelRisen", false);
+
+			return;
+		}
+
+		// previous region found or awareness level code 0 used
+		Integer prevRegionAwarenessLevelCode = 0;
+		if (prevRegion != null)
+			prevRegionAwarenessLevelCode = Integer.decode(prevRegion
+					.getAwarenessLevelCode());
+		
+		Integer currentRegionAwarenessLevelCode = 0;
+		currentRegionAwarenessLevelCode = Integer.decode(currentRegion.getAwarenessLevelCode());
+		
+		if(prevRegionAwarenessLevelCode == currentRegionAwarenessLevelCode) {
+			execution.setVariable("weatherChanged", false);
+			execution.setVariable("warningLevelRisen", false);
+
 			return;
 		}
 		
-		Report prevReport = reports.getLast();
-		reports.add(report);
+		execution.setVariable("weatherChanged", true);
 		
-		
-
-		boolean warningChange = false;
-		boolean warningLevelRisen = false;
-		
-		//TODO evaluate
-		/*String countriesOfInterestCode = "CZ";
-		List<String> countriesOfInterestCodeList = Arrays.asList(countriesOfInterestCode.split(","));
-		Map<String, Country> countriesCurrent = new HashMap<>();
-		Map<String, Country> countriesOld = new HashMap<>();
-		
-		for(Country c : prevReport.getCountries()) {
-			if(countriesOfInterestCodeList.contains(c.getCode()))
-				countriesOld.put(c.getCode(), c);
+		if(prevRegionAwarenessLevelCode < currentRegionAwarenessLevelCode) {
+			execution.setVariable("warningLevelRisen", true);
+		}else {
+			execution.setVariable("warningLevelRisen", false);
 		}
-		
-		for(Country c : report.getCountries()) {
-			if(countriesOfInterestCodeList.contains(c.getCode())) {
-				
-				countriesCurrent.put(c.getCode(), c);
-			}
-				
-		}
-		
-*/
-		execution.setVariable("weatherChanged", warningChange);
-		execution.setVariable("warningLevelRisen", warningLevelRisen);
 	}
 
 }

@@ -209,7 +209,10 @@ public abstract class AbstractCepProcessService implements CepProcessService {
 				.getProcessDefinition(processDefinition.getId());
 		Set<String> groups = new HashSet<>();
 
-		for (Expression ex : pde.getCandidateStarterGroupIdExpressions()) {
+		Set<Expression> candidateStarterGroupIdExpressions = pde.getCandidateStarterGroupIdExpressions();
+		if(candidateStarterGroupIdExpressions.isEmpty())
+			return true;
+		for (Expression ex : candidateStarterGroupIdExpressions) {
 			groups.add(ex.getExpressionText());
 		}
 

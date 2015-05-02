@@ -101,6 +101,15 @@ public class InformCitizensService extends AbstractCepProcessService {
 	public String getPublisherCode() {
 		return publisherCode;
 	}
+	
+	
+
+	@Override
+	public CepFormData getStartForm() {
+		CepFormData startForm = super.getStartForm();
+		startForm.getFormProperties().clear();
+		return startForm;
+	}
 
 	@Override
 	public ProcessInstance runProcess(CepFormData data) {
@@ -150,7 +159,6 @@ public class InformCitizensService extends AbstractCepProcessService {
 
 	@Override
 	public String complete(String taskId, CepFormData data) {
-		// ověřit, taskId patří této servise
 		User user = (User) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 

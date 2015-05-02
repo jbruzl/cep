@@ -1,6 +1,7 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,36 +9,38 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.transform.stream.StreamSource;
 
+import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestTemplate;
 import org.subethamail.wiser.Wiser;
-import org.subethamail.wiser.WiserMessage;
 
 import cz.muni.fi.cep.activiti.notification.tasks.SendSMSTask;
 import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.DTO.ContactType;
+import cz.muni.fi.cep.api.form.CepFormData;
+import cz.muni.fi.cep.api.form.CepFormProperty;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.api.services.users.IdentityService;
@@ -45,15 +48,16 @@ import cz.muni.fi.cep.warning.chmi.WeatherReportRegister;
 import cz.muni.fi.cep.warning.chmi.report.Country;
 import cz.muni.fi.cep.warning.chmi.report.Region;
 import cz.muni.fi.cep.warning.chmi.report.Report;
+import cz.muni.fi.cep.warning.chmi.service.WarningService;
 import cz.muni.fi.cep.warning.chmi.tasks.EvaluateWarningReport;
 import cz.muni.fi.cep.warning.chmi.tasks.ObtainWeatherReport;
 
 /**
+ * 
  * @author Jan Bruzl
  *
  */
-@PropertySource("classpath:config/config.properties")
-public class WarningTest extends ActivitiBasicTest {
+public class WarningServiceTest extends ActivitiBasicTest {
 	private Wiser wiser;
 
 	@Autowired
@@ -65,7 +69,9 @@ public class WarningTest extends ActivitiBasicTest {
 	@Autowired
 	private ConfigurationManager configurationManager;
 
-	private final String key = "warning";
+	@Autowired
+	private WarningService warningService;
+
 	private final String publisherCode = "Varování";
 
 	private MockRestServiceServer mockServerOk, mockServerNok, mockServerSMSOk,
@@ -86,194 +92,201 @@ public class WarningTest extends ActivitiBasicTest {
 	private Jaxb2Marshaller weatherReportMarshaller;
 
 	@Test
-	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
-	public void deploymentTest() {
-		assertNotNull("Expecting deployed Warning", repositoryService
-				.createProcessDefinitionQuery().processDefinitionKey(key)
-				.list().size() > 0);
-	}
-
-	@Test
-	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
-	public void timerStartTest() {
+	public void testStart() {
 		WeatherReportRegister wrr = new WeatherReportRegister();
 
 		Report okReport = (Report) weatherReportMarshaller
 				.unmarshal(new StreamSource(getClass().getClassLoader()
 						.getResourceAsStream("weatherOk.xml")));
+
+		setAwarenessLevel(okReport);
+
 		wrr.getReports().add(okReport);
 
 		evaluateWarningReport.setWeatherReportRegistr(wrr);
-		obtainWeatherReport.setRestTemplate(restTemplateNok);
-		List<Job> jobList = managementService.createJobQuery().executable()
-				.list();
-		for (Job j : jobList) {
-			managementService.executeJob(j.getId());
-		}
-		List<HistoricProcessInstance> processInstances = historyService
-				.createHistoricProcessInstanceQuery().processDefinitionKey(key)
-				.list();
-
-		skipToFuture();
-
-		List<Job> futureJobList = managementService.createJobQuery()
-				.executable().list();
-		for (Job j : futureJobList) {
-			managementService.executeJob(j.getId());
-		}
-		List<HistoricProcessInstance> futureProcessInstances = historyService
-				.createHistoricProcessInstanceQuery().processDefinitionKey(key)
-				.list();
-
-		assertTrue(processInstances.size() < futureProcessInstances.size());
-	}
-
-	@Test
-	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
-	public void manualStartTest() {
-
-		sendSMSTask.setRestTemplate(restTemplateSMSOk);
-		WeatherReportRegister wrr = new WeatherReportRegister();
-
-		evaluateWarningReport.setWeatherReportRegistr(wrr);
 		obtainWeatherReport.setRestTemplate(restTemplateOk);
 
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey(key);
-		assertNotNull("Expected process instance, got null", pi);
+		assertNotNull(warningService);
 
-		List<Task> list = taskService.createTaskQuery()
-				.processInstanceId(pi.getId()).list();
-		assertEquals(1, list.size());
+		CepFormData startForm = warningService.getStartForm();
+		assertNotNull(startForm);
+		assertNotNull(startForm.getFormProperties());
+		assertEquals(0, startForm.getFormProperties().size());
 
-		Task task = list.get(0);
+		ProcessInstance pi = warningService.runProcess(null);
+		assertNotNull(pi);
 
-		assertEquals("decideInformCitizens", task.getTaskDefinitionKey());
+		List<Task> availableTasks = warningService
+				.getAvailableTasks(pi.getId());
+		assertEquals(1, availableTasks.size());
 
-		Map<String, Object> vars = new HashMap<>();
-		vars.put("sendRadio", false);
-		vars.put("sendSMS", false);
-		vars.put("sendEmail", false);
-		vars.put("decideInformCitizens", true);
+		Task task = availableTasks.get(0);
+		assertEquals("Rozhodnutí o informování obyvatel", task.getName());
 
-		taskService.complete(task.getId(), vars);
+		CepFormData taskForm = warningService.getTaskForm(task.getId());
+		assertNotNull(taskForm);
+		assertNotNull(taskForm.getFormProperties());
+		assertEquals(4, taskForm.getFormProperties().size());
 
-		mockServerSMSOk.verify();
-		mockServerOk.verify();
+		FormProperty checkboxEmail = null;
+		FormProperty checkboxSMS = null;
+		FormProperty checkboxRadio = null;
+		FormProperty checkboxDecide = null;
+		for (FormProperty fp : taskForm.getFormProperties()) {
+			switch (fp.getId()) {
+			case "sendRadio":
+				checkboxRadio = fp;
+				break;
+			case "sendSMS":
+				checkboxSMS = fp;
+				break;
+			case "sendEmail":
+				checkboxEmail = fp;
+				break;
+			case "decideInformCitizens":
+				checkboxDecide = fp;
+				break;
+			default:
+				fail("Unexpected form property");
+				break;
+			}
+		}
+		assertNotNull("Email checkbox not found in form property",
+				checkboxEmail);
+		assertNotNull("SMS checkbox not found in form property", checkboxSMS);
+		assertNotNull("Radio checkbox not found in form property",
+				checkboxRadio);
+		assertNotNull("Decide checkbox not found in form property",
+				checkboxRadio);
+
+		assertTrue("Form property should be instance of CepFormProperty",
+				checkboxEmail instanceof CepFormProperty);
+		assertTrue("Form property should be instance of CepFormProperty",
+				checkboxSMS instanceof CepFormProperty);
+		assertTrue("Form property should be instance of CepFormProperty",
+				checkboxRadio instanceof CepFormProperty);
+		assertTrue("Form property should be instance of CepFormProperty",
+				checkboxDecide instanceof CepFormProperty);
+
+		((CepFormProperty) checkboxEmail).setInput(false);
+		((CepFormProperty) checkboxSMS).setInput(false);
+		((CepFormProperty) checkboxRadio).setInput(false);
+		((CepFormProperty) checkboxDecide).setInput(true);
+
+		warningService.complete(task.getId(), taskForm);
+
+		HistoricActivityInstance endActivity = historyService
+				.createHistoricActivityInstanceQuery()
+				.processInstanceId(pi.getId()).activityType("endEvent")
+				.singleResult();
+		assertNotNull(endActivity);
+		assertEquals("citizensInformed", endActivity.getActivityId());
 	}
 
-	@Test
-	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
-	public void sendSMSFailureTest() {
-		sendSMSTask.setRestTemplate(restTemplateSMSNok);
-		WeatherReportRegister wrr = new WeatherReportRegister();
-
-		evaluateWarningReport.setWeatherReportRegistr(wrr);
-		obtainWeatherReport.setRestTemplate(restTemplateOk);
-
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey(key);
-		assertNotNull("Expected process instance, got null", pi);
-
-		List<Task> list = taskService.createTaskQuery()
-				.processInstanceId(pi.getId()).list();
-		assertEquals(1, list.size());
-
-		Task task = list.get(0);
-
-		assertEquals("decideInformCitizens", task.getTaskDefinitionKey());
-
-		Map<String, Object> vars = new HashMap<>();
-		vars.put("decideInformCitizens", true);
-
-		List<WiserMessage> messages = wiser.getMessages();
-		assertEquals(2, messages.size());
-		mockServerSMSNok.verify();
-		mockServerOk.verify();
-
-	}
-
-	@Test
-	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
-	public void sendSMSDecreaseLevelTest() {
-		sendSMSTask.setRestTemplate(restTemplateSMSOkNok);
-		WeatherReportRegister wrr = new WeatherReportRegister();
-
-		Report okReport = (Report) weatherReportMarshaller
-				.unmarshal(new StreamSource(getClass().getClassLoader()
-						.getResourceAsStream("weatherOk.xml")));
-
-		String countryCode = configurationManager.getKey(EvaluateWarningReport.countryCodeKey);
-		String regionCode = configurationManager.getKey(EvaluateWarningReport.regionCodeKey);
+	private void setAwarenessLevel(Report okReport) {
+		String countryCode = configurationManager
+				.getKey(EvaluateWarningReport.countryCodeKey);
+		String regionCode = configurationManager
+				.getKey(EvaluateWarningReport.regionCodeKey);
+		
 		Country currentCountry = null;
 		Region currentRegion = null;
-		
+
 		for (Country c : okReport.getCountries()) {
 			if (countryCode.equals(c.getCode()))
 				currentCountry = c;
 		}
-		
+
 		for (Region r : currentCountry.getRegions()) {
 			if (regionCode.equals(r.getCode())) {
 				currentRegion = r;
 			}
 		}
-		
+
 		currentRegion.setAwarenessLevelCode("1");
-		
-		wrr.getReports().add(okReport); 
-
-		evaluateWarningReport.setWeatherReportRegistr(wrr);
-		obtainWeatherReport.setRestTemplate(restTemplateOk);
-
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey(key);
-		assertNotNull("Expected process instance, got null", pi);
-
-		List<Task> list = taskService.createTaskQuery()
-				.processInstanceId(pi.getId()).list();
-		assertEquals(1, list.size());
-
-		Task task = list.get(0);
-
-		assertEquals("decideInformCitizens", task.getTaskDefinitionKey());
-
-		mockServerSMSOkNok.verify();
-		mockServerOk.verify();
-
 	}
 
 	@Test
-	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
-	public void dontInformCitizensTest() {
-		sendSMSTask.setRestTemplate(restTemplateSMSOk);
+	public void dontInformCitizenTest() {
 		WeatherReportRegister wrr = new WeatherReportRegister();
 
+		Report okReport = (Report) weatherReportMarshaller
+				.unmarshal(new StreamSource(getClass().getClassLoader()
+						.getResourceAsStream("weatherOk.xml")));
+		setAwarenessLevel(okReport);
+		wrr.getReports().add(okReport);
 
 		evaluateWarningReport.setWeatherReportRegistr(wrr);
 		obtainWeatherReport.setRestTemplate(restTemplateOk);
 
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey(key);
-		assertNotNull("Expected process instance, got null", pi);
+		assertNotNull(warningService);
 
-		List<Task> list = taskService.createTaskQuery()
-				.processInstanceId(pi.getId()).list();
-		assertEquals(1, list.size());
+		CepFormData startForm = warningService.getStartForm();
+		assertNotNull(startForm);
+		assertNotNull(startForm.getFormProperties());
+		assertEquals(0, startForm.getFormProperties().size());
 
-		Task task = list.get(0);
+		ProcessInstance pi = warningService.runProcess(null);
+		assertNotNull(pi);
 
-		assertEquals("decideInformCitizens", task.getTaskDefinitionKey());
+		List<Task> availableTasks = warningService
+				.getAvailableTasks(pi.getId());
+		assertEquals(1, availableTasks.size());
 
-		Map<String, Object> vars = new HashMap<>();
-		vars.put("sendRadio", false);
-		vars.put("sendSMS", false);
-		vars.put("sendEmail", false);
-		vars.put("decideInformCitizens", false);
+		Task task = availableTasks.get(0);
+		assertEquals("Rozhodnutí o informování obyvatel", task.getName());
 
-		taskService.complete(task.getId(), vars);
+		CepFormData taskForm = warningService.getTaskForm(task.getId());
+		assertNotNull(taskForm);
+		assertNotNull(taskForm.getFormProperties());
+		assertEquals(4, taskForm.getFormProperties().size());
+
+		FormProperty checkboxEmail = null;
+		FormProperty checkboxSMS = null;
+		FormProperty checkboxRadio = null;
+		FormProperty checkboxDecide = null;
+		for (FormProperty fp : taskForm.getFormProperties()) {
+			switch (fp.getId()) {
+			case "sendRadio":
+				checkboxRadio = fp;
+				break;
+			case "sendSMS":
+				checkboxSMS = fp;
+				break;
+			case "sendEmail":
+				checkboxEmail = fp;
+				break;
+			case "decideInformCitizens":
+				checkboxDecide = fp;
+				break;
+			default:
+				fail("Unexpected form property");
+				break;
+			}
+		}
+		assertNotNull("Email checkbox not found in form property",
+				checkboxEmail);
+		assertNotNull("SMS checkbox not found in form property", checkboxSMS);
+		assertNotNull("Radio checkbox not found in form property",
+				checkboxRadio);
+		assertNotNull("Decide checkbox not found in form property",
+				checkboxRadio);
+
+		assertTrue("Form property should be instance of CepFormProperty",
+				checkboxEmail instanceof CepFormProperty);
+		assertTrue("Form property should be instance of CepFormProperty",
+				checkboxSMS instanceof CepFormProperty);
+		assertTrue("Form property should be instance of CepFormProperty",
+				checkboxRadio instanceof CepFormProperty);
+		assertTrue("Form property should be instance of CepFormProperty",
+				checkboxDecide instanceof CepFormProperty);
+
+		((CepFormProperty) checkboxEmail).setInput(false);
+		((CepFormProperty) checkboxSMS).setInput(false);
+		((CepFormProperty) checkboxRadio).setInput(false);
+		((CepFormProperty) checkboxDecide).setInput(false);
+
+		warningService.complete(task.getId(), taskForm);
 
 		HistoricActivityInstance endActivity = historyService
 				.createHistoricActivityInstanceQuery()
@@ -281,15 +294,10 @@ public class WarningTest extends ActivitiBasicTest {
 				.singleResult();
 		assertNotNull(endActivity);
 		assertEquals("declineInformCitizens", endActivity.getActivityId());
-
-		mockServerSMSOk.verify();
-		mockServerOk.verify();
 	}
 
 	@Test
-	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
-	public void noChangeTest() {
+	public void testCHMUFailure() {
 		WeatherReportRegister wrr = new WeatherReportRegister();
 
 		Report okReport = (Report) weatherReportMarshaller
@@ -298,55 +306,39 @@ public class WarningTest extends ActivitiBasicTest {
 		wrr.getReports().add(okReport);
 
 		evaluateWarningReport.setWeatherReportRegistr(wrr);
-		obtainWeatherReport.setRestTemplate(restTemplateOk);
+		obtainWeatherReport.setRestTemplate(restTemplateNok);
 
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey(key);
-		assertNotNull("Expected process instance, got null", pi);
+		assertNotNull(warningService);
+
+		CepFormData startForm = warningService.getStartForm();
+		assertNotNull(startForm);
+		assertNotNull(startForm.getFormProperties());
+		assertEquals(0, startForm.getFormProperties().size());
+
+		ProcessInstance pi = warningService.runProcess(null);
+		assertNotNull(pi);
+
+		List<Task> availableTasks = warningService
+				.getAvailableTasks(pi.getId());
+		assertEquals(1, availableTasks.size());
+
+		Task task = availableTasks.get(0);
+		assertEquals("Informování o selhání komunikace", task.getName());
+
+		CepFormData taskForm = warningService.getTaskForm(task.getId());
+		assertNotNull(taskForm);
+		assertNotNull(taskForm.getFormProperties());
+		assertEquals(0, taskForm.getFormProperties().size());
+
+		warningService.complete(task.getId(), taskForm);
 
 		HistoricActivityInstance endActivity = historyService
 				.createHistoricActivityInstanceQuery()
 				.processInstanceId(pi.getId()).activityType("endEvent")
 				.singleResult();
 		assertNotNull(endActivity);
-		assertEquals("warningLevelNotChanged", endActivity.getActivityId());
+		assertEquals("communicationFailure", endActivity.getActivityId());
 
-		mockServerOk.verify();
-
-	}
-
-	@Test
-	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
-	public void badRequestWeatherReportTest() {
-		obtainWeatherReport.setRestTemplate(restTemplateNok);
-
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey(key);
-		assertNotNull("Expected process instance, got null", pi);
-
-		mockServerNok.verify();
-
-		List<Task> list = taskService.createTaskQuery()
-				.processInstanceId(pi.getId()).list();
-		assertEquals(1, list.size());
-
-		Task task = list.get(0);
-
-		assertEquals("informCommunicationFailure", task.getTaskDefinitionKey());
-
-		taskService.complete(task.getId());
-
-		List<HistoricProcessInstance> piList = historyService
-				.createHistoricProcessInstanceQuery()
-				.processInstanceId(pi.getId()).finished().list();
-		assertEquals(1, piList.size());
-
-		final HistoricActivityInstance activity = historyService
-				.createHistoricActivityInstanceQuery()
-				.processInstanceId(pi.getId()).activityType("endEvent")
-				.singleResult();
-		assertEquals("Chyba spojení s ÈHMÚ", activity.getActivityName());
-
-		mockServerNok.verify();
 	}
 
 	@Before
@@ -486,9 +478,16 @@ public class WarningTest extends ActivitiBasicTest {
 				.expect(MockRestRequestMatchers.requestTo(requestUrlSMSNok))
 				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
 				.andRespond(MockRestResponseCreators.withBadRequest());
-		
+
 		configurationManager.setKey(EvaluateWarningReport.countryCodeKey, "CZ");
 		configurationManager.setKey(EvaluateWarningReport.regionCodeKey, "B");
+
+		List<GrantedAuthority> gaList = new ArrayList<>();
+		gaList.add(new SimpleGrantedAuthority("mayor"));
+		User user = new User("test", "test", true, true, true, true, gaList);
+
+		SecurityContextHolder.getContext().setAuthentication(
+				new UsernamePasswordAuthenticationToken(user, "test"));
 
 	}
 
@@ -498,16 +497,4 @@ public class WarningTest extends ActivitiBasicTest {
 		if (wiser != null)
 			wiser.stop();
 	}
-
-	/**
-	 * Adds 5 mins to process engine
-	 */
-	private void skipToFuture() {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(activitiRule.getProcessEngine()
-				.getProcessEngineConfiguration().getClock().getCurrentTime());
-		cal.add(Calendar.MINUTE, 5);
-		activitiRule.setCurrentTime(cal.getTime());
-	}
-
 }
