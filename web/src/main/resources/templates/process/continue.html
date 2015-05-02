@@ -4,7 +4,7 @@
 <head th:include="index :: head">
 </head>
 <body>
-	<div class="sticky" th:include="snippets/menu :: menu">	</div>
+	<div class="sticky" th:include="snippets/menu :: menu"></div>
 
 
 
@@ -35,13 +35,17 @@
 		<div class="large-9 columns">
 			<div class="panel">
 				<h4 th:text="${process}">Process name</h4>
-				<form action="#" th:action="@{${'/proces/task/submit/' + key + '/' + taskId}}"
+				<form action="#"
+					th:action="@{${'/proces/task/submit/' + key + '/' + taskId}}"
 					method="post" enctype="multipart/form-data">
 					<table>
 						<tbody>
 							<tr th:each="property : ${startForm.formProperties}">
-								<td><label th:for="${property.id}" th:text="${property.name}">Name</label></td>
-								<td><input th:type="${property.type.name}" th:name="${property.id}" th:id="${property.id}" /></td>
+								<td><label th:for="${property.id}"
+									th:text="${property.name}">Name</label></td>
+								<td><input th:type="${property.type.name}"
+									th:name="${property.id}" th:id="${property.id}"
+									th:value="${property.value}" th:if="${property.required}" /></td>
 							</tr>
 						</tbody>
 					</table>

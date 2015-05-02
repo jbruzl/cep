@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	creating-authority="ČHMÚ, none" creating-user="Mejstřík" creation-day="úterý"
+	creation-purpose="aktuální stav" creation-time="2015-04-28T18:46:00"
+	xsi:noNamespaceSchemaLocation="http://pocasi.chmi.cz/data/doc/2.0/DataInterchange.CZ.xsd">
+	<country awareness-level-code="3" code="CZ" id="SIVS" name="Czech Republic">
+		<region awareness-level="green" awareness-level-code="0" code="A"
+			name="Praha" />
+		<region awareness-level="green" awareness-level-code="0" code="S"
+			name="Středočeský kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="K"
+			name="Karlovarský kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="P"
+			name="Plzeňský kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="C"
+			name="Jihočeský kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="E"
+			name="Pardubický kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="H"
+			name="Královéhradecký kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="L"
+			name="Liberecký kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="U"
+			name="Ústecký kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="J"
+			name="Kraj Vysočina" />
+		<region awareness-level="green" awareness-level-code="0" code="B"
+			name="Jihomoravský kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="Z"
+			name="Zlínský kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="M"
+			name="Olomoucký kraj" />
+		<region awareness-level="green" awareness-level-code="0" code="T"
+			name="Moravskoslezský kraj" />
+	</country>
+</report>

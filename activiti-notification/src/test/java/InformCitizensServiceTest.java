@@ -3,6 +3,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +66,7 @@ public class InformCitizensServiceTest extends ActivitiBasicTest {
 	private InformCitizensHistoryService informCitizensHistoryService;
 
 	private final String broadcastUrlKey = "cep.radio.broadcast.url";
-	private String message = "Hello_World!";
+	private String message = "Hello_World";
 	private String receiver = "728484615";
 	private String publisherCode = "Informace";
 	private MockRestServiceServer mockServerSMS, mockServerRadio;
@@ -133,7 +135,7 @@ public class InformCitizensServiceTest extends ActivitiBasicTest {
 				break;
 			case "smsMessage":
 			case "emailMessage":
-				((CepFormProperty) formProperty).setInput("Hello_World!");
+				((CepFormProperty) formProperty).setInput(message);
 				break;
 			}
 
@@ -153,7 +155,7 @@ public class InformCitizensServiceTest extends ActivitiBasicTest {
 	}
 
 	@Before
-	public void setUp() {
+	public void setUp() throws UnsupportedEncodingException {
 		assertNotNull("Identity service null", identityService);
 		assertNotNull("Subscription service null", subscriptionService);
 
@@ -203,7 +205,7 @@ public class InformCitizensServiceTest extends ActivitiBasicTest {
 				.append("&password=")
 				.append(configurationManager.getKey("cep.sms.password"))
 				.append("&action=send_sms").append("&number=").append(receiver)
-				.append("&message=").append(message).toString();
+				.append("&message=").append(URLEncoder.encode(message, "UTF-8")).toString();
 		mockServerSMS = MockRestServiceServer.createServer(restTemplate);
 		mockServerSMS
 				.expect(MockRestRequestMatchers.requestTo(requestUrl))

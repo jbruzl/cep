@@ -17,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import cz.muni.fi.cep.activiti.radio.messages.FileRadioMessage;
+import cz.muni.fi.cep.activiti.notification.messages.FileRadioMessage;
 import cz.muni.fi.cep.api.DTO.CepGroup;
 import cz.muni.fi.cep.api.form.CepFormData;
 import cz.muni.fi.cep.api.form.CepFormProperty;

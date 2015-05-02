@@ -1,11 +1,5 @@
 import static org.junit.Assert.assertNotNull;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.history.HistoricVariableUpdate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,12 +8,10 @@ import org.springframework.context.annotation.PropertySource;
 import org.subethamail.wiser.Wiser;
 
 import cz.muni.fi.cep.api.DTO.ContactType;
-import cz.muni.fi.cep.core.bpmn.service.api.MessageType;
-import cz.muni.fi.cep.core.subscriptions.api.SubscriptionService;
-import cz.muni.fi.cep.core.users.api.IdentityService;
+import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
+import cz.muni.fi.cep.api.services.users.IdentityService;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 import cz.muni.fi.cep.warning.chmi.WeatherReportRegister;
-import cz.muni.fi.cep.warning.chmi.report.Report;
 
 /**
  * @author Jan Bruzl
@@ -72,7 +64,7 @@ public class WarningCHMITest extends ActivitiBasicTest {
 
 	@Before
 	public void setUp() {
-		assertNotNull("Identity service null", identityService);
+		/*assertNotNull("Identity service null", identityService);
 		assertNotNull("Subscription service null", subscriptionService);
 
 		CepUserEntity userEntity = new CepUserEntity();
@@ -107,7 +99,7 @@ public class WarningCHMITest extends ActivitiBasicTest {
 		}
 		wiser = new Wiser();
 		wiser.setPort(2025);
-		wiser.start();
+		wiser.start();*/
 	}
 
 	@After

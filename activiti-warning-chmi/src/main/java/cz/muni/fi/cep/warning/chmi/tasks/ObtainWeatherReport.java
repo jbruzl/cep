@@ -8,8 +8,12 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 import cz.muni.fi.cep.warning.chmi.report.Report;
 
 /**
@@ -18,9 +22,22 @@ import cz.muni.fi.cep.warning.chmi.report.Report;
  * @author Jan Bruzl
  *
  */
+@Component
 public class ObtainWeatherReport implements JavaDelegate {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private String sourceURL = "http://www.chmi.cz/files/portal/docs/meteo/om/zpravy/data/sivs_aktual.xml";
+	
+	@Autowired
+	private ConfigurationManager configurationManager;
+
+	private RestOperations restTemplate;
+
+	public void setRestTemplate(RestOperations restTemplate) {
+		this.restTemplate = restTemplate;
+	}
+	
+	public ObtainWeatherReport() {
+		restTemplate = new RestTemplate();
+	}
 
 	/**
 	 * Tries to obtain weather report and parse it to class structure. Then pass
@@ -33,8 +50,9 @@ public class ObtainWeatherReport implements JavaDelegate {
 	public void execute(DelegateExecution execution) throws Exception {
 
 		Report report = null;
+		String sourceURL = configurationManager.getKey("cep.warning.chmi.url");
+
 		try {
-			RestTemplate restTemplate = new RestTemplate();
 			report = restTemplate.getForObject(sourceURL, Report.class);
 		} catch (Exception e) {
 			logger.error("Error while obtaining weather report. {}", e.toString());

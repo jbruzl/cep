@@ -3,6 +3,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,9 +26,9 @@ import org.springframework.web.client.RestTemplate;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
+import cz.muni.fi.cep.activiti.notification.messages.FileRadioMessage;
 import cz.muni.fi.cep.activiti.notification.tasks.BroadcastTask;
 import cz.muni.fi.cep.activiti.notification.tasks.SendSMSTask;
-import cz.muni.fi.cep.activiti.radio.messages.FileRadioMessage;
 import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.DTO.ContactType;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
@@ -58,7 +60,7 @@ public class InformCitizensTest extends ActivitiBasicTest {
 	@Autowired
 	private ConfigurationManager configurationManager;
 
-	private String message = "Hello_World!";
+	private String message = "Hello_World";
 	private String receiver = "728484615";
 	private String publisherCode = "001";
 	private MockRestServiceServer mockServerSMS, mockServerRadio;
@@ -493,7 +495,7 @@ public class InformCitizensTest extends ActivitiBasicTest {
 
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws UnsupportedEncodingException {
 		assertNotNull("Identity service null", identityService);
 		assertNotNull("Subscription service null", subscriptionService);
 
@@ -543,7 +545,7 @@ public class InformCitizensTest extends ActivitiBasicTest {
 				.append("&password=")
 				.append(configurationManager.getKey("cep.sms.password"))
 				.append("&action=send_sms").append("&number=").append(receiver)
-				.append("&message=").append(message).toString();
+				.append("&message=").append(URLEncoder.encode(message, "UTF-8")).toString();
 		mockServerSMS = MockRestServiceServer.createServer(restTemplate);
 		mockServerSMS
 				.expect(MockRestRequestMatchers.requestTo(requestUrl))

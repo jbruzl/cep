@@ -34,13 +34,13 @@
     
     <logger name="org.activiti">
         <!-- Print only messages of level warn or above in the package org.jboss -->
-        <level value="debug"/> 
+        <level value="info"/> 
     </logger>
     
 
     <!-- Root logger -->
     <root>
-        <level value="debug" />
+        <level value="info" />
         <appender-ref ref="console" />
     </root>
 

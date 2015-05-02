@@ -1,8 +1,7 @@
-/**
- * 
- */
 package cz.muni.fi.cep.activiti.notification.tasks;
 
+import java.net.URI;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,11 +50,10 @@ public class SendSMSTask implements JavaDelegate {
 			receivers = (ArrayList<String>) execution
 					.getVariable("smsReceivers");
 		} else {
-			logger.error(
-					"Supplied unsupported variable: receivers.");
+			logger.error("Supplied unsupported variable: receivers.");
 			return;
 		}
-		
+
 		ArrayList<String> unsendSMStrings = (ArrayList<String>) receivers
 				.clone();
 
@@ -65,21 +63,25 @@ public class SendSMSTask implements JavaDelegate {
 			execution.setVariable("unsucessfullSMS", unsendSMStrings);
 			throw new BpmnError("smsSendError");
 		}
-		
+
 		logger.info("Executing SendSMS task with params: {}, {}", message,
 				receivers);
+		final String encodedMessage = URLEncoder.encode(message, "UTF-8");
 
 		try {
 			logger.info("Starting to send sms");
 			for (String smsReceiver : receivers) {
-
-				String response = restTemplate
-						.getForObject(
-								"http://api.smsbrana.cz/smsconnect/http.php?login={login}&password={heslo}&action=send_sms&number={number}&message={message}",
-								String.class,
-								configurationManager.getKey("cep.sms.login"),
-								configurationManager.getKey("cep.sms.password"),
-								smsReceiver, message);
+				String requestUrl = new StringBuilder()
+						.append("http://api.smsbrana.cz/smsconnect/http.php")
+						.append("?login=")
+						.append(configurationManager.getKey("cep.sms.login"))
+						.append("&password=")
+						.append(configurationManager.getKey("cep.sms.password"))
+						.append("&action=send_sms").append("&number=")
+						.append(smsReceiver).append("&message=")
+						.append(encodedMessage).toString();
+				URI uri = URI.create(requestUrl);
+				String response = restTemplate.getForObject(uri, String.class);
 				logger.info(response);
 				unsendSMStrings.remove(smsReceiver);
 			}

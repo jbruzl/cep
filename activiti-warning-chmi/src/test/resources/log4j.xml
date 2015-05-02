@@ -28,7 +28,7 @@
 
     <!-- Root logger -->
     <root>
-        <level value="TRACE" />
+        <level value="debug" />
         <appender-ref ref="console" />
     </root>
 

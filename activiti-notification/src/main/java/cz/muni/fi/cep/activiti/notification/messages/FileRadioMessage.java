@@ -1,4 +1,4 @@
-package cz.muni.fi.cep.activiti.radio.messages;
+package cz.muni.fi.cep.activiti.notification.messages;
 
 import java.io.File;
 import java.util.Calendar;

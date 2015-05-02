@@ -1,9 +1,10 @@
-package cz.muni.fi.cep.activiti.radio.messages;
+package cz.muni.fi.cep.activiti.notification.messages;
 
-import java.io.Serializable;
 import java.util.Calendar;
 
 import org.springframework.core.io.FileSystemResource;
+
+import scala.Serializable;
 
 /**
  * Describes interface for class that contains audio message.

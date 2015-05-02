@@ -17,7 +17,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
-import cz.muni.fi.cep.activiti.radio.messages.RadioMessage;
+import cz.muni.fi.cep.activiti.notification.messages.RadioMessage;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 
 /**
