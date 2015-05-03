@@ -12,9 +12,7 @@
 		<module>core</module>
 		<module>activiti-archetype</module>
 		<module>activiti-notification</module>
-
 		<module>web</module>
-		<module>activiti-radio</module>
 		<module>radiobroadcaster</module>
 	</modules>
 	
