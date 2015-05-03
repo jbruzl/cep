@@ -27,6 +27,7 @@ public class WarningHistoryService extends DefaultHistoryService {
 		processDefinitionKey = key;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public CepHistoryProcessInstance getDetail(String pid)
 			throws IllegalArgumentException {
@@ -34,44 +35,30 @@ public class WarningHistoryService extends DefaultHistoryService {
 		List<CepHistoricVariableInstance> filteredVariables = new ArrayList<>();
 		for (CepHistoricVariableInstance chvi : detail.getVariableInstances()) {
 			switch (chvi.getVariableName()) {
-			/*
-			case "sendSMS":
-				chvi.setVariableName("SMS?");
-				filteredVariables.add(chvi);
-				break;
-			case "sendRadio":
-				chvi.setVariableName("Rozhlas?");
-				filteredVariables.add(chvi);
-				break;
-			case "sendEmail":
-				chvi.setVariableName("Email?");
-				filteredVariables.add(chvi);
-				break;
+			
 			case "smsMessage":
-				chvi.setVariableName("SMS");
+				chvi.setVariableName("Upozornìní");
 				filteredVariables.add(chvi);
-				break;
-			case "emailMessage":
-				chvi.setVariableName("Email");
-				filteredVariables.add(chvi);
-				break;
-			case "sendEmailError":
-				if (chvi.getValue() != null) {
-					chvi.setVariableName("Chyba pÅ™i odesÃ­lÃ¡nÃ­ emailu");
-					filteredVariables.add(chvi);
-				}
 				break;
 			case "smsReceivers":
-				chvi.setVariableName("PÅ™Ã­jemci SMS");
+				chvi.setVariableName("Pøíjemci SMS");
 				List<String> value = (List<String>) chvi.getValue();
 				chvi.setValue(value);
 				filteredVariables.add(chvi);
 				break;
-			case "mailList":
-				chvi.setVariableName("PÅ™Ã­jemci e-mailu");
+			case "emailInfoReceivers":
+				chvi.setVariableName("Pøíjemci e-mailu");
 				filteredVariables.add(chvi);
 				break;
-				*/
+			case "decideInformCitizens":
+				chvi.setVariableName("Informovat obyvatele?");
+				if((Boolean)chvi.getValue())
+					chvi.setValue("Ano");
+				else
+					chvi.setValue("Ne");
+				filteredVariables.add(chvi);
+				break;
+				
 			default:
 				break;
 			}

@@ -26,6 +26,7 @@
       emailContactType = cz.muni.fi.cep.api.DTO.ContactType.EMAIL
       smsContactType = cz.muni.fi.cep.api.DTO.ContactType.SMS
       publisherCode = "Varování"
+      informPublisherCode = "Varování pro občany"
       </script>
     </scriptTask>
     <serviceTask id="obtainSMSContacts" name="Získání SMS kontaktů" activiti:expression="${subscriptionService.getContacts(publisherCode, smsContactType)}" activiti:resultVariableName="smsReceivers"></serviceTask>
@@ -54,6 +55,7 @@
         <activiti:in sourceExpression="${sendRadio}" target="sendRadio"></activiti:in>
         <activiti:in sourceExpression="${sendSMS}" target="sendSMS"></activiti:in>
         <activiti:in sourceExpression="${sendEmail}" target="sendEmail"></activiti:in>
+        <activiti:in sourceExpression="${informPublisherCode}" target="publisherCode"></activiti:in>
       </extensionElements>
     </callActivity>
     <sequenceFlow id="flow14" name="Informovat" sourceRef="decisionInformCItizens" targetRef="callInformCitizens">

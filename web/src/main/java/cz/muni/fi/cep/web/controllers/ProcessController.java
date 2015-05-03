@@ -221,9 +221,16 @@ public class ProcessController {
 					return "process/error?proces=" + key + "&state=uploaderror";
 				}
 				cfp.setInput(f.getAbsolutePath());
-			} else {
+			} 
+			if (cfp.getType() instanceof CepTextFormType) {
 				String parameter = httpServletRequest.getParameter(cfp.getId());
 				cfp.setInput(parameter);
+			}
+			if (cfp.getType() instanceof CepCheckboxFormType) {
+				if(httpServletRequest.getParameter(cfp.getId())==null)
+					cfp.setInput(false);
+				else
+					cfp.setInput(true);;
 			}
 		}
 

@@ -408,7 +408,7 @@ public class WarningTest extends ActivitiBasicTest {
 		RestTemplate restTemplate = new RestTemplate();
 
 		String requestUrl = "http://www.chmi.cz/files/portal/docs/meteo/om/zpravy/data/sivs_aktual.xml";
-		configurationManager.setKey("cep.warning.chmi.url", requestUrl);
+		configurationManager.setKey(ObtainWeatherReport.chmiUrlKey, requestUrl);
 
 		mockServerOk = MockRestServiceServer.createServer(restTemplate);
 		mockServerOk

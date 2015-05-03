@@ -62,13 +62,14 @@ public class EvaluateWarningReport implements JavaDelegate {
 		}
 
 		LinkedList<Report> reports = weatherReportRegistr.getReports();
+		
 		if (reports.isEmpty()) {
 			execution.setVariable("weatherChanged", true);
 			execution.setVariable("warningLevelRisen", true);
-
+			reports.add(report);
 			return;
 		}
-
+		
 		Report prevReport = reports.getLast();
 		reports.add(report);
 

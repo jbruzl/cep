@@ -21,6 +21,7 @@ import cz.muni.fi.cep.api.form.CepFormProperty;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
 import cz.muni.fi.cep.warning.chmi.tasks.EvaluateWarningReport;
+import cz.muni.fi.cep.warning.chmi.tasks.ObtainWeatherReport;
 
 /**
  * Service class for BPMN diagram Warning.
@@ -49,6 +50,9 @@ public class WarningService extends AbstractCepProcessService {
 	
 	@Value("${cep.warning.regionCode}")
 	private String regionCode;
+	
+	@Value("${cep.warning.chmi.url}")
+	private String chmiUrl;
 
 	@Autowired
 	public WarningService(
@@ -81,8 +85,10 @@ public class WarningService extends AbstractCepProcessService {
 		
 		configurationManager.setKey(EvaluateWarningReport.countryCodeKey, countryCode);
 		configurationManager.setKey(EvaluateWarningReport.regionCodeKey, regionCode);
-
+		configurationManager.setKey(ObtainWeatherReport.chmiUrlKey, chmiUrl);
+		
 		subscriptionService.register(publisherCode);
+		subscriptionService.register("Varování pro obèany");
 		logger.debug("Publisher {} registered", publisherCode);
 
 		if (repositoryService.createProcessDefinitionQuery()

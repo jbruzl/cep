@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.activiti.notification.messages.FileRadioMessage;
+import cz.muni.fi.cep.activiti.notification.tasks.SendSMSTask;
 import cz.muni.fi.cep.api.DTO.CepGroup;
 import cz.muni.fi.cep.api.form.CepFormData;
 import cz.muni.fi.cep.api.form.CepFormProperty;
@@ -44,6 +45,12 @@ public class InformCitizensService extends AbstractCepProcessService {
 	
 	@Value("${cep.radio.broadcast.url}")
 	private String broadcastUrl;
+	
+	@Value("${cep.informcitizens.sms.login}")
+	private String login;
+	
+	@Value("${cep.informcitizens.sms.password}")
+	private String password;
 	
 	private final String broadcastUrlKey = "cep.radio.broadcast.url";
 
@@ -77,6 +84,9 @@ public class InformCitizensService extends AbstractCepProcessService {
 		processServiceManager.registerService(this);
 		
 		configurationManager.setKey(broadcastUrlKey, broadcastUrl);
+		
+		configurationManager.setKey(SendSMSTask.loginKey, login);
+		configurationManager.setKey(SendSMSTask.passwordKey, password);
 
 		subscriptionService.register(publisherCode);
 		logger.debug("Publisher {} registered", publisherCode);

@@ -34,7 +34,7 @@
 
 		<div class="large-9 columns">
 			<div class="panel">
-				<h4>Process name</h4>
+				<h4>Úkol</h4>
 				<ul>
 					<li th:each="task : ${tasks}"><a
 						th:href="@{${'/proces/task/'+#strings.substringBefore(task.processDefinitionId, ':')+'/'+task.id}}"

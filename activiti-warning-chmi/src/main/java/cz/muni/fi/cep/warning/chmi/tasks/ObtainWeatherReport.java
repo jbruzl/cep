@@ -30,6 +30,8 @@ public class ObtainWeatherReport implements JavaDelegate {
 	private ConfigurationManager configurationManager;
 
 	private RestOperations restTemplate;
+	
+	public final static String chmiUrlKey = "cep.warning.chmi.url";
 
 	public void setRestTemplate(RestOperations restTemplate) {
 		this.restTemplate = restTemplate;
@@ -50,7 +52,7 @@ public class ObtainWeatherReport implements JavaDelegate {
 	public void execute(DelegateExecution execution) throws Exception {
 
 		Report report = null;
-		String sourceURL = configurationManager.getKey("cep.warning.chmi.url");
+		String sourceURL = configurationManager.getKey(chmiUrlKey);
 
 		try {
 			report = restTemplate.getForObject(sourceURL, Report.class);

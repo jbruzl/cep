@@ -44,9 +44,11 @@ public class Config {
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(getDataSource());
+		
 
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
+		
 		em.setJpaProperties(additionalProperties());
 
 		return em;
@@ -71,6 +73,13 @@ public class Config {
 		properties.setProperty("hibernate.hbm2ddl.auto", "update");
 		properties.setProperty("hibernate.dialect",
 				"org.hibernate.dialect.MySQL5Dialect");
+		properties.setProperty("hibernate.connection.characterEncoding",
+				"utf8");
+		properties.setProperty("hibernate.connection.useUnicode",
+				"true");
+		properties.setProperty("hibernate.connection.charSet",
+				"UTF-8");
+		
 		return properties;
 	}
 	

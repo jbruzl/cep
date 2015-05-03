@@ -29,6 +29,9 @@ public class SendSMSTask implements JavaDelegate {
 	private ConfigurationManager configurationManager;
 
 	private RestOperations restTemplate;
+	
+	public static final String loginKey = "cep.sms.login";
+	public static final String passwordKey = "cep.sms.password";
 
 	public void setRestTemplate(RestOperations restTemplate) {
 		this.restTemplate = restTemplate;
@@ -71,12 +74,13 @@ public class SendSMSTask implements JavaDelegate {
 		try {
 			logger.info("Starting to send sms");
 			for (String smsReceiver : receivers) {
+				
 				String requestUrl = new StringBuilder()
 						.append("http://api.smsbrana.cz/smsconnect/http.php")
 						.append("?login=")
-						.append(configurationManager.getKey("cep.sms.login"))
+						.append(configurationManager.getKey(loginKey))
 						.append("&password=")
-						.append(configurationManager.getKey("cep.sms.password"))
+						.append(configurationManager.getKey(passwordKey))
 						.append("&action=send_sms").append("&number=")
 						.append(smsReceiver).append("&message=")
 						.append(encodedMessage).toString();

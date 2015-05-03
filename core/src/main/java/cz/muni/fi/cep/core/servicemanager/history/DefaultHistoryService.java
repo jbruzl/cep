@@ -46,7 +46,7 @@ public class DefaultHistoryService implements CepHistoryService {
 	public List<CepHistoryProcessInstance> getAllInstances() {
 		List<CepHistoryProcessInstance> cepHPIList = new ArrayList<>();
 		List<HistoricProcessInstance> hpiList = getProcessInstanceQuery()
-				.list();
+			.list();
 
 		for (HistoricProcessInstance hpi : hpiList) {
 			CepHistoryProcessInstance cepHPI = mapper.map(hpi,
