@@ -8,6 +8,7 @@
 	</parent>
 	<artifactId>web</artifactId>
 	<name>web module</name>
+	<!-- <packaging>war</packaging> -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -24,17 +25,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!--  <dependency>
-			<groupId>cz.muni.fi.cep</groupId>
-			<artifactId>activiti-radio</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>-->
 		<dependency>
 			<groupId>cz.muni.fi.cep</groupId>
 			<artifactId>activiti-notification</artifactId>
@@ -182,12 +172,12 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.3.168</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>1.2.0.RELEASE</version>
-
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>
@@ -199,6 +189,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+	<!-- 	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<version>1.1.10.RELEASE</version>
+			<scope>provided</scope>
+		</dependency> -->
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
@@ -263,6 +259,12 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
