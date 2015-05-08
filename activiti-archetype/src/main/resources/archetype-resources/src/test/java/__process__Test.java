@@ -9,8 +9,10 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ${groupId}.core.configuration.ConfigurationManager;
-import ${groupId}.core.users.api.IdentityService;
+
+
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
+import cz.muni.fi.cep.api.services.users.IdentityService;
 
 
 /**

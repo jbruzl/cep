@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import cz.muni.fi.cep.api.form.CepFormData;
 import ${groupId}.api.DTO.forms.CepFormData;
 import ${groupId}.api.DTO.forms.CepFormProperty;
 import ${groupId}.core.servicemanager.AbstractCepProcessService;
@@ -32,11 +33,11 @@ import ${groupId}.core.servicemanager.AbstractCepProcessService;
  */
 @Service
 @PropertySource("classpath:config/application-${process}.properties")
-public class ExampleService extends AbstractCepProcessService {
+public class ${process}Service extends AbstractCepProcessService {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	public ${processName}Service(@Value("${symbol_dollar}{cep.${process}.process.key}") String processKey,
+	public ${process}Service(@Value("${symbol_dollar}{cep.${process}.process.key}") String processKey,
 			@Value("${symbol_dollar}{cep.${process}.process.name}") String processName,
 			@Value("${symbol_dollar}{cep.${process}.key}") String key,
 			@Value("${symbol_dollar}{cep.${process}.name}") String name,
@@ -98,6 +99,7 @@ public class ExampleService extends AbstractCepProcessService {
 	}
 
 	@Override
-	public void complete(Task task, CepFormData data) {
+	public String complete(String taskId, CepFormData data) {
+		return null;
 	}
 }

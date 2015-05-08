@@ -5,7 +5,7 @@
 
 	<groupId>cz.muni.fi.cep</groupId>
 	<artifactId>activiti-archetype</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 	<packaging>maven-archetype</packaging>
 
 	<name>activiti-archetype</name>

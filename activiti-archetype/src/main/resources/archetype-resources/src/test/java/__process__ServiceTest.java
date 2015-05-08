@@ -19,12 +19,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import ${package}.service.${processName}HistoryService;
-import ${package}.service.${processName}Service;
-import ${groupId}.api.DTO.CepHistoryProcessInstance;
-import ${groupId}.api.DTO.forms.CepFormData;
-import ${groupId}.core.configuration.ConfigurationManager;
-import ${groupId}.core.users.api.IdentityService;
+import cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance;
+import cz.muni.fi.cep.api.form.CepFormData;
+import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
+import cz.muni.fi.cep.api.services.users.IdentityService;
+
 
 public class ${processName}ServiceTest extends ActivitiBasicTest  {
 	@Autowired

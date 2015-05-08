@@ -8,20 +8,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import ${groupId}.api.DTO.CepHistoryProcessInstance;
-import ${groupId}.core.servicemanager.history.DefaultHistoryService;
+import cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance;
+import cz.muni.fi.cep.core.servicemanager.history.DefaultHistoryService;
 
 /**
  * ${processName} History Service
  * 
  * @author Jan Bruzl
  */
-@Service("${processName}HistoryService")
+@Service
 @PropertySource("classpath:config/application-${process}.properties")
-public class ${processName}HistoryService extends DefaultHistoryService {
+public class ${process}HistoryService extends DefaultHistoryService {
 
 	@Autowired
-	public ${processName}HistoryService(@Value("${symbol_dollar}{cep.${process}.key}")String key) {
+	public ${process}HistoryService(@Value("${symbol_dollar}{cep.${process}.key}")String key) {
 		processDefinitionKey = key;
 	}
 

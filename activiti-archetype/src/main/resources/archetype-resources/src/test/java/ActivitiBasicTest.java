@@ -10,6 +10,7 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.test.ActivitiRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,6 +39,8 @@ public class ActivitiBasicTest{
 	protected RepositoryService repositoryService;
 	@Autowired
 	protected FormService formService;
+	@Autowired
+	protected TaskService taskService;
 
 	@Test
 	public void defaultTest() {
