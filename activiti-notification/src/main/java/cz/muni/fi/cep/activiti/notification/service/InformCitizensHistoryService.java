@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
+import cz.muni.fi.cep.activiti.notification.messages.RadioMessage;
 import cz.muni.fi.cep.api.DTO.history.CepHistoricVariableInstance;
 import cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance;
 import cz.muni.fi.cep.core.servicemanager.history.DefaultHistoryService;
@@ -53,6 +54,13 @@ public class InformCitizensHistoryService extends DefaultHistoryService {
 				break;
 			case "emailMessage":
 				chvi.setVariableName("Email");
+				filteredVariables.add(chvi);
+				break;
+				
+			case "radioMessage":
+				chvi.setVariableName("Zpráva");
+				RadioMessage rm = (RadioMessage) chvi.getValue();
+				chvi.setValue("<a href'" + rm.getRadioMessage().getPath() + "'>Zpráva</a>");
 				filteredVariables.add(chvi);
 				break;
 			case "sendEmailError":

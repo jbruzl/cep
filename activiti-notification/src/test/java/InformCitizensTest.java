@@ -65,8 +65,6 @@ public class InformCitizensTest extends ActivitiBasicTest {
 	private String publisherCode = "001";
 	private MockRestServiceServer mockServerSMS, mockServerRadio;
 
-	private final String broadcastUrlKey = "cep.radio.broadcast.url";
-
 	private final String key = "informCitizens";
 
 	@Test
@@ -555,14 +553,14 @@ public class InformCitizensTest extends ActivitiBasicTest {
 								MediaType.TEXT_PLAIN));
 		sendSMSTask.setRestTemplate(restTemplate);
 
-		configurationManager.setKey(broadcastUrlKey,
+		configurationManager.setKey(BroadcastTask.broadcastUrlKey,
 				"http://localhost:8080/broadcast");
 
 		RestTemplate restTemplate2 = new RestTemplate();
 		mockServerRadio = MockRestServiceServer.createServer(restTemplate2);
 		mockServerRadio
 				.expect(MockRestRequestMatchers.requestTo(configurationManager
-						.getKey(broadcastUrlKey)))
+						.getKey(BroadcastTask.broadcastUrlKey)))
 				.andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
 				.andRespond(
 						MockRestResponseCreators.withSuccess("",

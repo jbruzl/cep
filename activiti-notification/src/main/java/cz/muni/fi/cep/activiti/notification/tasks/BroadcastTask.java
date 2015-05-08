@@ -41,7 +41,7 @@ public class BroadcastTask implements JavaDelegate {
 	@Autowired
 	private ConfigurationManager configurationManager;
 	
-	private final String broadcastUrlKey = "cep.radio.broadcast.url";
+	public static final String broadcastUrlKey = "cep.radio.broadcast.url";
 
 	/**
 	 * Broadcast Task of BroadcastMessage diagram. Obtains execution variable
