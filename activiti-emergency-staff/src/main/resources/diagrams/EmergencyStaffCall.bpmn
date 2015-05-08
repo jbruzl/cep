@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="emergencyStaffCall" name="Emergency Staff Call" isExecutable="true" activiti:candidateStarterGroups="mayor">
+    <startEvent id="startevent" name="Start" activiti:initiator="initiator"></startEvent>
+    <userTask id="insertInformations" name="Vyplnění informací" activiti:candidateGroups="mayor">
+      <extensionElements>
+        <activiti:formProperty id="meetingTime" name="Čas konání" type="text" required="true"></activiti:formProperty>
+        <activiti:formProperty id="meetingPlace" name="Místo konání" type="text" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent" targetRef="insertInformations"></sequenceFlow>
+    <scriptTask id="prepareCallMessage" name="Příprava svolávací zprávy" scriptFormat="javascript" activiti:autoStoreVariables="true">
+      <script>smsContactType = cz.muni.fi.cep.api.DTO.ContactType.SMS
+smsMessage = "Byl svolán krizový štáb na místo: " + meetingPlace + " v " + meetingTime</script>
+    </scriptTask>
+    <sequenceFlow id="flow2" sourceRef="insertInformations" targetRef="prepareCallMessage"></sequenceFlow>
+    <serviceTask id="sendSMSMessage" name="Odeslání svolávací zprávy" activiti:delegateExpression="${sendSMSTask}"></serviceTask>
+    <intermediateCatchEvent id="wait" name="Čas na odpověď">
+      <timerEventDefinition>
+        <timeDuration>PT5M</timeDuration>
+      </timerEventDefinition>
+    </intermediateCatchEvent>
+    <serviceTask id="checkConfirmations" name="Ověření svolávací zprávy" activiti:delegateExpression="${checkSMSResponses}"></serviceTask>
+    <sequenceFlow id="flow6" sourceRef="wait" targetRef="checkConfirmations"></sequenceFlow>
+    <exclusiveGateway id="allResponded" name="Odpověděli všichni?"></exclusiveGateway>
+    <sequenceFlow id="flow7" sourceRef="checkConfirmations" targetRef="allResponded"></sequenceFlow>
+    <userTask id="informAboutResult" name="Oznámení výsledků svolání">
+      <extensionElements>
+        <activiti:formProperty id="smsSentMessage" name="Odeslaná zpráva" type="text" default="${smsMessage}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="callReceivers" name="Příjemci" type="text" default="${smsReceivers}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow8" sourceRef="allResponded" targetRef="informAboutResult">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!(retryCount < 3 && smsReceivers.size()>0)}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow9" sourceRef="informAboutResult" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow11" sourceRef="sendSMSMessage" targetRef="wait"></sequenceFlow>
+    <serviceTask id="obtainSMSContact" name="Získání kontaktních údajů" activiti:expression="${subscriptionService.getContacts(publisherCode, smsContactType)}" activiti:resultVariableName="smsReceivers"></serviceTask>
+    <sequenceFlow id="flow12" sourceRef="prepareCallMessage" targetRef="obtainSMSContact"></sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="obtainSMSContact" targetRef="sendSMSMessage"></sequenceFlow>
+    <boundaryEvent id="smsSendError" name="SMSError" attachedToRef="sendSMSMessage">
+      <errorEventDefinition errorRef="smsSendError"></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow14" name="Odpovědi neobdrženy" sourceRef="allResponded" targetRef="sendSMSMessage">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${retryCount < 3 && smsReceivers.size()>0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="smsSendError" targetRef="informAboutResult"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_emergencyStaffCall">
+    <bpmndi:BPMNPlane bpmnElement="emergencyStaffCall" id="BPMNPlane_emergencyStaffCall">
+      <bpmndi:BPMNShape bpmnElement="startevent" id="BPMNShape_startevent">
+        <omgdc:Bounds height="35.0" width="35.0" x="56.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="insertInformations" id="BPMNShape_insertInformations">
+        <omgdc:Bounds height="55.0" width="105.0" x="136.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="prepareCallMessage" id="BPMNShape_prepareCallMessage">
+        <omgdc:Bounds height="60.0" width="105.0" x="290.0" y="169.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendSMSMessage" id="BPMNShape_sendSMSMessage">
+        <omgdc:Bounds height="65.0" width="105.0" x="591.0" y="165.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="smsSendError" id="BPMNShape_smsSendError">
+        <omgdc:Bounds height="30.0" width="30.0" x="650.0" y="151.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="wait" id="BPMNShape_wait">
+        <omgdc:Bounds height="35.0" width="35.0" x="736.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="checkConfirmations" id="BPMNShape_checkConfirmations">
+        <omgdc:Bounds height="65.0" width="105.0" x="810.0" y="165.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="allResponded" id="BPMNShape_allResponded">
+        <omgdc:Bounds height="40.0" width="40.0" x="966.0" y="178.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="informAboutResult" id="BPMNShape_informAboutResult">
+        <omgdc:Bounds height="61.0" width="105.0" x="1050.0" y="168.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1201.0" y="181.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="obtainSMSContact" id="BPMNShape_obtainSMSContact">
+        <omgdc:Bounds height="62.0" width="105.0" x="440.0" y="168.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="91.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="136.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="241.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="290.0" y="199.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="771.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="810.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="915.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="966.0" y="198.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="1006.0" y="198.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1050.0" y="198.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="1155.0" y="198.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1201.0" y="198.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="696.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="736.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="395.0" y="199.0"></omgdi:waypoint>
+        <omgdi:waypoint x="440.0" y="199.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="545.0" y="199.0"></omgdi:waypoint>
+        <omgdi:waypoint x="591.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="986.0" y="218.0"></omgdi:waypoint>
+        <omgdi:waypoint x="985.0" y="298.0"></omgdi:waypoint>
+        <omgdi:waypoint x="815.0" y="298.0"></omgdi:waypoint>
+        <omgdi:waypoint x="643.0" y="298.0"></omgdi:waypoint>
+        <omgdi:waypoint x="643.0" y="230.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="996.0" y="218.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="665.0" y="151.0"></omgdi:waypoint>
+        <omgdi:waypoint x="664.0" y="86.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1102.0" y="86.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1102.0" y="168.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
