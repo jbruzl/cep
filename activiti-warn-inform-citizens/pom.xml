@@ -7,10 +7,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>activiti-warn-inform-citizens</artifactId>
-	<groupId>cz.muni.fi.cep</groupId>
 	<name>Warn and inform citizens process</name>
 	<description>Implementation of warnInformCItizens process</description>
-	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<spring.version>4.1.4.RELEASE</spring.version>
 		<spring.boot.version>1.2.0.RELEASE</spring.boot.version>
