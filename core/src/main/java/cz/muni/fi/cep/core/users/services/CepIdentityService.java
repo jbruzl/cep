@@ -116,6 +116,8 @@ public class CepIdentityService implements IdentityService {
 
 		CepUserEntity cepUserEntity = cepUserDao.findByEmail(email);
 		logger.info("Returning user {}", cepUserEntity);
+		if(cepUserEntity == null)
+			return null;
 		return mapper.map(cepUserEntity, CepUser.class);
 	}
 

@@ -126,7 +126,7 @@ public class DefaultHistoryService implements CepHistoryService {
 	private HistoricProcessInstanceQuery getProcessInstanceQuery() {
 		HistoricProcessInstanceQuery query = historyService
 				.createHistoricProcessInstanceQuery()
-				.orderByProcessInstanceStartTime().asc();
+				.orderByProcessInstanceStartTime().desc();
 
 		if (processDefinitionKey != null)
 			query.processDefinitionKey(processDefinitionKey);
