@@ -3,7 +3,11 @@
   <process id="warning" name="Výstrahy" isExecutable="true" activiti:candidateStarterGroups="mayor">
     <serviceTask id="obtainMeteoData" name="Získání meteorologických výstrah" activiti:delegateExpression="${obtainWeatherReport}"></serviceTask>
     <sequenceFlow id="flow1" sourceRef="timerstartevent1" targetRef="obtainMeteoData"></sequenceFlow>
-    <userTask id="informCommunicationFailure" name="Informování o selhání komunikace" activiti:candidateGroups="mayor"></userTask>
+    <userTask id="informCommunicationFailure" name="Informování o selhání komunikace" activiti:candidateGroups="mayor">
+      <extensionElements>
+        <activiti:formProperty id="reason" name="Zpráva" default="Komunikace s ČHMÚ selhala"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
     <endEvent id="communicationFailure" name="Chyba spojení s ČHMÚ"></endEvent>
     <sequenceFlow id="flow3" sourceRef="informCommunicationFailure" targetRef="communicationFailure"></sequenceFlow>
     <serviceTask id="evaluateMeteoData" name="Vyhodnocení úrovně výstrah" activiti:delegateExpression="${evaluateWarningReport}"></serviceTask>

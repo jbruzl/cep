@@ -15,6 +15,8 @@ import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import cz.muni.fi.cep.warning.chmi.report.Report;
@@ -24,6 +26,7 @@ import cz.muni.fi.cep.warning.chmi.report.Report;
  *
  */
 @Service
+@EnableScheduling
 public class WeatherReportRegister implements Serializable {
 	private static final long serialVersionUID = -8966006846535085676L;
 	private final String saveFile = "reports.dat";
@@ -54,12 +57,15 @@ public class WeatherReportRegister implements Serializable {
 	}
 
 	@PreDestroy
+	@Scheduled(cron="0 0/5 * 1/1 * ?")
 	public void cleanUp() throws Exception {
+		logger.info("Persisting WeatherReportRegister");
 		FileOutputStream fos = new FileOutputStream(saveFile);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		oos.writeObject(reports);
-
+		oos.close();
 		fos.close();
+		logger.info("WeatherReportRegister persisted");
 	}
 
 	public LinkedList<Report> getReports() {
