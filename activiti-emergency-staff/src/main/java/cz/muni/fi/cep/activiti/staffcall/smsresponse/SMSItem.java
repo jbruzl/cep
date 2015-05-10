@@ -5,6 +5,11 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlElement;
 
+/**
+ * Item element for sms response
+ * 
+ * @author Jan Bruzl
+ */
 public class SMSItem implements Serializable{
 	private static final long serialVersionUID = 8484501481598017438L;
 	private String number;

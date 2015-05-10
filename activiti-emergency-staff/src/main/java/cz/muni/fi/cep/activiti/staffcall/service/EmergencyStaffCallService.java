@@ -24,7 +24,7 @@ import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
 /**
  * Service class for BPMN diagram.
  * 
- * All interaction with Example process should be done thru this service.
+ * All interaction with Emergency Staff Call process should be done thru this service.
  * 
  * @author Jan Bruzl
  */
@@ -96,25 +96,7 @@ public class EmergencyStaffCallService extends AbstractCepProcessService {
 
 		HashMap<String, Object> variables = new HashMap<>();
 		variables.put("publisherCode", publisherCode);
-		identityService.setAuthenticatedUserId(user.getUsername());
-		ProcessInstance pi = runtimeService
-				.startProcessInstanceByKey(processDefinition.getKey(), variables);
-		identityService.setAuthenticatedUserId(null);
-		logger.info("Process EmergencyStaffCall started");
-		return pi;
-	}
-
-
-	@Override
-	public String complete(String taskId, CepFormData data) {
-		User user = (User) SecurityContextHolder.getContext()
-				.getAuthentication().getPrincipal();
-		if (!canStart(user)) {
-			return null;
-		}
-
-		HashMap<String, Object> variables = new HashMap<>();
-
+		
 		for (FormProperty fp : data.getFormProperties()) {
 			if (fp instanceof CepFormProperty) {
 				CepFormProperty cepFormProperty = (CepFormProperty) fp;
@@ -133,9 +115,27 @@ public class EmergencyStaffCallService extends AbstractCepProcessService {
 			}
 		}
 		
+		
+		identityService.setAuthenticatedUserId(user.getUsername());
+		ProcessInstance pi = runtimeService
+				.startProcessInstanceByKey(processDefinition.getKey(), variables);
+		identityService.setAuthenticatedUserId(null);
+		logger.info("Process EmergencyStaffCall started");
+		return pi;
+	}
+
+
+	@Override
+	public String complete(String taskId, CepFormData data) {
+		User user = (User) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
+		if (!canStart(user)) {
+			return null;
+		}
+		
 		String processInstanceId = taskService.createTaskQuery().taskId(taskId)
 				.singleResult().getProcessInstanceId();
-		taskService.complete(taskId, variables);
+		taskService.complete(taskId);
 
 		return processInstanceId;
 	}

@@ -5,6 +5,11 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Root element for sms response
+ * 
+ * @author Jan Bruzl
+ */
 @XmlRootElement(name="result")
 public class SMSResult implements Serializable{
 	private static final long serialVersionUID = 8492396588505825022L;

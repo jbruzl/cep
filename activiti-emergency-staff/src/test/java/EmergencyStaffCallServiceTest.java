@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -45,7 +46,7 @@ import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.api.services.users.IdentityService;
 
-public class EmergencyStaffCallServiceTest extends ActivitiBasicTest  {
+public class EmergencyStaffCallServiceTest extends ActivitiBasicTest {
 	@Autowired
 	private IdentityService identityService;
 
@@ -62,44 +63,30 @@ public class EmergencyStaffCallServiceTest extends ActivitiBasicTest  {
 	private CheckSMSResponses checkResponses;
 
 	private String receiver = "+420728484615";
-	private String publisherCode = "001";
-	private MockRestServiceServer mockServerSMS, mockServerSMSResponse;
+	private String publisherCode = "Svolání krizového štábu";
+	private MockRestServiceServer mockServerSMS, mockServerSMSResponse,
+			mockServerSMSResponseFail;
 
 	private String message, meetingTimeText, meetingPlaceText;
+	private RestTemplate restTemplateResponseFail;
 
 	@Autowired
 	private EmergencyStaffCallService service;
-	
+
 	@Autowired
 	private EmergencyStaffCallHistoryService historyService;
 
-
 	@Test
-	public void testStart() {
+	public void okTest() {
 		CepFormData startForm = service.getStartForm();
 		assertNotNull(startForm);
 		assertNotNull(startForm.getFormProperties());
-		assertEquals(0, startForm.getFormProperties().size());
-
-		ProcessInstance pi = service.runProcess((CepFormData) startForm);
-		assertNotNull("Process instance is null", pi);
-		
-		List<Task> availableTasks = service
-				.getAvailableTasks(pi.getId());
-		assertEquals(1, availableTasks.size());
-
-		Task task = availableTasks.get(0);
-		assertEquals("Vyplnění informací", task.getName());
-
-		CepFormData taskForm = service.getTaskForm(task.getId());
-		assertNotNull(taskForm);
-		assertNotNull(taskForm.getFormProperties());
-		assertEquals(2, taskForm.getFormProperties().size());
+		assertEquals(2, startForm.getFormProperties().size());
 
 		FormProperty meetingPlace = null;
 		FormProperty meetingTime = null;
 
-		for (FormProperty fp : taskForm.getFormProperties()) {
+		for (FormProperty fp : startForm.getFormProperties()) {
 			switch (fp.getId()) {
 			case "meetingPlace":
 				meetingPlace = fp;
@@ -112,8 +99,7 @@ public class EmergencyStaffCallServiceTest extends ActivitiBasicTest  {
 				break;
 			}
 		}
-		assertNotNull("Meeting place not found in form property",
-				meetingPlace);
+		assertNotNull("Meeting place not found in form property", meetingPlace);
 		assertNotNull("Meeting time not found in form property", meetingTime);
 
 		assertTrue("Form property should be instance of CepFormProperty",
@@ -124,73 +110,156 @@ public class EmergencyStaffCallServiceTest extends ActivitiBasicTest  {
 		((CepFormProperty) meetingPlace).setInput(meetingPlaceText);
 		((CepFormProperty) meetingTime).setInput(meetingTimeText);
 
-		service.complete(task.getId(), taskForm);
-		
-		//because for tests job executioner is stopped
+		ProcessInstance pi = service.runProcess((CepFormData) startForm);
+		assertNotNull("Process instance is null", pi);
+
+		// because for tests job executioner is stopped
 		Job singleResultJob = managementService.createJobQuery()
 				.processInstanceId(pi.getId()).singleResult();
 		assertNotNull(singleResultJob);
 		managementService.executeJob(singleResultJob.getId());
-		/*
-		availableTasks = service
-				.getAvailableTasks(pi.getId());
+
+		List<Task> availableTasks = service.getAvailableTasks(pi.getId());
 		assertEquals(1, availableTasks.size());
 
-		task = availableTasks.get(0);
+		Task task = availableTasks.get(0);
 		assertEquals("Oznámení výsledků svolání", task.getName());
-		
-		CepFormData taskForm2 = service.getTaskForm(task.getId());
-		assertNotNull(taskForm);
-		assertNotNull(taskForm.getFormProperties());
-		assertEquals(2, taskForm.getFormProperties().size());
 
-		FormProperty smsSentMessage = null;
-		FormProperty callReceivers = null;
+		TaskFormData taskFormData = formService.getTaskFormData(task.getId());
+		assertNotNull(taskFormData);
+		assertNotNull(taskFormData.getFormProperties());
+		assertEquals(3, taskFormData.getFormProperties().size());
 
-		for (FormProperty fp : taskForm.getFormProperties()) {
-			switch (fp.getId()) {
-			case "smsSentMessage":
-				smsSentMessage = fp;
+		for (FormProperty fp : taskFormData.getFormProperties()) {
+			switch (fp.getName()) {
+			case "Odeslaná zpráva":
+				assertEquals(message, (String) fp.getValue());
 				break;
-			case "callReceivers":
-				callReceivers = fp;
+			case "Nepotvrzená čísla":
+				assertEquals("[]", (String) fp.getValue());
+				break;
+			case "Potvrzená čísla":
+				assertEquals("[" + receiver + "]", (String) fp.getValue());
+				break;
+
+			default:
+				fail("Unknown form property: " + fp.getName());
+				break;
+			}
+		}
+
+		taskService.complete(task.getId());
+
+		CepHistoryProcessInstance chpi = historyService.getDetail(pi.getId());
+		assertNotNull(
+				"Historic process instance is null, process does not have recorded progress",
+				chpi);
+	}
+
+	@Test
+	public void noReponseTest() {
+		checkResponses.setRestTemplate(restTemplateResponseFail);
+
+		CepFormData startForm = service.getStartForm();
+		assertNotNull(startForm);
+		assertNotNull(startForm.getFormProperties());
+		assertEquals(2, startForm.getFormProperties().size());
+
+		FormProperty meetingPlace = null;
+		FormProperty meetingTime = null;
+
+		for (FormProperty fp : startForm.getFormProperties()) {
+			switch (fp.getId()) {
+			case "meetingPlace":
+				meetingPlace = fp;
+				break;
+			case "meetingTime":
+				meetingTime = fp;
 				break;
 			default:
 				fail("Unexpected form property");
 				break;
 			}
 		}
-		assertNotNull("Call receivers not found in form property",
-				callReceivers);
-		assertNotNull("SMS sent message not found in form property", smsSentMessage);
+		assertNotNull("Meeting place not found in form property", meetingPlace);
+		assertNotNull("Meeting time not found in form property", meetingTime);
 
 		assertTrue("Form property should be instance of CepFormProperty",
-				callReceivers instanceof CepFormProperty);
+				meetingPlace instanceof CepFormProperty);
 		assertTrue("Form property should be instance of CepFormProperty",
-				smsSentMessage instanceof CepFormProperty);
+				meetingTime instanceof CepFormProperty);
 
-		service.complete(task.getId(), taskForm2);
+		((CepFormProperty) meetingPlace).setInput(meetingPlaceText);
+		((CepFormProperty) meetingTime).setInput(meetingTimeText);
 
-		*/
-		CepHistoryProcessInstance chpi = historyService
-				.getDetail(pi.getId());
+		ProcessInstance pi = service.runProcess((CepFormData) startForm);
+		assertNotNull("Process instance is null", pi);
+
+		// because for tests job executioner is stopped
+		Job singleResultJob = managementService.createJobQuery()
+				.processInstanceId(pi.getId()).singleResult();
+		assertNotNull(singleResultJob);
+		managementService.executeJob(singleResultJob.getId());
+		
+		singleResultJob = managementService.createJobQuery()
+				.processInstanceId(pi.getId()).singleResult();
+		assertNotNull(singleResultJob);
+		managementService.executeJob(singleResultJob.getId());
+		
+		singleResultJob = managementService.createJobQuery()
+				.processInstanceId(pi.getId()).singleResult();
+		assertNotNull(singleResultJob);
+		managementService.executeJob(singleResultJob.getId());
+
+		List<Task> availableTasks = service.getAvailableTasks(pi.getId());
+		assertEquals(1, availableTasks.size());
+
+		Task task = availableTasks.get(0);
+		assertEquals("Oznámení výsledků svolání", task.getName());
+
+		TaskFormData taskFormData = formService.getTaskFormData(task.getId());
+		assertNotNull(taskFormData);
+		assertNotNull(taskFormData.getFormProperties());
+		assertEquals(3, taskFormData.getFormProperties().size());
+
+		for (FormProperty fp : taskFormData.getFormProperties()) {
+			switch (fp.getName()) {
+			case "Odeslaná zpráva":
+				assertEquals(message, (String) fp.getValue());
+				break;
+			case "Nepotvrzená čísla":
+				assertEquals("[" + receiver + "]", (String) fp.getValue());
+				break;
+			case "Potvrzená čísla":
+				assertEquals("[]", (String) fp.getValue());
+				break;
+
+			default:
+				fail("Unknown form property: " + fp.getName());
+				break;
+			}
+		}
+
+		taskService.complete(task.getId());
+
+		CepHistoryProcessInstance chpi = historyService.getDetail(pi.getId());
 		assertNotNull(
 				"Historic process instance is null, process does not have recorded progress",
 				chpi);
 	}
-	
+
 	@Before
 	public void setUp() throws UnsupportedEncodingException {
 		assertNotNull("Identity service null", identityService);
-		
+
 		List<GrantedAuthority> gaList = new ArrayList<>();
 		gaList.add(new SimpleGrantedAuthority("mayor"));
 		User user = new User("test", "test", true, true, true, true, gaList);
 
 		SecurityContextHolder.getContext().setAuthentication(
 				new UsernamePasswordAuthenticationToken(user, "test"));
-	    
-	    assertNotNull("Identity service null", identityService);
+
+		assertNotNull("Identity service null", identityService);
 		assertNotNull("Subscription service null", subscriptionService);
 
 		CepUser userEntity = new CepUser();
@@ -230,8 +299,8 @@ public class EmergencyStaffCallServiceTest extends ActivitiBasicTest  {
 
 		meetingPlaceText = "U kolouška";
 		meetingTimeText = "8:00";
-		message = "Byl svolán krizový štáb na místo: " + meetingPlaceText + " v "
-				+ meetingTimeText;
+		message = "Byl svolán krizový štáb na místo: " + meetingPlaceText
+				+ " v " + meetingTimeText;
 
 		RestTemplate restTemplate = new RestTemplate();
 		String requestUrl = new StringBuilder()
@@ -244,6 +313,18 @@ public class EmergencyStaffCallServiceTest extends ActivitiBasicTest  {
 				.append("&message=")
 				.append(URLEncoder.encode(message, "UTF-8")).toString();
 		mockServerSMS = MockRestServiceServer.createServer(restTemplate);
+		mockServerSMS
+				.expect(MockRestRequestMatchers.requestTo(requestUrl))
+				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+				.andRespond(
+						MockRestResponseCreators.withSuccess("",
+								MediaType.TEXT_PLAIN));
+		mockServerSMS
+				.expect(MockRestRequestMatchers.requestTo(requestUrl))
+				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+				.andRespond(
+						MockRestResponseCreators.withSuccess("",
+								MediaType.TEXT_PLAIN));
 		mockServerSMS
 				.expect(MockRestRequestMatchers.requestTo(requestUrl))
 				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
@@ -283,6 +364,29 @@ public class EmergencyStaffCallServiceTest extends ActivitiBasicTest  {
 				.andRespond(
 						MockRestResponseCreators.withSuccess(smsResponseXML,
 								MediaType.APPLICATION_XML));
+
+		restTemplateResponseFail = new RestTemplate();
+		mockServerSMSResponseFail = MockRestServiceServer
+				.createServer(restTemplateResponseFail);
+		mockServerSMSResponseFail
+				.expect(MockRestRequestMatchers.requestTo(requestUrlResponse))
+				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+				.andRespond(
+						MockRestResponseCreators.withSuccess(
+								"<result></result>", MediaType.APPLICATION_XML));
+		mockServerSMSResponseFail
+				.expect(MockRestRequestMatchers.requestTo(requestUrlResponse))
+				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+				.andRespond(
+						MockRestResponseCreators.withSuccess(
+								"<result></result>", MediaType.APPLICATION_XML));
+		mockServerSMSResponseFail
+				.expect(MockRestRequestMatchers.requestTo(requestUrlResponse))
+				.andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+				.andRespond(
+						MockRestResponseCreators.withSuccess(
+								"<result></result>", MediaType.APPLICATION_XML));
+
 		checkResponses.setRestTemplate(restTemplateResponse);
 	}
 

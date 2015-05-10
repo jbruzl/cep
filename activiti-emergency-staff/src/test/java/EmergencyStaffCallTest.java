@@ -34,10 +34,9 @@ import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.api.services.users.IdentityService;
 
 /**
- * Test class for Example.bpmn process.
+ * Test class for EmergencyStaffCall.bpmn process.
  * 
  * @author Jan Bruzl
- *
  */
 public class EmergencyStaffCallTest extends ActivitiBasicTest {
 
@@ -76,20 +75,11 @@ public class EmergencyStaffCallTest extends ActivitiBasicTest {
 	public void okTest() {
 		HashMap<String, Object> variables = new HashMap<>();
 		variables.put("publisherCode", publisherCode);
+		variables.put("meetingTime", meetingTime);
+		variables.put("meetingPlace", meetingPlace);
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(key,
 				variables);
-		assertNotNull(pi);
-
-		Task task = taskService.createTaskQuery().processInstanceId(pi.getId())
-				.singleResult();
-		assertNotNull(task);
-		assertEquals("Vyplnění informací", task.getName());
-
-		HashMap<String, Object> vars = new HashMap<>();
-		vars.put("meetingTime", meetingTime);
-		vars.put("meetingPlace", meetingPlace);
-
-		taskService.complete(task.getId(), vars);
+		assertNotNull(pi);		
 
 		// job query&execute
 		Job singleResultJob = managementService.createJobQuery()
@@ -97,7 +87,7 @@ public class EmergencyStaffCallTest extends ActivitiBasicTest {
 		assertNotNull(singleResultJob);
 		managementService.executeJob(singleResultJob.getId());
 
-		task = taskService.createTaskQuery().processInstanceId(pi.getId())
+		Task task = taskService.createTaskQuery().processInstanceId(pi.getId())
 				.singleResult();
 		assertNotNull(task);
 		assertEquals("Oznámení výsledků svolání", task.getName());
@@ -117,9 +107,9 @@ public class EmergencyStaffCallTest extends ActivitiBasicTest {
 		String requestUrlResponse = new StringBuilder()
 				.append("http://api.smsbrana.cz/smsconnect/http.php")
 				.append("?login=")
-				.append(configurationManager.getKey("cep.sms.login"))
+				.append(configurationManager.getKey(SendSMSTask.loginKey))
 				.append("&password=")
-				.append(configurationManager.getKey("cep.sms.password"))
+				.append(configurationManager.getKey(SendSMSTask.passwordKey))
 				.append("&action=inbox").append("&delete=1").toString();
 		RestTemplate restTemplateResponse = new RestTemplate();
 		mockServerSMSResponse = MockRestServiceServer
@@ -135,20 +125,11 @@ public class EmergencyStaffCallTest extends ActivitiBasicTest {
 
 		HashMap<String, Object> variables = new HashMap<>();
 		variables.put("publisherCode", publisherCode);
+		variables.put("meetingTime", meetingTime);
+		variables.put("meetingPlace", meetingPlace);
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(key,
 				variables);
 		assertNotNull(pi);
-
-		Task task = taskService.createTaskQuery().processInstanceId(pi.getId())
-				.singleResult();
-		assertNotNull(task);
-		assertEquals("Vyplnění informací", task.getName());
-
-		HashMap<String, Object> vars = new HashMap<>();
-		vars.put("meetingTime", meetingTime);
-		vars.put("meetingPlace", meetingPlace);
-
-		taskService.complete(task.getId(), vars);
 
 		RestTemplate restTemplate = new RestTemplate();
 		String requestUrl = new StringBuilder()
@@ -229,7 +210,7 @@ public class EmergencyStaffCallTest extends ActivitiBasicTest {
 		assertNotNull(singleResultJob);
 		managementService.executeJob(singleResultJob.getId());
 
-		task = taskService.createTaskQuery().processInstanceId(pi.getId())
+		Task task = taskService.createTaskQuery().processInstanceId(pi.getId())
 				.singleResult();
 		assertNotNull(task);
 		assertEquals("Oznámení výsledků svolání", task.getName());

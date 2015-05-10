@@ -8,8 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 /**
+ * SMS Response marshaller
+ * 
  * @author Jan Bruzl
- *
  */
 @Configuration
 public class SMSResponseMarshaller {

@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlElement;
 
+/**
+ * Inbox element for sms response
+ * 
+ * @author Jan Bruzl
+ */
 public class SMSInbox implements Serializable{
 	private static final long serialVersionUID = 5253382301174408346L;
 	private SMSDelivery smsDelivery;

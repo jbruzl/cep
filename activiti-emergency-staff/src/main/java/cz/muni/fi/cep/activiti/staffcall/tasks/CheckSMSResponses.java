@@ -18,8 +18,9 @@ import cz.muni.fi.cep.activiti.staffcall.smsresponse.SMSResult;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 
 /**
+ * Implementation of Check SMS Response Service Task
+ * 
  * @author Jan Bruzl
- *
  */
 @Component
 public class CheckSMSResponses implements JavaDelegate {
@@ -41,6 +42,9 @@ public class CheckSMSResponses implements JavaDelegate {
 		restTemplate = new RestTemplate();
 	}
 
+	/**
+	 * Contacts smsbrana.cz and gets list of received sms
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {

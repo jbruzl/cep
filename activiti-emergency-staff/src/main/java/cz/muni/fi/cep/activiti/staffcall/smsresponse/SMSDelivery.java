@@ -7,7 +7,11 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 
 
-
+/**
+ * Delivery element for sms response
+ * 
+ * @author Jan Bruzl
+ */
 public class SMSDelivery implements Serializable{
 	private static final long serialVersionUID = -1890323425974872556L;
 	private List<SMSItem> items = new ArrayList<>();
