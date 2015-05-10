@@ -20,11 +20,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import cz.muni.fi.cep.api.DTO.CepGroup;
+import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.services.users.IdentityService;
 
 /**
  *
- * @author Jan Bruzl <bruzl@progenium.cz>
+ * @author Jan Bruzl
  */
 @Configuration
 @EnableWebSecurity
@@ -50,6 +51,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         
         if(identityService.getGroupByCode(admin.getCode())==null)
         	identityService.createGroup(admin);
+        admin = identityService.getGroupByCode(admin.getCode());
+        
+        String adminUserEmail = "admin@admin.cz";
+		CepUser adminUser = identityService.getCepUserByEmail(adminUserEmail);
+		if(adminUser==null){
+        	adminUser = new CepUser();
+        	adminUser.setFirstName("Admin");
+        	adminUser.setLastName("Administrator");
+        	adminUser.setMail(adminUserEmail);
+        	adminUser.setPassword(passwordEncoder().encode("1234"));
+        	
+        	identityService.createUser(adminUser);
+        	adminUser = identityService.getCepUserByEmail(adminUserEmail);
+        }
+		
+		identityService.createMembership(adminUser, admin);
         
     }
 
@@ -76,7 +93,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     	
         http
                 .authorizeRequests()
-                .antMatchers("/","/index","/signup", "/signup-submit").permitAll()
+                .antMatchers("/","/index","/signup", "/signup-submit").permitAll()            
+                .and()
+                .authorizeRequests()
+                .antMatchers("/odbery**", "/uzivatele**", "/skupiny**").access("hasRole('administrator')")                
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

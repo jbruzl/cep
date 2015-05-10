@@ -10,7 +10,7 @@
 
 				<li class="name">
 					<h1>
-						<a href="#"> Městský krizový portál </a>
+						<a href="/"> Městský krizový portál </a>
 					</h1>
 				</li>
 				<li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
@@ -27,7 +27,7 @@
 							<li th:each="service : ${@processServiceManager.getAvailableServices()}"><a th:href="@{${'/proces/start/' + service.key}}" th:text="${service.name}">Process name</a></li>
 						</ul></li>
 					<li class="divider" sec:authorize="isAuthenticated()"></li>
-					<li class="has-dropdown" sec:authorize="isAuthenticated()"><a
+					<li class="has-dropdown" sec:authorize="hasRole('administrator')"><a
 						href="#">Nastavení</a>
 						<ul class="dropdown">
 							<li><a th:href="@{/odbery}">Odběry</a></li>

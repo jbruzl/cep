@@ -32,12 +32,16 @@
 			</div>
 			<div class="panel">
 				<h5>Statistika koncových stavů</h5>
-				<div class="column medium-6" th:each="count : ${endStatistic}">
-					<div class="column medium-8" th:text="${count.key}">end event</div>
-					<div class="column medium-4" th:text="${count.value}">occurence</div>
+				<div class="row">
+					<div class="column medium-6" th:each="count : ${endStatistic}">
+						<div class="column medium-8" th:text="${count.key}">end
+							event</div>
+						<div class="column medium-4" th:text="${count.value}">occurence</div>
+					</div>
 				</div>
 				<div class="medium-12">
-					Z celkem <span th:text="${endStatisticTotal}">count</span> spuštění.
+					Z celkem <span th:text="${endStatisticTotal}">count</span>
+					spuštění.
 				</div>
 			</div>
 
@@ -54,8 +58,7 @@
 						<tr th:each="processInstance : ${processInstances}">
 							<td th:text="${processInstance.startTime}"></td>
 							<td th:text="${processInstance.startUserId}"></td>
-							<td
-								th:text="${processInstance.endTime}?${'Dokončená'}:${'Běží'}"></td>
+							<td th:text="${processInstance.endTime}?${'Dokončená'}:${'Běží'}"></td>
 							<td><a
 								th:href="@{${'/historie/instance/'+processKey+'/'+processInstance.processInstanceId}}">Detail...</a></td>
 						</tr>
@@ -66,16 +69,18 @@
 		</div>
 
 	</div>
-	
+
 	<div class="row">
 		<div class="large-12 columns">
 			<div class="panel">
-				<h4 >Diagram procesu</h4>
-				<a th:href="@{${'/historie/diagram/'+processKey}}"><img alt="process diagram" th:src="@{${'/historie/diagram/'+processKey}}"></img></a>
+				<h4>Diagram procesu</h4>
+				<a th:href="@{${'/historie/diagram/'+processKey}}"><img
+					alt="process diagram"
+					th:src="@{${'/historie/diagram/'+processKey}}"></img></a>
 			</div>
 		</div>
 	</div>
-	
+
 	<footer class="row" th:include="index :: footer"> </footer>
 
 	<div th:include="index :: foot-scripts"></div>

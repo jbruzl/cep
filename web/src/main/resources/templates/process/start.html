@@ -47,11 +47,20 @@
 					</table>
 					<input class="small button" type="reset" name="submit"
 						value="Reset" /> <input class="small button" type="submit"
-						name="submit" value="Odeslat" />
+						name="submit" value="Spustit" />
 				</form>
 			</div>
 		</div>
 
+	</div>
+	
+	<div class="row">
+		<div class="large-12 columns">
+			<div class="panel">
+				<h4 >Diagram procesu</h4>
+				<a th:href="@{${'/historie/diagram/'+key}}"><img alt="process diagram" th:src="@{${'/historie/diagram/'+key}}"></img></a>
+			</div>
+		</div>
 	</div>
 
 

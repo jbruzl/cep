@@ -43,9 +43,9 @@
 							<tr th:each="property : ${startForm.formProperties}">
 								<td><label th:for="${property.id}"
 									th:text="${property.name}">Name</label></td>
-								<td><input th:type="${property.type.name}"
+								<td class="large-12"><input th:type="${property.type.name}"
 									th:name="${property.id}" th:id="${property.id}"
-									th:value="${property.value}" th:if="${property.required}" /></td>
+									th:value="${property.value}" th:disabled="${!property.isWritable()}" th:required="${property.isRequired()}"/></td>
 							</tr>
 						</tbody>
 					</table>

@@ -80,13 +80,13 @@ public class Config {
 		return new PersistenceExceptionTranslationPostProcessor();
 	}
 
-	Properties additionalProperties() {
+	private Properties additionalProperties() {
 		Properties properties = new Properties();
 		properties.setProperty("hibernate.hbm2ddl.auto", "update");
 		properties.setProperty("hibernate.dialect",
 				"org.hibernate.dialect.MySQL5Dialect");
 		properties.setProperty("hibernate.connection.characterEncoding",
-				"utf8");
+				"UTF-8");
 		properties.setProperty("hibernate.connection.useUnicode",
 				"true");
 		properties.setProperty("hibernate.connection.charSet",

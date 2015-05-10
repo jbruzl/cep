@@ -1,0 +1,114 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="index :: head">
+</head>
+<body>
+	<div class="sticky" th:include="snippets/menu :: menu"></div>
+
+
+	<div class="row ">
+		<div class="large-12 columns show-for-medium-up">
+			<img th:src="@{img/1600x500.gif}" /><br /> <br />
+		</div>
+	</div>
+
+
+
+
+	<div class="row">
+
+		<div class="large-3 columns">
+
+			<div class="panel">
+				<h4>Chyba!</h4>
+			</div>
+		</div>
+
+		<div class="large-9 columns">
+			<div class="panel">
+				<h1 th:text="${errorCode}">500</h1>
+				<p th:text="${errorMessage}">java.lang.NullPointerException</p>
+			</div>
+
+		</div>
+
+	</div>
+
+
+
+	<footer class="row" th:fragment="footer">
+		<div class="large-12 columns">
+			<hr />
+			<div class="row">
+
+				<div class="large-6 columns">
+					<p>CEP @ FI MUNI CZ</p>
+				</div>
+
+
+			</div>
+		</div>
+		<div id="loginModal" class="reveal-modal remove-whitespace"
+			th:attr="data-reveal=a">
+			<div class="row">
+				<div class="large-6 columns auth-plain">
+					<div class="signup-panel left-solid">
+						<p class="welcome">Registrovaní uživatelé</p>
+						<form action="#" th:action="@{/login-submit}" method="post">
+							<div class="row collapse">
+								<div class="small-2  columns">
+									<span class="prefix"><i class="fi-torso-female"></i></span>
+								</div>
+								<div class="small-10 columns">
+									<input type="text" name="username" id="username"
+										placeholder="username" />
+								</div>
+							</div>
+							<div class="row collapse">
+								<div class="small-2 columns ">
+									<span class="prefix"><i class="fi-lock"></i></span>
+								</div>
+								<div class="small-10 columns ">
+									<input type="password" name="password" id="password"
+										placeholder="password" />
+								</div>
+							</div>
+							<input class="small button" type="submit" name="submit"
+								value="Přihlásit se" />
+						</form>
+					</div>
+				</div>
+
+				<div class="large-6 columns auth-plain">
+					<div class="signup-panel newusers">
+						<p class="welcome">Neregitrován?</p>
+						<p>By creating an account with us, you will be able to move
+							through the checkout process faster, view and track your orders,
+							and more.</p>
+						<br> <a th:href="@{/signup}" class="button ">Zaregistrovat
+							se</a></br>
+					</div>
+				</div>
+
+			</div>
+			<a class="close-reveal-modal">&#215;</a>
+		</div>
+	</footer>
+
+
+
+	<div th:fragment="foot-scripts">
+		<script th:src="@{/bower_components/jquery/dist/jquery.min.js}"></script>
+		<script th:src="@{/bower_components/foundation/js/foundation.min.js}"></script>
+		<script th:src="@{/js/app.js}"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				if (window.location.hash.indexOf("login") > -1) {
+					$('#loginModal').foundation('reveal', 'open');
+				}
+			});
+		</script>
+	</div>
+</body>
+</html>
