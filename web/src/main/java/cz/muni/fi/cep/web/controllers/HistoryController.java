@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cz.muni.fi.cep.api.DTO.history.CepHistoricActivitiInstance;
 import cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance;
 import cz.muni.fi.cep.api.services.servicemanager.CepHistoryService;
 import cz.muni.fi.cep.api.services.servicemanager.CepProcessService;
@@ -91,6 +92,18 @@ public class HistoryController {
 			historyService = defaultHistoryService;
 
 		final CepHistoryProcessInstance hpi = historyService.getDetail(pid);
+		CepHistoricActivitiInstance startActivity = null;
+		CepHistoricActivitiInstance endActivity = null;
+		for(CepHistoricActivitiInstance chai : hpi.getActivitiInstances()){
+			if(chai.getActivityId().equals(hpi.getStartActivityId())){
+				startActivity = chai;
+			}
+			if(chai.getActivityId().equals(hpi.getEndActivityId())){
+				endActivity = chai;
+			}
+		}
+		model.addAttribute("startActivity", startActivity);
+		model.addAttribute("endActivity", endActivity);
 		model.addAttribute("process", hpi);
 		if (!process.equals("null"))
 			model.addAttribute("processName", service.getName());

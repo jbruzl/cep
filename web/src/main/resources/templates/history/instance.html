@@ -23,7 +23,10 @@
 		<div class="large-3 columns">
 			<div class="panel" th:include="history/history :: sub-menu"></div>
 
-			<div class="panel" th:include="history/history :: desc"></div>
+			<div class="panel">
+				<h4>Historie</h4>
+				<p>Přehled detailů vybrané instance procesu.</p>
+			</div>
 		</div>
 
 		<div class="large-9 columns">
@@ -65,7 +68,7 @@
 							<label>Trvání</label>
 						</div>
 						<div class="small-4 column end"
-							th:text="${process.durationInMillis + ' ms'}"></div>
+							th:text="${process.durationInMillis} ? ${process.durationInMillis + ' ms'} : ${'-'}"></div>
 
 						<div class="small-2 column">
 							<label>Nadřazený proces</label>
@@ -78,12 +81,12 @@
 						<div class="small-2 column">
 							<label>Start</label>
 						</div>
-						<div class="small-4 column" th:text="${process.startActivityId}"></div>
+						<div class="small-4 column" th:text="${startActivity!=null} ? ${startActivity.activityName} : ${'-'}"></div>
 
 						<div class="small-2 column">
 							<label>Konečný stav</label>
 						</div>
-						<div class="small-4 column" th:text="${process.endActivityId}"></div>
+						<div class="small-4 column" th:text="${endActivity!=null} ? ${endActivity.activityName} : ${'-'}"></div>
 					</div>
 
 					<div class="row">
@@ -91,7 +94,7 @@
 							<label>Proces</label>
 						</div>
 						<div class="small-4 column"
-							th:text="${process.processDefinitionId}"></div>
+							th:text="${processName}"></div>
 
 						<div class="small-2 column">
 							<label>Instance ID</label>
@@ -104,7 +107,7 @@
 						<div class="row" th:each="variable : ${process.variableInstances}">
 							<div class="column medium-1" th:text="${variable.id}"></div>
 							<div class="column medium-3" th:text="${variable.variableName}"></div>
-							<div class="column medium-8" th:text="${variable.value}"></div>
+							<div class="column medium-8" th:utext="${variable.value}"></div>
 						</div>
 					</div>
 
