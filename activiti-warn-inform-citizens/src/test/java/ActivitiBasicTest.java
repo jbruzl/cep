@@ -18,6 +18,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+/**
+ * Activiti test supertype
+ * 
+ * @author Jan Bruzl
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:activiti.cfg.xml")
 @TransactionConfiguration(defaultRollback=true)

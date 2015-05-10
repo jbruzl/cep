@@ -1,6 +1,3 @@
-/**
- * 
- */
 package cz.muni.fi.cep.activiti.warninformcitizens.tasks;
 
 import java.util.Calendar;
@@ -20,18 +17,20 @@ import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 import cz.muni.fi.cep.activiti.notification.messages.FileRadioMessage;
+import cz.muni.fi.cep.activiti.notification.tasks.BroadcastTask;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 
 /**
+ * Siren service task
+ * 
  * @author Jan Bruzl
- *
  */
 @Component
 public class SirenTask implements JavaDelegate {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	private RestOperations restTemplate;
-	private String audioFileName = "src/test/resources/test.wav";
+	private String audioFileName = "uploads/zkouska.wav";
 	
 	public void setRestTemplate(RestOperations restTemplate) {
 		this.restTemplate = restTemplate;
@@ -40,6 +39,16 @@ public class SirenTask implements JavaDelegate {
 	public SirenTask() {
 		restTemplate = new RestTemplate();
 	}
+	
+	public String getAudioFileName() {
+		return audioFileName;
+	}
+
+	public void setAudioFileName(String audioFileName) {
+		this.audioFileName = audioFileName;
+	}
+
+
 
 	@Autowired
 	private ConfigurationManager configurationManager;
@@ -47,9 +56,7 @@ public class SirenTask implements JavaDelegate {
 	private final String broadcastUrlKey = "cep.radio.broadcast.url";
 
 	/**
-	 * Broadcast Task of BroadcastMessage diagram. Obtains execution variable
-	 * "radioMessage" and then broadcast it via remote broadcast service (only
-	 * stub).
+	 * Similar as {@link BroadcastTask}, but with predefined radio message.
 	 * 
 	 * {@see
 	 * org.activiti.engine.delegate.JavaDelegate#execute(org.activiti.engine.

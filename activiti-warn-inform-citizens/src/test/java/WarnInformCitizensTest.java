@@ -658,6 +658,7 @@ public class WarnInformCitizensTest extends ActivitiBasicTest {
 						MockRestResponseCreators.withSuccess("",
 								MediaType.TEXT_PLAIN));
 		sirenTask.setRestTemplate(restSirenOkTemplate);
+		sirenTask.setAudioFileName("src/test/resources/zkouska.wav");
 
 		restSirenNokTemplate = new RestTemplate();
 		mockServerSirenFail = MockRestServiceServer

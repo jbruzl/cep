@@ -7,7 +7,7 @@
     <userTask id="insertMessage" name="Vložení zprávy" activiti:candidateGroups="mayor">
       <extensionElements>
         <activiti:formProperty id="smsMessage" name="SMS" type="text" required="true"></activiti:formProperty>
-        <activiti:formProperty id="checkResponse" name="Ověřovat odpověď?" type="checkbox" required="true"></activiti:formProperty>
+        <activiti:formProperty id="checkResponse" name="Ověřovat odpověď?" type="checkbox"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow2" sourceRef="parallelgateway1" targetRef="insertMessage"></sequenceFlow>
@@ -27,7 +27,11 @@
     <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="startSiren">
       <errorEventDefinition></errorEventDefinition>
     </boundaryEvent>
-    <userTask id="manualSirenStart" name="Ruční vyhlášení poplachu" activiti:candidateGroups="mayor"></userTask>
+    <userTask id="manualSirenStart" name="Ruční vyhlášení poplachu" activiti:candidateGroups="mayor">
+      <extensionElements>
+        <activiti:formProperty id="sirenError" name="Chyba sirény" type="text" default="Proveďte ruční spuštění." writable="false"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="flow8" sourceRef="boundaryerror1" targetRef="manualSirenStart"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow9" sourceRef="startSiren" targetRef="exclusivegateway1"></sequenceFlow>
@@ -38,7 +42,11 @@
     <boundaryEvent id="boundaryerror2" name="Error" attachedToRef="sendRadioMessage">
       <errorEventDefinition></errorEventDefinition>
     </boundaryEvent>
-    <userTask id="manualRadioMessage" name="Ruční rozhlášení zprávy" activiti:candidateGroups="mayor"></userTask>
+    <userTask id="manualRadioMessage" name="Ruční rozhlášení zprávy" activiti:candidateGroups="mayor">
+      <extensionElements>
+        <activiti:formProperty id="radioError" name="Chyba rozhlasu" type="text" default="Proveďte ruční rozhlášení zprávy." writable="false"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="flow13" sourceRef="boundaryerror2" targetRef="manualRadioMessage"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow14" sourceRef="sendRadioMessage" targetRef="exclusivegateway2"></sequenceFlow>
@@ -48,7 +56,8 @@
     <sequenceFlow id="flow18" sourceRef="insertMessage" targetRef="prepareSMS"></sequenceFlow>
     <sequenceFlow id="flow19" sourceRef="prepareSMS" targetRef="obtainSMSContacts"></sequenceFlow>
     <scriptTask id="prepareSMS" name="Příprava zprávy" scriptFormat="groovy" activiti:autoStoreVariables="true">
-      <script>smsContactType = cz.muni.fi.cep.api.DTO.ContactType.SMS</script>
+      <script>smsContactType = cz.muni.fi.cep.api.DTO.ContactType.SMS
+responded = []</script>
     </scriptTask>
     <serviceTask id="obtainSMSContacts" name="Načtení kontaktů" activiti:expression="${subscriptionService.getContacts(publisherCode, smsContactType)}" activiti:resultVariableName="smsReceivers"></serviceTask>
     <sequenceFlow id="flow20" sourceRef="obtainSMSContacts" targetRef="sendSMS"></sequenceFlow>
@@ -81,7 +90,12 @@
     <boundaryEvent id="smsSendError" name="Chyba odeslání SMS" attachedToRef="sendSMS">
       <errorEventDefinition errorRef="smsSendError"></errorEventDefinition>
     </boundaryEvent>
-    <userTask id="informSMSResult" name="Oznámení výsledku informování" activiti:candidateGroups="mayor"></userTask>
+    <userTask id="informSMSResult" name="Oznámení výsledku informování" activiti:candidateGroups="mayor">
+      <extensionElements>
+        <activiti:formProperty id="smsChecked" name="Potvrzené sms" type="text" default="${responded.toString()}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="smsCheckError" name="Nepotvrzeno" type="text" default="${smsReceivers.toString()}" writable="false"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="flow31" sourceRef="exclusivegateway6" targetRef="informSMSResult"></sequenceFlow>
     <sequenceFlow id="flow32" sourceRef="informSMSResult" targetRef="parallelgateway4"></sequenceFlow>
     <sequenceFlow id="flow33" sourceRef="smsSendError" targetRef="informSMSResult"></sequenceFlow>

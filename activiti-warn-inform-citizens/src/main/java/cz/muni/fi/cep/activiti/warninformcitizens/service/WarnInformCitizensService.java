@@ -27,7 +27,7 @@ import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.core.servicemanager.AbstractCepProcessService;
 
 /**
- * Service class for BPMN diagram.
+ * Service class for Warn and inform citizens BPMN diagram.
  * 
  * All interaction with Warn and inform citizens process should be done thru
  * this service.

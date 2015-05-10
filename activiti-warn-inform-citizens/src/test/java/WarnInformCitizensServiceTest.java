@@ -46,7 +46,10 @@ import cz.muni.fi.cep.api.form.CepFormProperty;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.api.services.users.IdentityService;
-
+/**
+ * {@link WarnInformCitizensService}'s test
+ * @author Jan Bruzl
+ */
 public class WarnInformCitizensServiceTest extends ActivitiBasicTest {
 	@Autowired
 	private ConfigurationManager configurationManager;
@@ -140,7 +143,10 @@ public class WarnInformCitizensServiceTest extends ActivitiBasicTest {
 				CepFormProperty cfp = (CepFormProperty) fp;
 				switch (cfp.getName()) {
 				default:
-					fail("Unknown form property");
+					fail("Unknown form property: " + cfp.getName());
+					break;
+				case "Potvrzené sms":
+				case "Nepotvrzeno":
 					break;
 				}
 			}
@@ -182,7 +188,7 @@ public class WarnInformCitizensServiceTest extends ActivitiBasicTest {
 				CepFormProperty cfp = (CepFormProperty) fp;
 				switch (cfp.getName()) {
 				default:
-					fail("Unknown form property");
+					fail("Unknown form property: " + cfp.getName());
 					break;
 				case "SMS":
 					cfp.setInput(smsMessage);
@@ -192,6 +198,8 @@ public class WarnInformCitizensServiceTest extends ActivitiBasicTest {
 					break;
 				case "Rozhlasová zpráva":
 					cfp.setInput("src/test/resources/test.wav");
+					break;
+				case "Chyba sirény":
 					break;
 				}
 			}
@@ -212,7 +220,12 @@ public class WarnInformCitizensServiceTest extends ActivitiBasicTest {
 				CepFormProperty cfp = (CepFormProperty) fp;
 				switch (cfp.getName()) {
 				default:
-					fail("Unknown form property");
+					fail("Unknown form property: "+ cfp.getName());
+					break;
+				case "Potvrzené sms":
+				case "Nepotvrzeno":
+				case "Chyba rozhlasu":
+				case "Chyba sirény":
 					break;
 				}
 			}
@@ -294,6 +307,7 @@ public class WarnInformCitizensServiceTest extends ActivitiBasicTest {
 						MockRestResponseCreators.withSuccess("",
 								MediaType.TEXT_PLAIN));
 		sirenTask.setRestTemplate(restSirenOkTemplate);
+		sirenTask.setAudioFileName("src/test/resources/zkouska.wav");
 
 		restSirenNokTemplate = new RestTemplate();
 		mockServerSirenFail = MockRestServiceServer
