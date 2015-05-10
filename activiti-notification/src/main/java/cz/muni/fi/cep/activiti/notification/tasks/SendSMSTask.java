@@ -18,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 
 /**
+ * Implementation of Send SMS service task.
+ * 
  * @author Jan Bruzl
  *
  */

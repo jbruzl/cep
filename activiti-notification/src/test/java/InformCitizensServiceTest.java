@@ -43,6 +43,11 @@ import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.api.services.users.IdentityService;
 
+/**
+ * {@link InformCitizensService}'s test
+ * 
+ * @author Jan Bruzl
+ */
 public class InformCitizensServiceTest extends ActivitiBasicTest {
 	@Autowired
 	private ConfigurationManager configurationManager;

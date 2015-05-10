@@ -38,14 +38,26 @@ public class InformCitizensHistoryService extends DefaultHistoryService {
 			switch (chvi.getVariableName()) {
 			case "sendSMS":
 				chvi.setVariableName("SMS?");
+				if((Boolean)chvi.getValue())
+					chvi.setValue("Ano");
+				else
+					chvi.setValue("Ne");
 				filteredVariables.add(chvi);
 				break;
 			case "sendRadio":
 				chvi.setVariableName("Rozhlas?");
+				if((Boolean)chvi.getValue())
+					chvi.setValue("Ano");
+				else
+					chvi.setValue("Ne");
 				filteredVariables.add(chvi);
 				break;
 			case "sendEmail":
 				chvi.setVariableName("Email?");
+				if((Boolean)chvi.getValue())
+					chvi.setValue("Ano");
+				else
+					chvi.setValue("Ne");
 				filteredVariables.add(chvi);
 				break;
 			case "smsMessage":
@@ -56,11 +68,13 @@ public class InformCitizensHistoryService extends DefaultHistoryService {
 				chvi.setVariableName("Email");
 				filteredVariables.add(chvi);
 				break;
-				
+
 			case "radioMessage":
-				chvi.setVariableName("Zpráva");
+				chvi.setVariableName("Rozhlasová zpráva");
 				RadioMessage rm = (RadioMessage) chvi.getValue();
-				chvi.setValue("<a href'" + rm.getRadioMessage().getPath() + "'>Zpráva</a>");
+				chvi.setValue("<a href=\"/uploads/"
+						+ rm.getRadioMessage().getFilename() + "\">Zpráva</a>");
+				
 				filteredVariables.add(chvi);
 				break;
 			case "sendEmailError":
@@ -79,6 +93,21 @@ public class InformCitizensHistoryService extends DefaultHistoryService {
 				chvi.setVariableName("Příjemci e-mailu");
 				filteredVariables.add(chvi);
 				break;
+			case "unsucessfullSMS":
+				chvi.setVariableName("Neodeslané SMS");
+				List<String> unsendSMS = (List<String>) chvi.getValue();
+				chvi.setValue(unsendSMS);
+				filteredVariables.add(chvi);
+				break;
+			case "emailError":
+				chvi.setVariableName("Chyba odeslání emailu");
+				filteredVariables.add(chvi);
+				break;
+			case "errorMessage":
+				chvi.setVariableName("Chyba rozhlasu");
+				filteredVariables.add(chvi);
+				break;
+				
 			default:
 				break;
 			}

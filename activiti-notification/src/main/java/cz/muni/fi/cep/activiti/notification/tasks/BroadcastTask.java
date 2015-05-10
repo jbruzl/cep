@@ -21,6 +21,8 @@ import cz.muni.fi.cep.activiti.notification.messages.RadioMessage;
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
 
 /**
+ * Implementation of Broadcast Service Task
+ * 
  * @author Jan Bruzl
  *
  */
