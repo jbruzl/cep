@@ -58,6 +58,14 @@ public class WarningHistoryService extends DefaultHistoryService {
 					chvi.setValue("Ne");
 				filteredVariables.add(chvi);
 				break;
+			case "weatherChanged":
+				chvi.setVariableName("Úroveò výstrah zmìnìna?");
+				if((Boolean)chvi.getValue())
+					chvi.setValue("Ano");
+				else
+					chvi.setValue("Ne");
+				filteredVariables.add(chvi);
+				break;
 				
 			default:
 				break;
