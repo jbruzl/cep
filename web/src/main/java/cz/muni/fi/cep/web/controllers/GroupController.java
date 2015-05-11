@@ -28,7 +28,6 @@ public class GroupController {
 	public String memebers(Model model, @RequestParam(value="id", required=true)Long id) {
 		CepGroup cepGroup = identityService.getGroupById(id);
 		if(cepGroup == null) {
-			//TODO error message
 			return "redirect:/skupiny";
 		}
 		model.addAttribute("group", cepGroup);
@@ -42,7 +41,6 @@ public class GroupController {
 		CepGroup group = identityService.getGroupById(groupId);
 		CepUser user = identityService.getCepUserById(userId);
 		if(group== null || user == null) {
-			//TODO error message
 			return "redirect:/skupiny";
 		}
 		identityService.createMembership(user, group);
@@ -54,7 +52,6 @@ public class GroupController {
 		CepGroup group = identityService.getGroupById(groupId);
 		CepUser user = identityService.getCepUserById(userId);
 		if(group== null || user == null) {
-			//TODO error message
 			return "redirect:/skupiny";
 		}
 		identityService.deleteMembership(user, group);
@@ -65,7 +62,6 @@ public class GroupController {
 	public String deleteGroup( @RequestParam(value="id", required=true) Long groupId) {
 		CepGroup group = identityService.getGroupById(groupId);
 		if(group== null) {
-			//TODO error message
 			return "redirect:/skupiny";
 		}
 		identityService.deleteGroup(group);

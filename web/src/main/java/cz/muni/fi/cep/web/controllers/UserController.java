@@ -68,7 +68,6 @@ public class UserController {
 	public String detail(Model model, @RequestParam(value="id", required=true) Long id) {
 		CepUser cepUser = identityService.getCepUserById(id);
 		if(cepUser==null) {
-			//TODO error message
 			return "users";
 		}
 		model.addAttribute("user", cepUser);
@@ -80,7 +79,6 @@ public class UserController {
 	public String delete(Model model, @RequestParam(value="id", required=true) Long id) {
 		CepUser cepUser = identityService.getCepUserById(id);
 		if(cepUser==null) {
-			//TODO error message
 			return "redirect:/uzivatele";
 		}
 		identityService.deleteUser(cepUser);
@@ -91,7 +89,6 @@ public class UserController {
 	public String edit(Model model, @RequestParam(value="id", required=true) Long id) {
 		CepUser cepUser = identityService.getCepUserById(id);
 		if(cepUser==null) {
-			//TODO error message
 			return "users";
 		}
 		model.addAttribute("user", cepUser);
@@ -111,7 +108,6 @@ public class UserController {
 
 		CepUser user = identityService.getCepUserById(Long.parseLong(id));
 		if(user==null) {
-			//TODO error message
 			return "redirect:/uzivatele";
 		}
 		user.setFirstName(name);
@@ -132,7 +128,6 @@ public class UserController {
 		
 		CepUser cepUser = identityService.getCepUserByEmail(email);
 		if(cepUser==null) {
-			//TODO error message
 			return "users";
 		}
 		model.addAttribute("user", cepUser);
@@ -145,7 +140,6 @@ public class UserController {
 		CepGroup group = identityService.getGroupById(groupId);
 		CepUser user = identityService.getCepUserById(userId);
 		if(group== null || user == null) {
-			//TODO error message
 			return "redirect:/skupiny";
 		}
 		identityService.deleteMembership(user, group);

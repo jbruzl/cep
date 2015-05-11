@@ -151,7 +151,6 @@ public class SubscriptionController {
 		CepUser cepUser = identityService.getCepUserById(Long.parseLong(userId));
 		String referer = request.getHeader("referer");
 		if(cepUser==null) {
-			//TODO error message
 			return "redirect:" + referer;
 		}
 		
