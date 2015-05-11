@@ -5,6 +5,12 @@ import java.util.List;
 import cz.muni.fi.cep.api.DTO.CepGroup;
 import cz.muni.fi.cep.api.DTO.CepUser;
 
+/**
+ * Interface to identity service, that manages user and group relationship.
+ * 
+ * @author Jan Bruzl
+ *
+ */
 public interface IdentityService extends UserService, GroupService {
 
 	/**

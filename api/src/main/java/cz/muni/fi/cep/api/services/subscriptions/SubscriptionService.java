@@ -5,6 +5,15 @@ import java.util.List;
 import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.DTO.ContactType;
 
+/**
+ * Interface for Subscription service.
+ * 
+ * Allows to register message sources/events (publishers) and subscribe to them.
+ * User or contact can be subscribed.
+ * 
+ * @author Jan Bruzl
+ *
+ */
 public interface SubscriptionService {
 
 	/**
@@ -97,9 +106,10 @@ public interface SubscriptionService {
 	 * @return list of event codes
 	 */
 	public List<String> getSubscriptions(String contact, ContactType contactType);
-	
+
 	/**
 	 * Return list of event codes.
+	 * 
 	 * @return list of event codes
 	 */
 	public List<String> getAllPublishers();

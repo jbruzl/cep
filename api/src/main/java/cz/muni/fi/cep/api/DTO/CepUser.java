@@ -1,5 +1,9 @@
 package cz.muni.fi.cep.api.DTO;
 
+/**
+ * @author Jan Bruzl
+ *
+ */
 public class CepUser {
 	private static final long serialVersionUID = -3456927035872908154L;
 

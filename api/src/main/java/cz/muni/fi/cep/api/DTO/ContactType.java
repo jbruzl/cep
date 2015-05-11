@@ -1,5 +1,9 @@
 package cz.muni.fi.cep.api.DTO;
 
+/**
+ * @author Jan Bruzl
+ *
+ */
 public enum ContactType {
 	SMS("SMS"), PHONE("PHONE"), EMAIL("EMAIL");
 

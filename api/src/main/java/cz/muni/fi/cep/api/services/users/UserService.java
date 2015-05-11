@@ -4,6 +4,12 @@ import java.util.List;
 
 import cz.muni.fi.cep.api.DTO.CepUser;
 
+/**
+ * Interface for user service, that manages all users.
+ * 
+ * @author Jan Bruzl
+ *
+ */
 public interface UserService {
 
 	/**

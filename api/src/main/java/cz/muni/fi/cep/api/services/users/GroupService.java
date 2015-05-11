@@ -4,6 +4,12 @@ import java.util.List;
 
 import cz.muni.fi.cep.api.DTO.CepGroup;
 
+/**
+ * Interface for group service, that manages all groups.
+ * 
+ * @author Jan Bruzl
+ *
+ */
 public interface GroupService {
 
 	/**
