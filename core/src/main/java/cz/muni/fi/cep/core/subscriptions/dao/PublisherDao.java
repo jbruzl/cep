@@ -9,10 +9,12 @@ import cz.muni.fi.cep.core.subscriptions.entities.Publisher;
 
 
 /**
+ * DAO class for accessing persisted {@link Publisher}
+ * 
  * @author Jan Bruzl
- *
  */
 public interface PublisherDao extends CrudRepository<Publisher, Long> {
+	
 	/**
 	 * Returns {@link Publisher} with given code.
 	 * @param code

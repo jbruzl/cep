@@ -13,6 +13,11 @@ import javax.persistence.ManyToMany;
 
 import org.activiti.engine.identity.Group;
 
+/**
+ * CepGroup entity
+ * 
+ * @author Jan Bruzl
+ */
 @Entity
 public class CepGroupEntity implements Group {
 	

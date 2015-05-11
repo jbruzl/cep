@@ -15,6 +15,8 @@ import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
@@ -25,10 +27,11 @@ import cz.muni.fi.cep.api.services.configurationmanager.ConfigurationManager;
  * @author Jan Bruzl
  */
 @Component("configurationManager")
+@EnableScheduling
 public class ConfigurationManagerImpl implements ConfigurationManager {
 	private static final long serialVersionUID = 7735116354010333835L;
 	private Map<String, String> values = new HashMap<>();
-	private String fileName;
+	private final String fileName = "config.dat";
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
@@ -58,8 +61,8 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
 	 * Save serialized values
 	 */
 	@PreDestroy
+	@Scheduled(cron="0 0/5 * 1/1 * ?")
 	public void destroy() {
-		//TODO refine
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
 		try {

@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 /**
- * TODO
+ * UserSubscriber entity
  * 
  * @author Jan Bruzl
  */

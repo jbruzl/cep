@@ -19,6 +19,12 @@ import cz.muni.fi.cep.core.users.dao.CepUserDao;
 import cz.muni.fi.cep.core.users.entities.CepGroupEntity;
 import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
+/**
+ * Implementation of {@link UserDetailsService} interface for web security
+ * purposes.
+ * 
+ * @author Jan Bruzl
+ */
 @Service("userDetailsService")
 @Transactional
 public class UserDetailServiceImpl implements UserDetailsService {
@@ -56,8 +62,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	/**
 	 * Build list of authorities from groups.
 	 *
-	 * @param user groups
-	 *            {@link CepGroupEntity}
+	 * @param user
+	 *            groups {@link CepGroupEntity}
 	 * @return List of {@link GrantedAuthority}
 	 */
 	private List<GrantedAuthority> buildUserAuthority(
@@ -67,7 +73,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 		for (CepGroupEntity group : groups) {
 			setAuths.add(new SimpleGrantedAuthority(group.getCode()));
 		}
-		
+
 		List<GrantedAuthority> result = new ArrayList<>(setAuths);
 		return result;
 	}

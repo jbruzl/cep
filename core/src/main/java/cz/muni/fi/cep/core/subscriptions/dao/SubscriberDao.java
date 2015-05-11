@@ -1,6 +1,3 @@
-/**
- * 
- */
 package cz.muni.fi.cep.core.subscriptions.dao;
 
 import org.springframework.data.jpa.repository.Query;
@@ -15,8 +12,9 @@ import cz.muni.fi.cep.core.users.entities.CepUserEntity;
 
 
 /**
+ * DAO class for accessing persisted {@link Subscriber}
+ * 
  * @author Jan Bruzl
- *
  */
 public interface SubscriberDao extends CrudRepository<Subscriber, Long> {
 	/**

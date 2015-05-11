@@ -29,7 +29,7 @@ public class DBSubscriptionService implements SubscriptionService {
 
 	@Autowired
 	private SubscriberDao subscriberDao;
-	
+
 	@Autowired
 	private Mapper mapper;
 
@@ -73,8 +73,7 @@ public class DBSubscriptionService implements SubscriptionService {
 	}
 
 	@Override
-	public void subscribeUser(CepUser user, String code,
-			ContactType contactType) {
+	public void subscribeUser(CepUser user, String code, ContactType contactType) {
 		if (user == null)
 			throw new NullPointerException("User parameter is null.");
 		if (code == null)
@@ -82,17 +81,14 @@ public class DBSubscriptionService implements SubscriptionService {
 		if (contactType == null)
 			throw new NullPointerException("Contact type parameter is null.");
 
-		if(getUserSubscriptions(user, contactType).contains(code)){
-			logger.info("User {} already subscribed to {} with {}", user, code, contactType.toString());
+		if (getUserSubscriptions(user, contactType).contains(code)) {
+			logger.info("User {} already subscribed to {} with {}", user, code,
+					contactType.toString());
 			return;
 		}
-			
-		
+
 		CepUserEntity cepUserEntity = mapper.map(user, CepUserEntity.class);
-		
-		
-		
-		
+
 		Subscriber subscriber = new UserSubscriber(cepUserEntity);
 		subscriber.setContactType(contactType);
 
@@ -151,13 +147,15 @@ public class DBSubscriptionService implements SubscriptionService {
 			if (publisher == null)
 				throw new IllegalArgumentException("Event with code " + code
 						+ " does not exists.");
-			subscribers = subscriberDao.findAllByUserAndPublisher(cepUserEntity,
-					publisher);
+			subscribers = subscriberDao.findAllByUserAndPublisher(
+					cepUserEntity, publisher);
 		}
 		for (Subscriber subscriber : subscribers) {
 			if (contactType == null
-					|| subscriber.getContactType().equals(contactType)) {				
-				logger.debug("Deleting subscription for {} to {} with contact type {}", user, code, subscriber.getContactType() );
+					|| subscriber.getContactType().equals(contactType)) {
+				logger.debug(
+						"Deleting subscription for {} to {} with contact type {}",
+						user, code, subscriber.getContactType());
 				subscriberDao.delete(subscriber);
 			}
 		}
@@ -185,7 +183,9 @@ public class DBSubscriptionService implements SubscriptionService {
 		for (Subscriber subscriber : subscribers) {
 			if (contactType == null
 					|| subscriber.getContactType().equals(contactType)) {
-				logger.debug("Deleting subscription for {} to {} with contact type {}", contact, code, subscriber.getContactType() );
+				logger.debug(
+						"Deleting subscription for {} to {} with contact type {}",
+						contact, code, subscriber.getContactType());
 				subscriberDao.delete(subscriber);
 			}
 		}
@@ -211,7 +211,9 @@ public class DBSubscriptionService implements SubscriptionService {
 					|| subscriber.getContactType().equals(contactType))
 				codes.add(subscriber.getPublisher().getCode());
 		}
-		logger.info("Returning user {} subscription with contact type {}. Size: {} ", user, contactType, codes.size());
+		logger.info(
+				"Returning user {} subscription with contact type {}. Size: {} ",
+				user, contactType, codes.size());
 		return codes;
 	}
 
@@ -230,7 +232,9 @@ public class DBSubscriptionService implements SubscriptionService {
 					|| subscriber.getContactType().equals(contactType))
 				codes.add(subscriber.getPublisher().getCode());
 		}
-		logger.info("Returning contact {} subscription with contact type {}. Size: {} ", contact, contactType, codes.size());
+		logger.info(
+				"Returning contact {} subscription with contact type {}. Size: {} ",
+				contact, contactType, codes.size());
 		return codes;
 	}
 
@@ -254,11 +258,15 @@ public class DBSubscriptionService implements SubscriptionService {
 				try {
 					contacts.add(subscriber.getContact());
 				} catch (Exception e) {
-					logger.error("Tryied to obtain contact of type {} from {} but failed.", contactType, subscriber);
+					logger.error(
+							"Tryied to obtain contact of type {} from {} but failed.",
+							contactType, subscriber);
 				}
 			}
 		}
-		logger.info("Returning publishers {} subscribed contacts with contact type {}. Size: {} ", publisher, contactType, contacts.size());
+		logger.info(
+				"Returning publishers {} subscribed contacts with contact type {}. Size: {} ",
+				publisher, contactType, contacts.size());
 		return contacts;
 	}
 
@@ -280,13 +288,19 @@ public class DBSubscriptionService implements SubscriptionService {
 			if (contactType == null
 					|| subscriber.getContactType().equals(contactType)) {
 				try {
-					users.add(mapper.map(((UserSubscriber) subscriber).getCepUserEntity(), CepUser.class));
+					users.add(mapper.map(
+							((UserSubscriber) subscriber).getCepUserEntity(),
+							CepUser.class));
 				} catch (Exception e) {
-					logger.error("Tryied to obtain contact of type {} from {} but failed.", contactType, subscriber);
+					logger.error(
+							"Tryied to obtain contact of type {} from {} but failed.",
+							contactType, subscriber);
 				}
 			}
 		}
-		logger.info("Returning publishers {} subscribed users with contact type {}. Size: {} ", publisher, contactType, users.size());
+		logger.info(
+				"Returning publishers {} subscribed users with contact type {}. Size: {} ",
+				publisher, contactType, users.size());
 		return users;
 	}
 
@@ -313,7 +327,9 @@ public class DBSubscriptionService implements SubscriptionService {
 			try {
 				contacts.add(subscriber.getContact());
 			} catch (Exception e) {
-				logger.error("Tryied to obtain contact of type {} from {} but failed.", contactType, subscriber);
+				logger.error(
+						"Tryied to obtain contact of type {} from {} but failed.",
+						contactType, subscriber);
 			}
 		}
 		logger.info("Returning contacts for {} of type {}", code, contactType);
@@ -329,7 +345,8 @@ public class DBSubscriptionService implements SubscriptionService {
 		for (Publisher publisher : publishers) {
 			publisherList.add(publisher.getCode());
 		}
-		logger.info("Returning list of publisher codes. Size: {}", publisherList.size());
+		logger.info("Returning list of publisher codes. Size: {}",
+				publisherList.size());
 		return publisherList;
 	}
 

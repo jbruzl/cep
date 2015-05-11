@@ -13,6 +13,11 @@ import javax.persistence.ManyToMany;
 
 import org.activiti.engine.identity.User;
 
+/**
+ * CepUser entity
+ * 
+ * @author Jan Bruzl
+ */
 @Entity
 public class CepUserEntity implements User {
 

@@ -15,8 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 /**
+ * Publisher entity
+ * 
  * @author Jan Bruzl
- *
  */
 @Entity
 public class Publisher {
