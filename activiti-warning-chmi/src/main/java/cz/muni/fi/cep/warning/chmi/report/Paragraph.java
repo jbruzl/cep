@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
 /**
- * Representation of CHMI weather reports Paragraph element
+ * Representation of CHMU weather reports Paragraph element
  * @author Jan Bruzl
  *
  */

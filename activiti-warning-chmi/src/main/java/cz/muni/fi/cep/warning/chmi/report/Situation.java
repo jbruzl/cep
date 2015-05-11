@@ -9,7 +9,7 @@ import java.util.GregorianCalendar;
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * Representation of CHMI weather reports Situation element
+ * Representation of CHMU weather reports Situation element
  * 
  * @author Jan Bruzl
  *

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
- * Representation of CHMI weather reports Text element
+ * Representation of CHMU weather reports Text element
  * @author Jan Bruzl
  *
  */

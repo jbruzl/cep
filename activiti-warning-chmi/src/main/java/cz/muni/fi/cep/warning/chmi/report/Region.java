@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
- * Representation of CHMI weather reports Region element
+ * Representation of CHMU weather reports Region element
  * @author Jan Bruzl
  *
  */
