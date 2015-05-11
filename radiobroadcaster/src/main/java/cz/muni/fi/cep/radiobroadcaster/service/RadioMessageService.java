@@ -53,7 +53,7 @@ public class RadioMessageService {
 		}
 	}
 	
-	@Scheduled(cron="0 0 * * * *")
+	@Scheduled(cron="0 0 0/1 1/1 * ?")
 	public void cleanMessages() {
 		cleanUp();
 		init();
