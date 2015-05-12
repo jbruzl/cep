@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>cz.muni.fi.cep</groupId>
 		<artifactId>city-emergency-portal</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0-RELEASE</version>
 	</parent>
 	<artifactId>activiti-emergency-staff</artifactId>
 	<name>Example process</name>
@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>cz.muni.fi.cep</groupId>
 			<artifactId>core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0-RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>cz.muni.fi.cep</groupId>
 			<artifactId>activiti-notification</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0-RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
