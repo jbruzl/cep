@@ -5,7 +5,7 @@
     <sequenceFlow id="flow1" sourceRef="timerstartevent1" targetRef="obtainMeteoData"></sequenceFlow>
     <userTask id="informCommunicationFailure" name="Informování o selhání komunikace" activiti:candidateGroups="mayor">
       <extensionElements>
-        <activiti:formProperty id="reason" name="Zpráva" default="Komunikace s ČHMÚ selhala"></activiti:formProperty>
+        <activiti:formProperty id="reason" name="Zpráva" type="text" default="Komunikace s ČHMÚ selhala"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <endEvent id="communicationFailure" name="Chyba spojení s ČHMÚ"></endEvent>
@@ -41,10 +41,10 @@
     <sequenceFlow id="flow10" sourceRef="endInformSMSMessage" targetRef="exclusivegateway2"></sequenceFlow>
     <userTask id="decideInformCitizens" name="Rozhodnutí o informování obyvatel" activiti:candidateGroups="mayor">
       <extensionElements>
-        <activiti:formProperty id="decideInformCitizens" name="Informovat obyvatele?" type="checkbox" required="true"></activiti:formProperty>
-        <activiti:formProperty id="sendRadio" name="Rozhlas?" type="checkbox" required="true"></activiti:formProperty>
-        <activiti:formProperty id="sendSMS" name="SMS?" type="checkbox" required="true"></activiti:formProperty>
-        <activiti:formProperty id="sendEmail" name="Email?" type="checkbox" required="true"></activiti:formProperty>
+        <activiti:formProperty id="decideInformCitizens" name="Informovat obyvatele?" type="checkbox"></activiti:formProperty>
+        <activiti:formProperty id="sendRadio" name="Rozhlas?" type="checkbox"></activiti:formProperty>
+        <activiti:formProperty id="sendSMS" name="SMS?" type="checkbox"></activiti:formProperty>
+        <activiti:formProperty id="sendEmail" name="Email?" type="checkbox"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow11" sourceRef="exclusivegateway2" targetRef="decideInformCitizens"></sequenceFlow>
