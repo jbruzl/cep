@@ -26,6 +26,8 @@ import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+
 @Configuration
 @PropertySource("classpath:config/application.properties")
 public class Config {
@@ -39,17 +41,23 @@ public class Config {
 	@Value("${cep.db.url}")
 	private String url;
 	
+	@Value("${cep.db.port}")
+	private int port;
+	
+	@Value("${cep.db.db}")
+	private String dbName;
+	
 	@Bean
 	public DataSource getDataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		MysqlDataSource d = new MysqlDataSource();
+		d.setUser(username);
+		d.setPassword(password);
+		d.setCharacterEncoding("UTF-8");
+		d.setDatabaseName(dbName);
+		d.setServerName(url);
+		d.setPort(port);
 
-		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dataSource.setUrl(url);
-		dataSource.setUsername(username);
-		dataSource.setPassword(password);
-
-
-		return dataSource;
+		return d;
 	}
 
 	@Bean
