@@ -97,7 +97,7 @@
     <sequenceFlow id="flow18" sourceRef="prepareInformMail" targetRef="sendInformEmail"></sequenceFlow>
     <startEvent id="timerstartevent1" name="Start">
       <timerEventDefinition>
-        <timeCycle>0 0/5 * 1/1 * ? *</timeCycle>
+        <timeCycle>0 0 0/1 1/1 * ? *</timeCycle>
       </timerEventDefinition>
     </startEvent>
     <exclusiveGateway id="atLeastOneContact" name="Získány kontakty?"></exclusiveGateway>

@@ -9,10 +9,8 @@
 
 
 
-	<div class="row">
-		<div class="large-12 columns">
-			<img th:src="@{/img/1600x500.gif}" /><br /> <br />
-		</div>
+	<div class="row" th:include="index :: banner">
+
 	</div>
 
 
@@ -38,12 +36,12 @@
 				<form action="#"
 					th:action="@{${'/proces/task/submit/' + key + '/' + taskId}}"
 					method="post" enctype="multipart/form-data">
-					<table>
+					<table class="large-12">
 						<tbody>
 							<tr th:each="property : ${startForm.formProperties}">
 								<td><label th:for="${property.id}"
 									th:text="${property.name}">Name</label></td>
-								<td class="large-12"><input th:type="${property.type.name}"
+								<td class=""><input class="large-12 small-12" th:type="${property.type.name}"
 									th:name="${property.id}" th:id="${property.id}"
 									th:value="${property.value}" th:disabled="${!property.isWritable()}" th:required="${property.isRequired()}"/></td>
 							</tr>

@@ -20,7 +20,7 @@ public class GroupController {
 	@RequestMapping(value= {""})
 	public String index(Model model) {
 		model.addAttribute("groups", identityService.getAllGroups());
-		return "/groups/groups";
+		return "groups/groups";
 	}
 	
 	
@@ -33,7 +33,7 @@ public class GroupController {
 		model.addAttribute("group", cepGroup);
 		model.addAttribute("groupUsers", identityService.getMembers(cepGroup));
 		model.addAttribute("users", identityService.getAllCepUsers());
-		return "/groups/members";
+		return "groups/members";
 	}
 	
 	@RequestMapping(value= {"/pridat-clena-submit"}, method=RequestMethod.POST)

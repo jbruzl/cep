@@ -5,6 +5,7 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -42,20 +42,25 @@ public class Config {
 	private String url;
 	
 	@Value("${cep.db.port}")
-	private int port;
+	private String port;
 	
 	@Value("${cep.db.db}")
 	private String dbName;
 	
 	@Bean
 	public DataSource getDataSource() {
+		 JdbcDataSource ds = new JdbcDataSource();
+		 ds.setURL("jdbc:h2:˜/test");
+		 ds.setUser("sa");
+		 ds.setPassword("sa");
+		
 		MysqlDataSource d = new MysqlDataSource();
 		d.setUser(username);
 		d.setPassword(password);
 		d.setCharacterEncoding("UTF-8");
 		d.setDatabaseName(dbName);
 		d.setServerName(url);
-		d.setPort(port);
+		d.setPortNumber(Integer.valueOf(port));
 
 		return d;
 	}

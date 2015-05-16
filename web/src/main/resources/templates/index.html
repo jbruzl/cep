@@ -14,96 +14,73 @@
 
 
 
-	<div class="row ">
-		<div class="large-12 columns show-for-medium-up">
-			<img th:src="@{img/1600x500.gif}" /><br /> <br />
-		</div>
+	<div class="row" th:fragment="banner">
+		<div class="large-12 columns"><div class="panel"><h1>City Emergency Portal</h1></div></div>
 	</div>
-
 
 
 
 	<div class="row">
 
-		<div class="large-3 columns">
-
+		<div class="large-12 columns">
 			<div class="panel">
-				<h4>Header</h4>
-				<p>Fusce ullamcorper mauris in eros dignissim molestie posuere
-					felis blandit. Aliquam erat volutpat. Mauris ultricies posuere
-					vehicula. Sed sit amet posuere erat. Quisque in ipsum non augue
-					euismod dapibus non et eros.</p>
-			</div>
-		</div>
+				
+				<p>Vítejte na stránkách městského krizového portálu. Na portálu
+					jsou nasazeny čtyři procesy souvysející s krizovým řízením v malých
+					obcích.</p>
 
-		<div class="large-9 columns">
-			<div class="panel">
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-					Etiam odio lacus, finibus quis tempus ut, posuere quis lacus.
-					Phasellus ligula lectus, tincidunt sit amet dapibus sed, ultricies
-					quis velit. Ut id tristique eros. Ut in lacus vitae erat dapibus
-					eleifend. Nullam facilisis justo sit amet nibh lacinia, nec laoreet
-					mi consequat. Vivamus in libero quis tellus faucibus malesuada in
-					vitae diam. Sed lacinia libero at nunc fringilla, id rhoncus tellus
-					imperdiet. Duis sed eros eu dui ornare rhoncus sed eget velit.
-					Maecenas ut vestibulum nunc. Duis ut condimentum risus. Praesent
-					maximus turpis molestie justo condimentum posuere.</p>
-				<p>Cras interdum, odio quis facilisis bibendum, metus lorem
-					aliquam sem, in hendrerit tellus diam eget nulla. Ut sed maximus
-					diam. Curabitur malesuada, turpis vitae consectetur consectetur,
-					arcu ante rutrum enim, nec lacinia mi nulla vel dui. Ut cursus id
-					libero lacinia tristique. Nam tempor semper ipsum, sed commodo
-					felis mattis nec. Duis eget ligula id enim fringilla mollis id ut
-					magna. Aenean a iaculis orci, eget fermentum neque.</p>
+				<h3>Svolání krizového štábu</h3>
+				<p>Proces automatizuje svolání krizového štábu obce. Při
+					spuštění vyzve starostu, aby zadal informace o času a místě setkání
+					krizového štábu. Poté proces rozešle svolávací sms členům krizového
+					štábu</p>
+				<p>Po uplynutí definované doby (5 min) proces zkontroluje, zda
+					obdržel od členů štábu odpověď. Těm členům, kteří neodpověděli na
+					svolávací zprávu odešle novou sms. Takto to proces opakuje dokud
+					neodpoví všichni členové nebo se nepřekročí určitý počet opakování.
+					Na konci zorbrazí proces starostovi přehled odeslaných zpráv.</p>
 
-				<p>Pellentesque condimentum justo sed sapien varius lobortis sit
-					amet at risus. Pellentesque habitant morbi tristique senectus et
-					netus et malesuada fames ac turpis egestas. Curabitur iaculis
-					dignissim dui sed blandit. Aliquam tortor purus, auctor ac dui nec,
-					posuere viverra leo. Duis eros odio, condimentum in vestibulum in,
-					tristique ut velit. Suspendisse vel nulla feugiat, condimentum eros
-					vel, dapibus felis. Quisque sed nisi sit amet mi lobortis lobortis
-					nec ac dolor. Nullam dictum tincidunt nunc vitae imperdiet. Proin
-					rutrum id tortor vel molestie. Proin ac ultrices enim, eu consequat
-					ex. Etiam quis commodo ligula, ut suscipit elit. Praesent congue
-					eros sed sodales viverra. Vivamus id nibh id dolor cursus iaculis
-					eu eget orci. Fusce et efficitur nibh, a aliquam ante. Morbi porta
-					ut ante eu vehicula. Pellentesque nec nisl in dolor viverra
-					ultrices ac id est. Donec sit amet quam at urna tristique gravida.
-					In libero nunc, consequat sit amet lectus sed, dapibus sodales
-					tortor. Vivamus nisi orci, vestibulum id malesuada quis, volutpat
-					sit amet odio. Nunc turpis dui, tincidunt eu luctus id, iaculis sit
-					amet ante. Quisque vulputate est sapien, id venenatis urna mattis
-					non. Quisque non ligula ante. Nunc id ligula erat. Ut commodo
-					tortor id dignissim molestie. Nulla aliquet augue non tellus
-					finibus aliquam. Phasellus sollicitudin odio lorem. Praesent mollis
-					nulla non consectetur tempus. Vivamus sagittis porttitor lorem, non
-					mattis nulla vehicula nec. Donec feugiat, libero tempor vehicula
-					facilisis, arcu odio pretium felis, a auctor tortor turpis eu nisl.
-					Maecenas et magna commodo, consectetur ipsum id, suscipit mauris.
-					Aenean nec est sed felis bibendum efficitur. Pellentesque tempor
-					blandit placerat. Suspendisse cursus turpis ac sem porta, nec
-					viverra erat congue.</p>
-			</div>
+				<p>Jako členy krizového štábu proces identifikuje uživatele a
+					kontakty přihlášené k odběru události "Svolání krizového štábu" s
+					typem kontaktu SMS.</p>
 
-			<div class="row">
-				<div class="large-6 columns">
-					<div class="panel">
-						<h5>Subheader</h5>
-						<p>Sed sit amet posuere erat. Quisque in ipsum non augue
-							euismod dapibus non et eros.</p>
-						<a href="#" class="small button">Link</a>
-					</div>
-				</div>
 
-				<div class="large-6 columns">
-					<div class="panel">
-						<h5>Subheader</h5>
-						<p>Sed sit amet posuere erat. Quisque in ipsum non augue
-							euismod dapibus non et eros.</p>
-						<a href="#" class="small button">Link</a>
-					</div>
-				</div>
+				<h3>Informování obyvatel</h3>
+				<p>Proces zajišťuje informování obyvatel obce. Využívá k tomu
+					tři informační kanály: rozhlas, sms a e-mail. Nabízí starostovi
+					možnost vybrat si libovolnou kombinaci z nabízených kanálů</p>
+				<p>Při výběru sms je starosta vyzván k vložení sms zprávy.
+					Adresáty jsou uživatelé a kontakty přihlášené k odběru události
+					"Informace".</p>
+				<p>Při výběru e-mailu je starosta vyzván k vložení e-mailové
+					zprávy. Adresáty jsou uživatelé a kontakty přihlášené k odběru
+					události "Informace".</p>
+				<p>Při výběru rozhlasu je starosta vyzván k nahrání rozhlasové
+					zprávy.</p>
+				<p>O případném selhání odeslání informace je starosta
+					informován.</p>
+
+
+				<h3>Varování a informování obyvatel</h3>
+				<p>Proces slouží k varování obyvatel v případě mimořádné
+					události. Vychází z krizového plánu HZS JM kraje. Proces spoustí
+					sirénu a zároveň vyzve starostu k vložení rozhlasové zprávy, kterou
+					odešle do rozhlasu.</p>
+				<p>Zároveň vyzve starostu k vložení sms zprávy, kterou rozešle
+					odběratelům události "Varování škol, samot a dalších subjektů".
+					Starosta může zároveň zvolit, zda má proces vyžadovat potvrzení
+					přijetí, a pokud jí nedostane, odeslat zprávu znovu. Rozesláním
+					informační sms starosta splní povinnost uloženou mu krizovým
+					plánem.</p>
+
+				<h3>Výstrahy</h3>
+				<p>Proces Výstrahy pravidelně kontroluje zveřejněná
+					meteorologická varování a vyhodnocuje je. Poku zjistí, že se úroveň
+					výstrah změnila, informuje o tom uživatele a kontakty přihlášené k
+					odběru události "Varování ČHMÚ". Poté nabídne starostovi možnost
+					informovat obyvatele o změně. Pokud tak učiní, jsou informováni
+					uživatelé a kontakty přihlášené k odběru události ""Varování pro
+					občany".</p>
 			</div>
 		</div>
 
@@ -156,7 +133,7 @@
 
 				<div class="large-6 columns auth-plain">
 					<div class="signup-panel newusers">
-						<p class="welcome">Neregitrován?</p>
+						<p class="welcome">Neregistrován?</p>
 						<p>By creating an account with us, you will be able to move
 							through the checkout process faster, view and track your orders,
 							and more.</p>

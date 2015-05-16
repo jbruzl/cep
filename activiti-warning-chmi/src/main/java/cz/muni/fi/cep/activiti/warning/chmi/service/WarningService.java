@@ -44,13 +44,13 @@ public class WarningService extends AbstractCepProcessService {
 
 	@Value("${cep.radio.broadcast.url}")
 	private String broadcastUrl;
-	
+
 	@Value("${cep.warning.countryCode}")
 	private String countryCode;
-	
+
 	@Value("${cep.warning.regionCode}")
 	private String regionCode;
-	
+
 	@Value("${cep.warning.chmi.url}")
 	private String chmiUrl;
 
@@ -82,11 +82,13 @@ public class WarningService extends AbstractCepProcessService {
 			identityService.createGroup(cepGroup);
 
 		processServiceManager.registerService(this);
-		
-		configurationManager.setKey(EvaluateWarningReport.countryCodeKey, countryCode);
-		configurationManager.setKey(EvaluateWarningReport.regionCodeKey, regionCode);
+
+		configurationManager.setKey(EvaluateWarningReport.countryCodeKey,
+				countryCode);
+		configurationManager.setKey(EvaluateWarningReport.regionCodeKey,
+				regionCode);
 		configurationManager.setKey(ObtainWeatherReport.chmiUrlKey, chmiUrl);
-		
+
 		subscriptionService.register(publisherCode);
 		subscriptionService.register("Varování pro obèany");
 		logger.debug("Publisher {} registered", publisherCode);
@@ -117,7 +119,7 @@ public class WarningService extends AbstractCepProcessService {
 		startForm.getFormProperties().clear();
 		return startForm;
 	}
-	
+
 	@Override
 	public ProcessInstance runProcess(CepFormData data) {
 		User user = (User) SecurityContextHolder.getContext()
