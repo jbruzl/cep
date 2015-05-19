@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>cz.muni.fi.cep</groupId>
 		<artifactId>city-emergency-portal</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0-RELEASE</version>
 	</parent>
 	<artifactId>activiti-warning-chmi</artifactId>
 	<name>activiti warning chmi</name>
@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>cz.muni.fi.cep</groupId>
 			<artifactId>core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0-RELEASE</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>cz.muni.fi.cep</groupId>
 			<artifactId>activiti-notification</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0-RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
