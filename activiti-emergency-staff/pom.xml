@@ -7,7 +7,7 @@
 		<version>1.0.0-RELEASE</version>
 	</parent>
 	<artifactId>activiti-emergency-staff</artifactId>
-	<name>Example process</name>
+	<name>Emergency staff call process</name>
 	<description>Implementation of emergencyStaffCall process</description>
 	<properties>
 		<spring.version>4.1.4.RELEASE</spring.version>
