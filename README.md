@@ -6,6 +6,13 @@ Note: jar can't be on file path with special characters, if so it won't parse pr
 
 If you encounter any problems with jar, try run it from IDE as Spring Boot App.
 
+You need MySQL database to run application. To configure connection, edit application.properties.
+Default connection is:
+localhost:3306
+database: activiti
+login: root
+password:
+
 ## BUILD ORDER ##
 api module
 core module
@@ -27,5 +34,5 @@ Passw: 1234
 He is member od administrator group, so he can manage memberships. Use his account to assign your account to mayor group. After logout and log in as with your account, you will have full access to processes.
 
 ### Subscriptions ###
-To receive any informations, you need to subscribe to events. You do so in "Moje odbìry" tab. 
+To receive any informations, you need to subscribe to events. You do so in "Moje odbÃ¬ry" tab. 
 To experience whole funkcionality of application, subscribe to all events.
