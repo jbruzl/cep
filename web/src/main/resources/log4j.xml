@@ -12,32 +12,32 @@
     </appender>
     
     <logger name="org.springframework">
-        <!-- Print only messages of level warn or above in the package org.springframework -->
+        <!-- Print only messages of level info or above in the package org.springframework -->
         <level value="info"/> 
     </logger>
     
     <logger name="org.hibernate">
-        <!-- Print only messages of level warn or above in the package org.hibernate -->
+        <!-- Print only messages of level info or above in the package org.hibernate -->
         <level value="info"/> 
     </logger>
 
     <logger name="org.jboss">
-        <!-- Print only messages of level warn or above in the package org.jboss -->
+        <!-- Print only messages of level info or above in the package org.jboss -->
         <level value="info"/> 
     </logger>
     
     <logger name="cz.muni.fi.cep">
-        <!-- Print only messages of level warn or above in the package org.jboss -->
+        <!-- Print only messages of level info or above in the package org.jboss -->
         <level value="info"/> 
     </logger>
     
     <logger name="org.thymeleaf">
-        <!-- Print only messages of level warn or above in the package org.jboss -->
+        <!-- Print only messages of level info or above in the package org.jboss -->
         <level value="info"/> 
     </logger>
     
     <logger name="org.activiti">
-        <!-- Print only messages of level warn or above in the package org.jboss -->
+        <!-- Print only messages of level info or above in the package org.jboss -->
         <level value="info"/> 
     </logger>
     
