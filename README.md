@@ -1,24 +1,16 @@
 # README #
 
-## Run from jar ##
 Run command:
-java -Dfile.encoding=UTF-8 -jar web-1.0.0-RELEASE.jar
+java -Dfile.encoding=UTF-8 -jar web-1.0.0-RELEASE.jar (or run run.bat)
+Note: jar can't be on file path with special characters, if so it won't parse processes. It's caused by Activiti parse component.
 
-## Run from source ##
-Build project first, then in web:
-mvn spring-boot:run
+If you encounter any problems with jar, try run it from IDE as Spring Boot App.
 
 ## BUILD ORDER ##
 api module
 core module
 activiti modules...
 web module
-
-On whole project:
-mvn install
-mvn package
-run web/target/web-1.0.0-RELEASE.jar:
-java -Dfile.encoding=UTF-8 -jar web-1.0.0-RELEASE.jar
 
 ## Radiobroadcaster ##
 Radiobroadcaster app is not part of master thesis and isn't necessary, it serves only for demonstration, as radio broadcasting service / siren service stub.
