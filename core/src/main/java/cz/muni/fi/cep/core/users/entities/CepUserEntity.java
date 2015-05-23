@@ -149,7 +149,7 @@ public class CepUserEntity implements User {
 	public String toString() {
 		return "CepUserEntity [id=" + id + ", phoneNumber=" + phoneNumber
 				+ ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", password=" + password + ", email=" + email + "]";
+				+ ", password='', email=" + email + "]";
 	}
 
 }

@@ -5,7 +5,6 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,12 +47,7 @@ public class Config {
 	private String dbName;
 	
 	@Bean
-	public DataSource getDataSource() {
-		 JdbcDataSource ds = new JdbcDataSource();
-		 ds.setURL("jdbc:h2:˜/test");
-		 ds.setUser("sa");
-		 ds.setPassword("sa");
-		
+	public DataSource getDataSource() {		
 		MysqlDataSource d = new MysqlDataSource();
 		d.setUser(username);
 		d.setPassword(password);

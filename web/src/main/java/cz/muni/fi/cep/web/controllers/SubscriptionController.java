@@ -21,7 +21,6 @@ import cz.muni.fi.cep.api.DTO.CepUser;
 import cz.muni.fi.cep.api.DTO.ContactType;
 import cz.muni.fi.cep.api.services.subscriptions.SubscriptionService;
 import cz.muni.fi.cep.api.services.users.IdentityService;
-import cz.muni.fi.cep.core.subscriptions.entities.Subscriber;
 
 
 @Controller
@@ -41,14 +40,7 @@ public class SubscriptionController {
 		return contactTypes;
 	}
 	
-	@RequestMapping(value= {""})
-	public String index(Model model) {
-		List<Subscriber> subs = new ArrayList<>();
-		model.addAttribute("userSubscriptions", subs);
-		return "subscriptions/publishers";
-	}
-	
-	@RequestMapping(value= {"/udalosti"})
+	@RequestMapping(value= {"/udalosti", ""})
 	public String publishers(Model model) {
 		model.addAttribute("publishers", subscriptionService.getAllPublishers());
 		return "subscriptions/publishers";

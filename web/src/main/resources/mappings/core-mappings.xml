@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
+	<mapping>
+		<class-a>cz.muni.fi.cep.api.DTO.CepGroup</class-a>
+		<class-b>cz.muni.fi.cep.core.users.entities.CepGroupEntity</class-b>
+		<field>
+			<a>id</a>
+			<b>id</b>
+		</field>
+		<field>
+			<a>code</a>
+			<b>code</b>
+		</field>
+		<field>
+			<a>name</a>
+			<b>name</b>
+		</field>
+		<field>
+			<a>type</a>
+			<b>type</b>
+		</field>
+	</mapping>
+	<mapping map-null="false" map-empty-string="false">
+		<class-a>cz.muni.fi.cep.api.DTO.CepUser</class-a>
+		<class-b>cz.muni.fi.cep.core.users.entities.CepUserEntity</class-b>
+		<field>
+			<a>mail</a>
+			<b>email</b>
+		</field>
+		<field type="one-way">
+			<a>password</a>
+			<b>password</b>
+		</field>
+		<field>
+			<a>lastName</a>
+			<b>lastName</b>
+		</field>
+		<field>
+			<a>firstName</a>
+			<b>firstName</b>
+		</field>
+		<field>
+			<a>phoneNumber</a>
+			<b>phoneNumber</b>
+		</field>
+		<field>
+			<a>id</a>
+			<b>id</b>
+		</field>
+	</mapping>
+	<mapping type="one-way">
+		<class-a>org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
+		</class-a>
+		<class-b>cz.muni.fi.cep.api.DTO.history.CepHistoryProcessInstance
+		</class-b>
+		<field>
+			<a get-method="getProcessInstanceId">processInstanceId</a>
+			<b>processInstanceId</b>
+		</field>
+		<field>
+			<a get-method="getDurationInMillis">durationInMillis</a>
+			<b>durationInMillis</b>
+		</field>
+		<field>
+			<a get-method="getEndTime">endTime</a>
+			<b>endTime</b>
+		</field>
+		<field>
+			<a get-method="getStartTime">startTime</a>
+			<b>startTime</b>
+		</field>
+		<field>
+			<a get-method="getProcessDefinitionId">processDefinitionId</a>
+			<b>processDefinitionId</b>
+		</field>
+		<field>
+			<a get-method="getId">id</a>
+			<b>id</b>
+		</field>
+	</mapping>
+	<mapping type="one-way" wildcard="false">
+		<class-a>org.activiti.engine.form.FormData</class-a>
+		<class-b>cz.muni.fi.cep.api.form.CepFormData</class-b>
+		<field>
+			<a get-method="getDeploymentId">deploymentId</a>
+			<b>deploymentId</b>
+		</field>
+		<field>
+			<a get-method="getFormKey">formKey</a>
+			<b>formKey</b>
+		</field>
+		<field-exclude type="one-way">
+			<a get-method="getFormProperties">formProperties</a>
+			<b set-method="setFormProperties">formProperties</b>
+		</field-exclude>
+	</mapping>
+	<mapping type="one-way">
+		<class-a>org.activiti.engine.form.FormProperty</class-a>
+		<class-b>cz.muni.fi.cep.api.form.CepFormProperty</class-b>
+		<field>
+			<a get-method="isRequired">required</a>
+			<b>required</b>
+		</field>
+		<field>
+			<a get-method="isWritable">writable</a>
+			<b>writable</b>
+		</field>
+		<field>
+			<a get-method="isReadable">readable</a>
+			<b>readable</b>
+		</field>
+		<field>
+			<a get-method="getValue">value</a>
+			<b>value</b>
+		</field>
+		<field>
+			<a get-method="getName">name</a>
+			<b>name</b>
+		</field>
+		<field>
+			<a get-method="getId">id</a>
+			<b>id</b>
+		</field>
+		<field copy-by-reference="true">
+			<a>type</a>
+			<b>type</b>
+		</field>
+	</mapping>
+	<mapping type="one-way">
+		<class-a>org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity
+		</class-a>
+		<class-b>cz.muni.fi.cep.api.DTO.history.CepHistoricActivitiInstance
+		</class-b>
+		<field>
+			<a>activityId</a>
+			<b>activitiId</b>
+		</field>
+		<field>
+			<a>activityName</a>
+			<b>activitiName</b>
+		</field>
+		<field>
+			<a>executionId</a>
+			<b>executionId</b>
+		</field>
+		<field>
+			<a>assignee</a>
+			<b>assignee</b>
+		</field>
+		<field>
+			<a>taskId</a>
+			<b>taskId</b>
+		</field>
+		<field>
+			<a>calledProcessInstanceId</a>
+			<b>calledProcessInstanceId</b>
+		</field>
+		<field>
+			<a>tenantId</a>
+			<b>tenantId</b>
+		</field>
+		<field>
+			<a get-method="getId">id</a>
+			<b>id</b>
+		</field>
+		<field>
+			<a get-method="getProcessDefinitionId">processDefinitionId</a>
+			<b>processDefinitionId</b>
+		</field>
+		<field>
+			<a get-method="getStartTime">startTime</a>
+			<b>startTime</b>
+		</field>
+		<field>
+			<a get-method="getEndTime">endTime</a>
+			<b>endTime</b>
+		</field>
+		<field>
+			<a get-method="getProcessInstanceId">processInstanceId</a>
+			<b>processInstanceId</b>
+		</field>
+		<field>
+			<a get-method="getDurationInMillis">durationInMillis</a>
+			<b>durationInMillis</b>
+		</field>
+		<field>
+			<a get-method="getTime">time</a>
+			<b>time</b>
+		</field>
+	</mapping>
+	<mapping type="one-way">
+		<class-a>org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity
+		</class-a>
+		<class-b>cz.muni.fi.cep.api.DTO.history.CepHistoricVariableInstance
+		</class-b>
+		<field>
+			<a>id</a>
+			<b>id</b>
+		</field>
+		<field>
+			<a get-method="getTime">time</a>
+			<b>time</b>
+		</field>
+		<field>
+			<a get-method="getVariableName">variableName</a>
+			<b>variableName</b>
+		</field>
+		<field>
+			<a get-method="getVariableTypeName">variableTypeName</a>
+			<b>variableTypeName</b>
+		</field>
+		<field copy-by-reference="true">
+			<a get-method="getValue">value</a>
+			<b set-method="setValue">value</b>
+		</field>
+		<field>
+			<a>processInstanceId</a>
+			<b>processInstanceId</b>
+		</field>
+		<field>
+			<a>taskId</a>
+			<b>taskId</b>
+		</field>
+		<field>
+			<a get-method="getCreateTime">createTime</a>
+			<b>createTime</b>
+		</field>
+		<field>
+			<a>lastUpdatedTime</a>
+			<b>lastUpdatedTime</b>
+		</field>
+	</mapping>
+</mappings>

@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>cz.muni.fi.cep</groupId>
 			<artifactId>activiti-warning-chmi</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0-RELEASE</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
