@@ -71,13 +71,13 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
 			<version>${activiti.version}</version>
-			<scope>test</scope>
+			
 		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring</artifactId>
 			<version>${activiti.version}</version>
-			<scope>test</scope>
+			
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>

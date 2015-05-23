@@ -102,7 +102,7 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
 			<version>5.16.1</version>
-			<scope>test</scope>
+			
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -122,7 +122,7 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring</artifactId>
 			<version>5.16.1</version>
-			<scope>test</scope>
+			
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
