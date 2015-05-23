@@ -329,7 +329,7 @@ public class WarningServiceTest extends ActivitiBasicTest {
 		CepFormData taskForm = warningService.getTaskForm(task.getId());
 		assertNotNull(taskForm);
 		assertNotNull(taskForm.getFormProperties());
-		assertEquals(0, taskForm.getFormProperties().size());
+		assertEquals(1, taskForm.getFormProperties().size());
 
 		warningService.complete(task.getId(), taskForm);
 

@@ -15,7 +15,8 @@
 		<module>radiobroadcaster</module>
 		<module>activiti-emergency-staff</module>
 		<module>activiti-warn-inform-citizens</module>
-		<module>web</module>
+		<module>activiti-warning-chmi</module>
+		<module>web</module>		
 	</modules>
 
 </project>

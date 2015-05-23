@@ -17,7 +17,7 @@ public class WeatherReportMarshaller {
 	@Bean
 	public Jaxb2Marshaller getWeatherReportMarshaller() {
 		Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-		jaxb2Marshaller.setPackagesToScan("cz.muni.fi.cep.warning.chmi.report");
+		jaxb2Marshaller.setPackagesToScan("cz.muni.fi.cep.activiti.warning.chmi.report");
 		
 		return jaxb2Marshaller;
 	}

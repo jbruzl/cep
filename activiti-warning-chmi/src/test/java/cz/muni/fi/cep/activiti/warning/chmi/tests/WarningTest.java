@@ -88,7 +88,7 @@ public class WarningTest extends ActivitiBasicTest {
 
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
+			"diagrams/InformCitizens.bpmn" })
 	public void deploymentTest() {
 		assertNotNull("Expecting deployed Warning", repositoryService
 				.createProcessDefinitionQuery().processDefinitionKey(key)
@@ -97,7 +97,7 @@ public class WarningTest extends ActivitiBasicTest {
 
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
+			"diagrams/InformCitizens.bpmn" })
 	public void timerStartTest() {
 		WeatherReportRegister wrr = new WeatherReportRegister();
 
@@ -133,7 +133,7 @@ public class WarningTest extends ActivitiBasicTest {
 
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
+			"diagrams/InformCitizens.bpmn" })
 	public void manualStartTest() {
 
 		sendSMSTask.setRestTemplate(restTemplateSMSOk);
@@ -167,7 +167,7 @@ public class WarningTest extends ActivitiBasicTest {
 
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
+			"diagrams/InformCitizens.bpmn" })
 	public void sendSMSFailureTest() {
 		sendSMSTask.setRestTemplate(restTemplateSMSNok);
 		WeatherReportRegister wrr = new WeatherReportRegister();
@@ -198,7 +198,7 @@ public class WarningTest extends ActivitiBasicTest {
 
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
+			"diagrams/InformCitizens.bpmn" })
 	public void sendSMSDecreaseLevelTest() {
 		sendSMSTask.setRestTemplate(restTemplateSMSOkNok);
 		WeatherReportRegister wrr = new WeatherReportRegister();
@@ -248,7 +248,7 @@ public class WarningTest extends ActivitiBasicTest {
 
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
+			"diagrams/InformCitizens.bpmn" })
 	public void dontInformCitizensTest() {
 		sendSMSTask.setRestTemplate(restTemplateSMSOk);
 		WeatherReportRegister wrr = new WeatherReportRegister();
@@ -289,7 +289,7 @@ public class WarningTest extends ActivitiBasicTest {
 
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
+			"diagrams/InformCitizens.bpmn" })
 	public void noChangeTest() {
 		WeatherReportRegister wrr = new WeatherReportRegister();
 
@@ -317,7 +317,7 @@ public class WarningTest extends ActivitiBasicTest {
 
 	@Test
 	@org.activiti.engine.test.Deployment(resources = { "diagrams/Warning.bpmn",
-			"diagrams/informCitizens.bpmn" })
+			"diagrams/InformCitizens.bpmn" })
 	public void badRequestWeatherReportTest() {
 		obtainWeatherReport.setRestTemplate(restTemplateNok);
 
@@ -501,13 +501,13 @@ public class WarningTest extends ActivitiBasicTest {
 	}
 
 	/**
-	 * Adds 5 mins to process engine
+	 * Adds 60 mins to process engine
 	 */
 	private void skipToFuture() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(activitiRule.getProcessEngine()
 				.getProcessEngineConfiguration().getClock().getCurrentTime());
-		cal.add(Calendar.MINUTE, 5);
+		cal.add(Calendar.MINUTE, 60);
 		activitiRule.setCurrentTime(cal.getTime());
 	}
 
